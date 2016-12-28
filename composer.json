@@ -1,0 +1,18 @@
+{
+  "name": "deimos/router",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "rez1dent3",
+      "email": "maksim.babichev95@gmail.com"
+    }
+  ],
+  "require": {
+    "deimos/helper": "~0.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "Deimos\\": "src/"
+    }
+  }
+}
