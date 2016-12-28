@@ -25,7 +25,7 @@ class Router
     /**
      * @var string
      */
-    protected $method = 'GET';
+    protected $method;
 
     /**
      * @param ClassRoute $route
@@ -46,7 +46,7 @@ class Router
     /**
      * @param string $method
      */
-    protected function setMethod($method)
+    public function setMethod($method = 'GET')
     {
         $this->method = $method;
     }
@@ -179,6 +179,11 @@ class Router
      */
     protected function run()
     {
+        if (!$this->method)
+        {
+            throw new \InvalidArgumentException('The HTTP method isn\'t known! Use method setMethod($path)!');
+        }
+
         foreach ($this->routes as $route)
         {
             $attributes = $this->match($route);
