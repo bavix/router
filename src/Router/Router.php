@@ -36,6 +36,17 @@ class Router
     }
 
     /**
+     * @param ClassRoute[] $routes
+     */
+    public function setRoutes(array $routes)
+    {
+        foreach ($routes as $route)
+        {
+            $this->addRoute($route);
+        }
+    }
+
+    /**
      * @param $path
      */
     protected function setPath($path)
