@@ -156,20 +156,7 @@ class Router
 
         }, $path);
 
-        $matches = $this->test($path);
-
-        if ($matches)
-        {
-            foreach ($matches as $key => $match)
-            {
-                if (is_int($key))
-                {
-                    unset($matches[$key]);
-                }
-            }
-        }
-
-        return $matches;
+        return $this->test($path);
     }
 
     /**

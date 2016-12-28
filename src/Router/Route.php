@@ -26,6 +26,15 @@ class Route
     public function __construct(ClassRoute $route, array $attributes)
     {
         $this->route      = $route;
+
+        foreach ($attributes as $key => $match)
+        {
+            if (is_int($key))
+            {
+                unset($attributes[$key]);
+            }
+        }
+
         $this->attributes = array_merge($this->route->attributes(), $attributes);
     }
 
