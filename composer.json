@@ -8,6 +8,7 @@
     }
   ],
   "require": {
+    "deimos/route": "~0.0",
     "deimos/helper": "~0.0"
   },
   "autoload": {
