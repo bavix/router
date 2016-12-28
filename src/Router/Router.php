@@ -34,7 +34,7 @@ class Router
     {
         $this->routes[] = $route;
     }
-    
+
     /**
      * @param ClassRoute[] $routes
      *
