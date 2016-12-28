@@ -34,15 +34,18 @@ class Router
     {
         $this->routes[] = $route;
     }
-
+    
     /**
      * @param ClassRoute[] $routes
+     *
+     * @throws \InvalidArgumentException
      */
     public function setRoutes(array $routes)
     {
         foreach ($routes as $route)
         {
-            $this->addRoute($route);
+            $classRoute = new ClassRoute($route);
+            $this->addRoute($classRoute);
         }
     }
 
