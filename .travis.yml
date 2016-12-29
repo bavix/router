@@ -7,3 +7,7 @@ php:
   - '7.1'
   - hhvm
   - nightly
+
+addons:
+    code_climate:
+        repo_token: 16f6bab8e283b343f3afe457dc6863a4ec79999506aa8bb77addcf7d96930e87
