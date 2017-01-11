@@ -69,6 +69,8 @@ class Router
      * @param string $path
      *
      * @return Route
+     *
+     * @throws \InvalidArgumentException
      */
     public function getCurrentRoute($path)
     {

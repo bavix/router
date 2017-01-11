@@ -25,7 +25,7 @@ class Route
      */
     public function __construct(ClassRoute $route, array $attributes)
     {
-        $this->route      = $route;
+        $this->route = $route;
 
         foreach ($attributes as $key => $match)
         {
