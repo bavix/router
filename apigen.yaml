@@ -1,0 +1,10 @@
+source:
+  - ./src/Router
+destination: ./docs
+internal: yes
+php: no
+tree: no
+deprecated: yes
+todo: yes
+sourceCode: no
+quiet: no
