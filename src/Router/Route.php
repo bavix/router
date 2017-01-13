@@ -29,7 +29,7 @@ class Route
 
         foreach ($attributes as $key => $match)
         {
-            if (is_int($key))
+            if (is_int($key) || empty($match))
             {
                 unset($attributes[$key]);
             }

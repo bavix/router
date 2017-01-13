@@ -29,7 +29,7 @@ class RouterTest extends \PHPUnit_Framework_TestCase
         $router->setRoutes([$route]);
         $router->addRoute($route2);
 
-        $attributes = $router->getCurrentRoute('/hello-world')->attributes();
+        $attributes  = $router->getCurrentRoute('/hello-world')->attributes();
         $attributes2 = $router->getCurrentRoute('/hello-world2/test/string')->attributes();
 
         $this->assertEquals(
@@ -96,6 +96,38 @@ class RouterTest extends \PHPUnit_Framework_TestCase
         $router->addRoute($route);
 
         $router->getCurrentRoute('/hello-world');
+    }
+
+    public function testLanguage()
+    {
+        $route = new \Deimos\Route\Route([
+            ['(/<lang:[a-z]{2}>)/<controller>(/<action>(/<id:\d+>))'],
+            [
+                'lang'   => 'ru',
+                'action' => 'default'
+            ]
+        ]);
+
+        $router = new \Deimos\Router\Router();
+
+        $router->setMethod('GET');
+        $router->addRoute($route);
+
+        // lang:default -> ru
+        $route = $router->getCurrentRoute('/hello-world');
+        $this->assertEquals($route->attributes(), [
+            'lang'       => 'ru',
+            'action'     => 'default',
+            'controller' => 'hello-world',
+        ]);
+
+        // lang -> en
+        $route = $router->getCurrentRoute('/en/hello-world');
+        $this->assertEquals($route->attributes(), [
+            'lang'       => 'en',
+            'action'     => 'default',
+            'controller' => 'hello-world',
+        ]);
     }
 
 }
