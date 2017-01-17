@@ -1,5 +1,5 @@
 # DeimosRouter
 
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/REZ1DENT3/DeimosRouter/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/REZ1DENT3/DeimosRouter/?branch=master)
-[![Code Coverage](https://scrutinizer-ci.com/g/REZ1DENT3/DeimosRouter/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/REZ1DENT3/DeimosRouter/?branch=master)
-[![Build Status](https://scrutinizer-ci.com/g/REZ1DENT3/DeimosRouter/badges/build.png?b=master)](https://scrutinizer-ci.com/g/REZ1DENT3/DeimosRouter/build-status/master)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/DeimosProject/Router/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/DeimosProject/Router/?branch=master)
+[![Code Coverage](https://scrutinizer-ci.com/g/DeimosProject/Router/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/DeimosProject/Router/?branch=master)
+[![Build Status](https://scrutinizer-ci.com/g/DeimosProject/Router/badges/build.png?b=master)](https://scrutinizer-ci.com/g/DeimosProject/Router/build-status/master)
