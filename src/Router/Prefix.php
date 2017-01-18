@@ -87,6 +87,8 @@ class Prefix
      * @param array $resolver
      *
      * @return array
+     *
+     * @throws \Deimos\Route\Exceptions\PathNotFound
      * @throws PathNotFound
      * @throws TypeNotFound
      */
@@ -106,38 +108,67 @@ class Prefix
                 throw new PathNotFound($key);
             }
 
-            if ($item['type'] === 'prefix')
+            if ($this->isPrefix($item, $rows))
             {
-                $prefix = new Prefix(
-                    $this->getArray($item, 'resolver'),
-                    $this->defaults(
-                        $this->getArray($item, 'defaults')
-                    )
-                );
-
-                $prefix->setPath($this->path() . $item['path']);
-
-                foreach ($prefix->getResolver() as $pattern)
-                {
-                    $rows[] = $pattern;
-                }
-
                 continue;
             }
 
-            $path    = (array)$item['path'];
-            $path[0] = $this->path() . $path[0];
-
-            $rows[] = new Route(
-                $path,
-                $this->defaults(
-                    $this->getArray($item, 'defaults')
-                ),
-                $this->getArray($item, 'methods')
-            );
+            $this->route($item, $rows);
         }
 
         return $rows;
+    }
+
+    /**
+     * @param array $item
+     * @param array $rows
+     *
+     * @throws \Deimos\Route\Exceptions\PathNotFound
+     */
+    protected function route(array $item, array &$rows)
+    {
+        $path    = (array)$item['path'];
+        $path[0] = $this->path() . $path[0];
+
+        $rows[] = new Route(
+            $path,
+            $this->defaults(
+                $this->getArray($item, 'defaults')
+            ),
+            $this->getArray($item, 'methods')
+        );
+    }
+
+    /**
+     * @param array $item
+     * @param array $rows
+     *
+     * @return bool
+     * @throws PathNotFound
+     * @throws TypeNotFound
+     */
+    protected function isPrefix(array $item, array &$rows)
+    {
+        if ($item['type'] === 'prefix')
+        {
+            $prefix = new Prefix(
+                $this->getArray($item, 'resolver'),
+                $this->defaults(
+                    $this->getArray($item, 'defaults')
+                )
+            );
+
+            $prefix->setPath($this->path() . $item['path']);
+
+            foreach ($prefix->getResolver() as $pattern)
+            {
+                $rows[] = $pattern;
+            }
+
+            return true;
+        }
+
+        return false;
     }
 
 }
