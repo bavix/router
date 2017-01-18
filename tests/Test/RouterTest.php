@@ -2,6 +2,8 @@
 
 namespace Test;
 
+use Deimos\Router\Router;
+
 class RouterTest extends \PHPUnit_Framework_TestCase
 {
 
@@ -63,9 +65,9 @@ class RouterTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException \InvalidArgumentException
+     * @expectedException \Deimos\Router\Exceptions\PathNotFound
      */
-    public function testError()
+    public function testErrorPathNotFound()
     {
         $route = new \Deimos\Route\Route(
             ['/<controller>(/<action>)'],
@@ -81,6 +83,109 @@ class RouterTest extends \PHPUnit_Framework_TestCase
         $router->addRoute($route);
 
         $router->getCurrentRoute('/hello-world');
+    }
+
+    /**
+     * @expectedException \Deimos\Router\Exceptions\TypeNotFound
+     */
+    public function testErrorWithoutType()
+    {
+        $route = new Router();
+
+        $route->setRoutes([
+            [
+                'type' => 'prefix',
+                'path' => '/demo',
+                'resolver' => [
+                    __METHOD__ => [
+//                        'type' => 'pattern',
+                        'path' => '/many.php',
+                        'defaults' => [
+                            'p1'     => 'hello',
+                            'p2'     => 'world',
+                            'action' => 'default'
+                        ],
+                    ]
+                ]
+            ]
+        ]);
+
+    }
+
+    /**
+     * @expectedException \Deimos\Router\Exceptions\PathNotFound
+     */
+    public function testErrorWithoutPath()
+    {
+        $route = new Router();
+
+        $route->setRoutes([
+            [
+                'type' => 'prefix',
+                'path' => '/demo',
+                'resolver' => [
+                    __METHOD__ => [
+                        'type' => 'pattern',
+//                        'path' => '/many.php',
+                        'defaults' => [
+                            'p1'     => 'hello',
+                            'p2'     => 'world',
+                            'action' => 'default'
+                        ],
+                    ]
+                ]
+            ]
+        ]);
+
+    }
+
+    public function testPrefixSuccess()
+    {
+        $route = new Router();
+
+        $route->setRoutes([
+            [
+                'type' => 'prefix',
+                'path' => '/demo',
+                'resolver' => [
+                    __FUNCTION__ => [
+                        'type' => 'pattern',
+                        'path' => '/many.php',
+                        'defaults' => [
+                            'p1'     => 'hello',
+                            'p2'     => 'world',
+                            'action' => 'default'
+                        ],
+                    ],
+                    __METHOD__ => [
+                        'type' => 'pattern',
+                        'path' => '/<p1>',
+                        'defaults' => [
+                            'p1'     => 'hello',
+                            'p2'     => 'world',
+                            'action' => 'default'
+                        ],
+                    ]
+                ]
+            ]
+        ]);
+
+        $route->setMethod('GET');
+
+        $attributes = $route->getCurrentRoute('/demo/many.php')->attributes();
+
+        $this->assertEquals(
+            'hello',
+            $attributes['p1']
+        );
+
+        $attributes = $route->getCurrentRoute('/demo/deimos')->attributes();
+
+        $this->assertEquals(
+            'deimos',
+            $attributes['p1']
+        );
+
     }
 
     /**

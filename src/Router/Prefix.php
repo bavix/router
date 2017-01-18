@@ -57,6 +57,8 @@ class Prefix
 
     /**
      * @return array
+     *
+     * @throws \Deimos\Route\Exceptions\PathNotFound
      * @throws PathNotFound
      * @throws TypeNotFound
      */
@@ -144,6 +146,8 @@ class Prefix
      * @param array $rows
      *
      * @return bool
+     *
+     * @throws \Deimos\Route\Exceptions\PathNotFound
      * @throws PathNotFound
      * @throws TypeNotFound
      */
