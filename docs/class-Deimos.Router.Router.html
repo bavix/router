@@ -26,10 +26,16 @@
 						<ul>
 				<li class="active">
 					<a href="namespace-Deimos.Router.html">
-						Router					</a>
+						Router<span></span>
+					</a>
+
+						<ul>
+				<li>
+					<a href="namespace-Deimos.Router.Exceptions.html">
+						Exceptions					</a>
 
 						</li>
-							</ul></li>
+							</ul></li></ul></li>
 				<li>
 					<a href="namespace-PHP.html">
 						PHP					</a>
@@ -44,6 +50,7 @@
 		<div id="elements">
 			<h3>Classes</h3>
 			<ul>
+				<li><a href="class-Deimos.Router.Prefix.html">Prefix</a></li>
 				<li><a href="class-Deimos.Router.Route.html">Route</a></li>
 				<li class="active"><a href="class-Deimos.Router.Router.html">Router</a></li>
 			</ul>
@@ -115,7 +122,7 @@
 		<b>Namespace:</b> <a href="namespace-Deimos.html">Deimos</a>\<a href="namespace-Deimos.Router.html">Router</a><br>
 		
 
-			<b>Located at</b> <a href="source-class-Deimos.Router.Router.html#7-203" title="Go to source code">Router/Router.php</a>
+			<b>Located at</b> <a href="source-class-Deimos.Router.Router.html#7-210" title="Go to source code">Router/Router.php</a>
 		<br>
 	</div>
 
@@ -170,7 +177,7 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#_setRoutes">#</a>
-		<code><a href="source-class-Deimos.Router.Router.html#38-50" title="Go to source code">setRoutes</a>( <span>array <var>$routes</var></span> )</code>
+		<code><a href="source-class-Deimos.Router.Router.html#38-57" title="Go to source code">setRoutes</a>( <span>array <var>$routes</var></span> )</code>
 
 		<div class="description short">
 			
@@ -189,7 +196,8 @@
 
 				<h4>Throws</h4>
 				<div class="list">
-					<code><a href="class-InvalidArgumentException.html">InvalidArgumentException</a></code>
+					<code><a href="class-Deimos.Router.Exceptions.PathNotFound.html">Deimos\Router\Exceptions\PathNotFound</a></code><br>
+					<code><a href="class-Deimos.Router.Exceptions.TypeNotFound.html">Deimos\Router\Exceptions\TypeNotFound</a></code>
 				</div>
 
 
@@ -209,7 +217,7 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#_setPath">#</a>
-		<code><a href="source-class-Deimos.Router.Router.html#52-58" title="Go to source code">setPath</a>( <span> <var>$path</var></span> )</code>
+		<code><a href="source-class-Deimos.Router.Router.html#59-65" title="Go to source code">setPath</a>( <span> <var>$path</var></span> )</code>
 
 		<div class="description short">
 			
@@ -244,7 +252,7 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#_setMethod">#</a>
-		<code><a href="source-class-Deimos.Router.Router.html#60-66" title="Go to source code">setMethod</a>( <span>string <var>$method</var> = <span class="php-quote">'GET'</span></span> )</code>
+		<code><a href="source-class-Deimos.Router.Router.html#67-73" title="Go to source code">setMethod</a>( <span>string <var>$method</var> = <span class="php-quote">'GET'</span></span> )</code>
 
 		<div class="description short">
 			
@@ -279,7 +287,7 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#_getCurrentRoute">#</a>
-		<code><a href="source-class-Deimos.Router.Router.html#68-85" title="Go to source code">getCurrentRoute</a>( <span>string <var>$path</var></span> )</code>
+		<code><a href="source-class-Deimos.Router.Router.html#75-92" title="Go to source code">getCurrentRoute</a>( <span>string <var>$path</var></span> )</code>
 
 		<div class="description short">
 			
@@ -322,7 +330,7 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#_optional">#</a>
-		<code><a href="source-class-Deimos.Router.Router.html#87-95" title="Go to source code">optional</a>( <span>string <var>$rulePath</var></span> )</code>
+		<code><a href="source-class-Deimos.Router.Router.html#94-102" title="Go to source code">optional</a>( <span>string <var>$rulePath</var></span> )</code>
 
 		<div class="description short">
 			
@@ -361,7 +369,7 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#_test">#</a>
-		<code><a href="source-class-Deimos.Router.Router.html#97-107" title="Go to source code">test</a>( <span>string <var>$test</var></span> )</code>
+		<code><a href="source-class-Deimos.Router.Router.html#104-114" title="Go to source code">test</a>( <span>string <var>$test</var></span> )</code>
 
 		<div class="description short">
 			
@@ -400,7 +408,7 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#_val">#</a>
-		<code><a href="source-class-Deimos.Router.Router.html#109-122" title="Go to source code">val</a>( <span> <var>$data</var></span> )</code>
+		<code><a href="source-class-Deimos.Router.Router.html#116-129" title="Go to source code">val</a>( <span> <var>$data</var></span> )</code>
 
 		<div class="description short">
 			
@@ -439,7 +447,7 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#_tokenizer">#</a>
-		<code><a href="source-class-Deimos.Router.Router.html#124-146" title="Go to source code">tokenizer</a>( <span> <var>$string</var></span> )</code>
+		<code><a href="source-class-Deimos.Router.Router.html#131-153" title="Go to source code">tokenizer</a>( <span> <var>$string</var></span> )</code>
 
 		<div class="description short">
 			
@@ -478,7 +486,7 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#_match">#</a>
-		<code><a href="source-class-Deimos.Router.Router.html#148-176" title="Go to source code">match</a>( <span>Deimos\Route\Route <var>$route</var></span> )</code>
+		<code><a href="source-class-Deimos.Router.Router.html#155-183" title="Go to source code">match</a>( <span>Deimos\Route\Route <var>$route</var></span> )</code>
 
 		<div class="description short">
 			
@@ -517,7 +525,7 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#_run">#</a>
-		<code><a href="source-class-Deimos.Router.Router.html#178-201" title="Go to source code">run</a>( )</code>
+		<code><a href="source-class-Deimos.Router.Router.html#185-208" title="Go to source code">run</a>( )</code>
 
 		<div class="description short">
 			
@@ -672,7 +680,7 @@
 	</div>
 </div>
 </div>
-<script src="resources/combined.js"></script>
-<script src="elementlist.js"></script>
+<script src="resources/combined.js?646c7375b6a1772b9bf9fd52bc31786b7948c565"></script>
+<script src="elementlist.js?9c9c458cf0666373bdb9b35a81fa939962e90686"></script>
 </body>
 </html>
