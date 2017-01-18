@@ -36,14 +36,16 @@ class Router
     }
 
     /**
-     * @param array $routes
+     * @param array  $routes
+     * @param string $path
      *
      * @throws Exceptions\PathNotFound
      * @throws Exceptions\TypeNotFound
      */
-    public function setRoutes(array $routes)
+    public function setRoutes(array $routes, $path = null)
     {
         $prefix = new Prefix($routes);
+        $prefix->setPath($path);
 
         /**
          * @var ClassRoute[] $resolver
