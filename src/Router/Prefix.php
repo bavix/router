@@ -86,6 +86,27 @@ class Prefix
     }
 
     /**
+     * @param array $value
+     *
+     * @throws PathNotFound
+     * @throws TypeNotFound
+     */
+    protected function checkItem(array $value, $key)
+    {
+
+        if (!isset($value['type']))
+        {
+            throw new TypeNotFound($key);
+        }
+
+        if (!isset($value['path']))
+        {
+            throw new PathNotFound($key);
+        }
+
+    }
+
+    /**
      * @param array $resolver
      *
      * @return array
@@ -100,15 +121,7 @@ class Prefix
 
         foreach ($resolver as $key => $item)
         {
-            if (!isset($item['type']))
-            {
-                throw new TypeNotFound($key);
-            }
-
-            if (!isset($item['path']))
-            {
-                throw new PathNotFound($key);
-            }
+            $this->checkItem($item, $key);
 
             if ($this->isPrefix($item, $rows))
             {
