@@ -3,7 +3,7 @@
 namespace Deimos\Router;
 
 use Deimos\Route\Route as ClassRoute;
-use Deimos\Router\Exceptions\PathNotFound;
+use Deimos\Router\Exceptions\NotFound;
 
 class Router
 {
@@ -40,9 +40,9 @@ class Router
      * @param array  $routes
      * @param string $path
      *
-     * @throws Exceptions\PathNotFound
+     * @throws Exceptions\NotFound
      * @throws Exceptions\TypeNotFound
-     * @throws \Deimos\Route\Exceptions\PathNotFound
+     * @throws \Deimos\Route\Exceptions\NotFound
      */
     public function setRoutes(array $routes, $path = null)
     {
@@ -84,7 +84,7 @@ class Router
      * @return \Deimos\Router\Route
      *
      * @throws \InvalidArgumentException
-     * @throws PathNotFound
+     * @throws NotFound
      */
     public function getCurrentRoute($path)
     {
@@ -192,7 +192,7 @@ class Router
      * @return Route
      *
      * @throws \InvalidArgumentException
-     * @throws PathNotFound
+     * @throws NotFound
      */
     protected function run()
     {
@@ -211,7 +211,7 @@ class Router
             }
         }
 
-        throw new PathNotFound($this->path);
+        throw new NotFound('Path \'' . $this->path . '\' not found');
     }
 
 }

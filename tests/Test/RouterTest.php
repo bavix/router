@@ -65,9 +65,9 @@ class RouterTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException \Deimos\Router\Exceptions\PathNotFound
+     * @expectedException \Deimos\Router\Exceptions\NotFound
      */
-    public function testErrorPathNotFound()
+    public function testErrorNotFound()
     {
         $route = new \Deimos\Route\Route(
             ['/<controller>(/<action>)'],
@@ -86,7 +86,7 @@ class RouterTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException \Deimos\Router\Exceptions\TypeNotFound
+     * @expectedException \Deimos\Router\Exceptions\NotFound
      */
     public function testErrorWithoutType()
     {
@@ -113,7 +113,7 @@ class RouterTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException \Deimos\Router\Exceptions\PathNotFound
+     * @expectedException \Deimos\Router\Exceptions\NotFound
      */
     public function testErrorWithoutPath()
     {
