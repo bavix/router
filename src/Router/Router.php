@@ -77,7 +77,7 @@ class Router
     /**
      * @param string $path
      *
-     * @return Route
+     * @return \Deimos\Router\Route
      *
      * @throws \InvalidArgumentException
      */
