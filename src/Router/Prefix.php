@@ -37,7 +37,7 @@ class Prefix
     }
 
     /**
-     * @param $value
+     * @param string $value
      */
     public function setPath($value)
     {
