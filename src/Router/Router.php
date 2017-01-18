@@ -57,7 +57,7 @@ class Router
     }
 
     /**
-     * @param $path
+     * @param string $path
      */
     protected function setPath($path)
     {
@@ -94,7 +94,7 @@ class Router
     /**
      * @param string $rulePath
      *
-     * @return mixed
+     * @return string
      */
     protected function optional($rulePath)
     {
@@ -104,7 +104,7 @@ class Router
     /**
      * @param string $test
      *
-     * @return array
+     * @return string[]
      */
     protected function test($test)
     {
@@ -131,7 +131,7 @@ class Router
     /**
      * @param $string
      *
-     * @return array
+     * @return string[]
      */
     protected function tokenizer($string)
     {
