@@ -122,7 +122,7 @@
 		<b>Namespace:</b> <a href="namespace-Deimos.html">Deimos</a>\<a href="namespace-Deimos.Router.html">Router</a><br>
 		
 
-			<b>Located at</b> <a href="source-class-Deimos.Router.Prefix.html#9-143" title="Go to source code">Router/Prefix.php</a>
+			<b>Located at</b> <a href="source-class-Deimos.Router.Prefix.html#9-191" title="Go to source code">Router/Prefix.php</a>
 		<br>
 	</div>
 
@@ -179,7 +179,7 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#_setPath">#</a>
-		<code><a href="source-class-Deimos.Router.Prefix.html#39-45" title="Go to source code">setPath</a>( <span> <var>$value</var></span> )</code>
+		<code><a href="source-class-Deimos.Router.Prefix.html#39-45" title="Go to source code">setPath</a>( <span>string <var>$value</var></span> )</code>
 
 		<div class="description short">
 			
@@ -255,7 +255,7 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#_getResolver">#</a>
-		<code><a href="source-class-Deimos.Router.Prefix.html#58-66" title="Go to source code">getResolver</a>( )</code>
+		<code><a href="source-class-Deimos.Router.Prefix.html#58-68" title="Go to source code">getResolver</a>( )</code>
 
 		<div class="description short">
 			
@@ -273,6 +273,7 @@
 
 				<h4>Throws</h4>
 				<div class="list">
+					Deimos\Route\Exceptions\PathNotFound<br>
 					<code><a href="class-Deimos.Router.Exceptions.PathNotFound.html">Deimos\Router\Exceptions\PathNotFound</a></code><br>
 					<code><a href="class-Deimos.Router.Exceptions.TypeNotFound.html">Deimos\Router\Exceptions\TypeNotFound</a></code>
 				</div>
@@ -294,7 +295,7 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#_path">#</a>
-		<code><a href="source-class-Deimos.Router.Prefix.html#68-74" title="Go to source code">path</a>( )</code>
+		<code><a href="source-class-Deimos.Router.Prefix.html#70-76" title="Go to source code">path</a>( )</code>
 
 		<div class="description short">
 			
@@ -328,7 +329,7 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#_defaults">#</a>
-		<code><a href="source-class-Deimos.Router.Prefix.html#76-84" title="Go to source code">defaults</a>( <span>array <var>$rows</var></span> )</code>
+		<code><a href="source-class-Deimos.Router.Prefix.html#78-86" title="Go to source code">defaults</a>( <span>array <var>$rows</var></span> )</code>
 
 		<div class="description short">
 			
@@ -355,6 +356,48 @@
 		</div>
 		</div></td>
 	</tr>
+	<tr data-order="checkItem" id="_checkItem">
+
+		<td class="attributes"><code>
+			 protected 
+
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_checkItem">#</a>
+		<code><a href="source-class-Deimos.Router.Prefix.html#88-107" title="Go to source code">checkItem</a>( <span>array <var>$value</var></span>, <span> <var>$key</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$value</var></dt>
+					<dd></dd>
+					<dt><var>$key</var></dt>
+					<dd></dd>
+				</dl></div>
+
+
+				<h4>Throws</h4>
+				<div class="list">
+					<code><a href="class-Deimos.Router.Exceptions.PathNotFound.html">Deimos\Router\Exceptions\PathNotFound</a></code><br>
+					<code><a href="class-Deimos.Router.Exceptions.TypeNotFound.html">Deimos\Router\Exceptions\TypeNotFound</a></code>
+				</div>
+
+
+
+		</div>
+		</div></td>
+	</tr>
 	<tr data-order="resolver" id="_resolver">
 
 		<td class="attributes"><code>
@@ -367,7 +410,7 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#_resolver">#</a>
-		<code><a href="source-class-Deimos.Router.Prefix.html#86-141" title="Go to source code">resolver</a>( <span>array <var>$resolver</var></span> )</code>
+		<code><a href="source-class-Deimos.Router.Prefix.html#109-135" title="Go to source code">resolver</a>( <span>array <var>$resolver</var></span> )</code>
 
 		<div class="description short">
 			
@@ -390,6 +433,95 @@
 
 				<h4>Throws</h4>
 				<div class="list">
+					Deimos\Route\Exceptions\PathNotFound<br>
+					<code><a href="class-Deimos.Router.Exceptions.PathNotFound.html">Deimos\Router\Exceptions\PathNotFound</a></code><br>
+					<code><a href="class-Deimos.Router.Exceptions.TypeNotFound.html">Deimos\Router\Exceptions\TypeNotFound</a></code>
+				</div>
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="route" id="_route">
+
+		<td class="attributes"><code>
+			 protected 
+
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_route">#</a>
+		<code><a href="source-class-Deimos.Router.Prefix.html#137-155" title="Go to source code">route</a>( <span>array <var>$item</var></span>, <span>array <var>&amp; $rows</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$item</var></dt>
+					<dd></dd>
+					<dt><var>$rows</var></dt>
+					<dd></dd>
+				</dl></div>
+
+
+				<h4>Throws</h4>
+				<div class="list">
+					Deimos\Route\Exceptions\PathNotFound
+				</div>
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="isPrefix" id="_isPrefix">
+
+		<td class="attributes"><code>
+			 protected 
+
+			boolean
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_isPrefix">#</a>
+		<code><a href="source-class-Deimos.Router.Prefix.html#157-189" title="Go to source code">isPrefix</a>( <span>array <var>$item</var></span>, <span>array <var>&amp; $rows</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$item</var></dt>
+					<dd></dd>
+					<dt><var>$rows</var></dt>
+					<dd></dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					boolean
+				</div>
+
+				<h4>Throws</h4>
+				<div class="list">
+					Deimos\Route\Exceptions\PathNotFound<br>
 					<code><a href="class-Deimos.Router.Exceptions.PathNotFound.html">Deimos\Router\Exceptions\PathNotFound</a></code><br>
 					<code><a href="class-Deimos.Router.Exceptions.TypeNotFound.html">Deimos\Router\Exceptions\TypeNotFound</a></code>
 				</div>
@@ -503,7 +635,7 @@
 	</div>
 </div>
 </div>
-<script src="resources/combined.js?646c7375b6a1772b9bf9fd52bc31786b7948c565"></script>
-<script src="elementlist.js?9c9c458cf0666373bdb9b35a81fa939962e90686"></script>
+<script src="resources/combined.js"></script>
+<script src="elementlist.js"></script>
 </body>
 </html>
