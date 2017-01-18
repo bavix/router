@@ -4,7 +4,6 @@ namespace Deimos\Router;
 
 use Deimos\Route\Route as ClassRoute;
 use Deimos\Router\Exceptions\NotFound;
-use Deimos\Router\Exceptions\TypeNotFound;
 
 class Prefix
 {
@@ -58,7 +57,7 @@ class Prefix
     /**
      * @return array
      *
-     * @throws \Deimos\Route\Exceptions\NotFound
+     * @throws \Deimos\Route\Exceptions\PathNotFound
      * @throws NotFound
      */
     public function getResolver()
@@ -89,7 +88,7 @@ class Prefix
      *
      * @return array
      *
-     * @throws \Deimos\Route\Exceptions\NotFound
+     * @throws \Deimos\Route\Exceptions\PathNotFound
      * @throws NotFound
      */
     protected function resolver(array $resolver)
@@ -118,7 +117,7 @@ class Prefix
      * @param array $item
      * @param array $rows
      *
-     * @throws \Deimos\Route\Exceptions\NotFound
+     * @throws \Deimos\Route\Exceptions\PathNotFound
      */
     protected function route(array $item, array &$rows)
     {
@@ -140,7 +139,7 @@ class Prefix
      *
      * @return bool
      *
-     * @throws \Deimos\Route\Exceptions\NotFound
+     * @throws \Deimos\Route\Exceptions\PathNotFound
      * @throws NotFound
      */
     protected function isPrefix(array $item, array &$rows)

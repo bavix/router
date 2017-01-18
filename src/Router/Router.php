@@ -41,8 +41,7 @@ class Router
      * @param string $path
      *
      * @throws Exceptions\NotFound
-     * @throws Exceptions\TypeNotFound
-     * @throws \Deimos\Route\Exceptions\NotFound
+     * @throws \Deimos\Route\Exceptions\PathNotFound
      */
     public function setRoutes(array $routes, $path = null)
     {
