@@ -2,7 +2,7 @@
 
 namespace Deimos\Router;
 
-use Deimos\Route\Route;
+use Deimos\Route\Route as ClassRoute;
 use Deimos\Router\Exceptions\PathNotFound;
 use Deimos\Router\Exceptions\TypeNotFound;
 
@@ -130,7 +130,7 @@ class Prefix
         $path    = (array)$item['path'];
         $path[0] = $this->path() . $path[0];
 
-        $rows[] = new Route(
+        $rows[] = new ClassRoute(
             $path,
             $this->defaults(
                 $this->getArray($item, 'defaults')
