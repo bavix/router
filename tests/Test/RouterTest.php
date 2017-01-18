@@ -8,25 +8,29 @@ class RouterTest extends \PHPUnit_Framework_TestCase
     public function testRouter()
     {
 
-        $route = [
-            ['/<controller>(/<action>(/<id:\d+>))'],
-            [
-                'action' => 'default'
-            ],
-            ['GET', 'POST']
-        ];
-
-        $route2 = new \Deimos\Route\Route([
+        $route2 = new \Deimos\Route\Route(
             ['/<controller>(/<action>/<value:\w+>)'],
             [
                 'action' => 'default2'
             ]
-        ]);
+        );
 
         $router = new \Deimos\Router\Router();
 
         $router->setMethod('GET');
-        $router->setRoutes([$route]);
+        $router->setRoutes([
+            [
+                'type'     => 'pattern',
+                'path'     => '/<controller>(/<action>(/<id:\d+>))',
+
+                'defaults' => [
+                    'action' => 'default'
+                ],
+
+                'methods'  => ['GET', 'POST']
+            ]
+
+        ]);
         $router->addRoute($route2);
 
         $attributes  = $router->getCurrentRoute('/hello-world')->attributes();
@@ -63,13 +67,13 @@ class RouterTest extends \PHPUnit_Framework_TestCase
      */
     public function testError()
     {
-        $route = new \Deimos\Route\Route([
+        $route = new \Deimos\Route\Route(
             ['/<controller>(/<action>)'],
             [
                 'action' => 'default'
             ],
             ['FLASH']
-        ]);
+        );
 
         $router = new \Deimos\Router\Router();
 
@@ -84,12 +88,12 @@ class RouterTest extends \PHPUnit_Framework_TestCase
      */
     public function testInvalidMethod()
     {
-        $route = new \Deimos\Route\Route([
+        $route = new \Deimos\Route\Route(
             ['/<controller>(/<action>)'],
             [
                 'action' => 'default'
             ]
-        ]);
+        );
 
         $router = new \Deimos\Router\Router();
 
@@ -100,13 +104,15 @@ class RouterTest extends \PHPUnit_Framework_TestCase
 
     public function testLanguage()
     {
-        $route = new \Deimos\Route\Route([
-            ['(/<lang:[a-z]{2}>)/<controller>(/<action>(/<id:\d+>))'],
+        $route = new \Deimos\Route\Route(
+            [
+                '(/<lang:[a-z]{2}>)/<controller>(/<action>(/<id:\d+>))'
+            ],
             [
                 'lang'   => 'ru',
                 'action' => 'default'
             ]
-        ]);
+        );
 
         $router = new \Deimos\Router\Router();
 

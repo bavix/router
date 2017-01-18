@@ -15,7 +15,7 @@
     }
   ],
   "require": {
-    "deimos/route": "~0.0"
+    "deimos/route": "~0.1"
   },
   "require-dev": {
     "phpunit/phpunit": "~5.7",

@@ -2,13 +2,13 @@
 
 include_once __DIR__ . '/../vendor/autoload.php';
 
-$route = new \Deimos\Route\Route([
+$route = new \Deimos\Route\Route(
     ['(/<lang:[a-z]{2}>)/<controller>(/<action>(/<id:\d+>))'],
     [
         'lang'   => 'ru',
         'action' => 'default'
     ]
-]);
+);
 
 $router = new \Deimos\Router\Router();
 

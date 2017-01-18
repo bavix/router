@@ -36,16 +36,23 @@ class Router
     }
 
     /**
-     * @param ClassRoute[] $routes
+     * @param array $routes
      *
-     * @throws \InvalidArgumentException
+     * @throws Exceptions\PathNotFound
+     * @throws Exceptions\TypeNotFound
      */
     public function setRoutes(array $routes)
     {
-        foreach ($routes as $route)
+        $prefix = new Prefix($routes);
+
+        /**
+         * @var ClassRoute[] $resolver
+         */
+        $resolver = $prefix->getResolver();
+
+        foreach ($resolver as $route)
         {
-            $classRoute = new ClassRoute($route);
-            $this->addRoute($classRoute);
+            $this->addRoute($route);
         }
     }
 
