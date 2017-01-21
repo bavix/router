@@ -171,7 +171,7 @@ class Router
         }
 
         $path = $this->optional($route->route());
-        $path = str_replace('.', '\\.', $path);
+        //$path = str_replace('.', '\\.', $path); // issue #1
         $path = preg_replace_callback('~\<(.*?)\>~u', function ($matches) use (&$route)
         {
             list ($match, $newRegExp) = $this->tokenizer($matches[1]);
