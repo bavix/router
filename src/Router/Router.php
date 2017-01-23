@@ -151,7 +151,7 @@ class Router
 
         $path = $this->quote($route->route());
         $path = preg_replace_callback(
-            '~\<(?<key>[a-z\d_-]+)\>~',
+            '~\<(?<key>[\w-]+)\>~',
             function ($matches) use (&$route)
             {
                 $key = $matches['key'];
