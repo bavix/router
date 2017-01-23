@@ -120,21 +120,6 @@ class Router
     }
 
     /**
-     * @param $data
-     *
-     * @return string
-     */
-    protected function val($data)
-    {
-        if (is_array($data))
-        {
-            return $data[1];
-        }
-
-        return $data;
-    }
-
-    /**
      * @param string $path
      *
      * @return string
