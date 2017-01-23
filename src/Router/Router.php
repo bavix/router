@@ -135,27 +135,21 @@ class Router
     }
 
     /**
-     * @param $string
+     * @param string $path
      *
-     * @return string[]
+     * @return string
      */
-    protected function tokenizer($string)
+    protected function quote($path)
     {
-        $tokens = token_get_all('<?php ' . $string);
-        array_shift($tokens);
+        $path = preg_quote($path, '()');
+        $path = strtr($path, [
+            '\\(' => '(',
+            '\\)' => ')',
+            '\\<' => '<',
+            '\\>' => '>',
+        ]);
 
-        $attribute = $this->val(array_shift($tokens));
-        if (current($tokens))
-        {
-            array_shift($tokens);
-
-            foreach ($tokens as $key => $token)
-            {
-                $tokens[$key] = $this->val($token);
-            }
-        }
-
-        return [$attribute, implode($tokens)];
+        return $this->optional($path);
     }
 
     /**
@@ -170,19 +164,12 @@ class Router
             return [];
         }
 
-        $path = $this->optional($route->route());
-        //$path = str_replace('.', '\\.', $path); // issue #1
-        $path = preg_replace_callback('~\<(.*?)\>~u', function ($matches) use (&$route)
+        $path = $this->quote($route->route());
+        $path = preg_replace_callback('~\<(?<key>.*?)\>~u', function ($matches) use (&$route)
         {
-            list ($match, $newRegExp) = $this->tokenizer($matches[1]);
+            $key = $matches['key'];
 
-            if (empty($newRegExp))
-            {
-                $newRegExp = $route->regExp($match);
-            }
-
-            return '(?<' . $match . '>' . $newRegExp . ')';
-
+            return '(?<' . $key . '>' . $route->regExp($key) . ')';
         }, $path);
 
         return $this->test($path);
