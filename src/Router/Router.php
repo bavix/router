@@ -104,7 +104,7 @@ class Router
      */
     protected function optional($rulePath)
     {
-        return preg_replace('~\)~', ')?', $rulePath);
+        return str_replace(')', ')?', $rulePath);
     }
 
     /**
@@ -114,7 +114,7 @@ class Router
      */
     protected function test($test)
     {
-        preg_match('~^' . $test . '$~', $this->path, $matches);
+        preg_match('~^' . $test . '$~u', $this->path, $matches);
 
         return $matches;
     }
@@ -165,12 +165,16 @@ class Router
         }
 
         $path = $this->quote($route->route());
-        $path = preg_replace_callback('~\<(?<key>.*?)\>~u', function ($matches) use (&$route)
-        {
-            $key = $matches['key'];
+        $path = preg_replace_callback(
+            '~\<(?<key>[a-z\d_-]+)\>~',
+            function ($matches) use (&$route)
+            {
+                $key = $matches['key'];
 
-            return '(?<' . $key . '>' . $route->regExp($key) . ')';
-        }, $path);
+                return '(?<' . $key . '>' . $route->regExp($key) . ')';
+            },
+            $path
+        );
 
         return $this->test($path);
     }
