@@ -39,6 +39,22 @@ class Route
     }
 
     /**
+     * @return string
+     */
+    public function path()
+    {
+        return $this->route->route();
+    }
+
+    /**
+     * @return \Deimos\Route\Route
+     */
+    public function route()
+    {
+        return $this->route;
+    }
+
+    /**
      * @return array
      */
     public function attributes()
