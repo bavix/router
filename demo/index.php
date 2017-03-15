@@ -19,10 +19,15 @@ $router->setMethod('GET');
 $router->setRoutes([
     [
         'type'     => 'pattern',
-        'path'     => '(/<lang:[a-z]{2}>)/<controller>(/<action>(/<id:\d+>))',
+        'path'     => [
+            '(/<lang:[a-z]{2}>)/<controller>(/<action>(/<id:\d+>))',
+            [
+                'controller' => '[\w-<>!12]+'
+            ]
+        ],
 
         'defaults' => [
-            'lang'   => 'ru',
+//            'lang'   => 'ru',
             'action' => 'default'
         ]
     ],
