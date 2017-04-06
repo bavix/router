@@ -2,56 +2,24 @@
 
 namespace Deimos\Router;
 
-use Deimos\Route\Route as ClassRoute;
+use Deimos\Slice\Slice;
 
 class Route
 {
 
     /**
-     * @var \Deimos\Route\Route
+     * @var Slice
      */
-    protected $route;
-
-    /**
-     * @var array
-     */
-    protected $attributes;
+    protected $slice;
 
     /**
      * Route constructor.
      *
-     * @param ClassRoute $route
-     * @param array      $attributes
+     * @param Slice $slice
      */
-    public function __construct(ClassRoute $route, array $attributes)
+    public function __construct(Slice $slice)
     {
-        $this->route = $route;
-
-        foreach ($attributes as $key => $match)
-        {
-            if (is_int($key) || (!is_numeric($match) && empty($match)))
-            {
-                unset($attributes[$key]);
-            }
-        }
-
-        $this->attributes = array_merge($this->route->attributes(), $attributes);
-    }
-
-    /**
-     * @return string
-     */
-    public function path()
-    {
-        return $this->route->route();
-    }
-
-    /**
-     * @return \Deimos\Route\Route
-     */
-    public function route()
-    {
-        return $this->route;
+        $this->slice = $slice;
     }
 
     /**
@@ -59,7 +27,7 @@ class Route
      */
     public function attributes()
     {
-        return $this->attributes;
+        return $this->slice->getData('attributes', []);
     }
 
 }

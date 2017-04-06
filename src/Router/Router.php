@@ -2,26 +2,25 @@
 
 namespace Deimos\Router;
 
-use Deimos\Route\Route as ClassRoute;
-use Deimos\Router\Exceptions\NotFound;
+use Deimos\CacheHelper\SliceHelper;
+use Deimos\Slice\Slice;
 
 class Router
 {
 
-    /**
-     * @var ClassRoute[]
-     */
-    protected $routes = [];
+    protected $classMap = [
+        'configure' => Configure::class
+    ];
 
     /**
-     * @var Route[]
+     * @var Slice
      */
-    protected $selfRoutes;
+    protected $slice;
 
     /**
-     * @var string
+     * @var Configure
      */
-    protected $path;
+    protected $configure;
 
     /**
      * @var string
@@ -29,165 +28,74 @@ class Router
     protected $method;
 
     /**
-     * @param ClassRoute $route
+     * @var string
      */
-    public function addRoute(ClassRoute $route)
-    {
-        $this->routes[] = $route;
-    }
+    protected $scheme;
 
     /**
-     * @param array  $routes
-     * @param string $path
-     *
-     * @throws Exceptions\NotFound
-     * @throws \Deimos\Route\Exceptions\PathNotFound
+     * @var string
      */
-    public function setRoutes(array $routes, $path = null)
+    protected $domain;
+
+    /**
+     * @var string
+     */
+    protected $path;
+
+    /**
+     * @var SliceHelper
+     */
+    protected $cache;
+
+    /**
+     * Router constructor.
+     *
+     * @param Slice       $slice
+     * @param SliceHelper $cache
+     */
+    public function __construct(Slice $slice, SliceHelper $cache = null)
     {
-        $this->routes = [];
+        $this->slice  = $slice;
+        $this->cache  = $cache;
+        $this->method = method();
+        $this->scheme = scheme();
+        $this->domain = domain();
+        $this->path   = path();
+    }
 
-        $prefix = new Prefix($routes);
-        $prefix->setPath($path);
-
-        /**
-         * @var ClassRoute[] $resolver
-         */
-        $resolver = $prefix->getResolver();
-
-        foreach ($resolver as $route)
+    protected function configure()
+    {
+        if (!$this->configure)
         {
-            $this->addRoute($route);
-        }
-    }
+            $class = $this->classMap['configure'];
 
-    /**
-     * @param string $path
-     */
-    protected function setPath($path)
-    {
-        $this->path = $path;
-    }
-
-    /**
-     * @param string $method
-     */
-    public function setMethod($method = 'GET')
-    {
-        $this->method = $method;
-    }
-
-    /**
-     * @param string $path
-     *
-     * @return \Deimos\Router\Route
-     *
-     * @throws \InvalidArgumentException
-     * @throws NotFound
-     */
-    public function getCurrentRoute($path)
-    {
-        $this->setPath($path);
-
-        if (!isset($this->selfRoutes[$this->path]))
-        {
-            $this->selfRoutes[$this->path] = $this->run();
+            $this->configure = new $class($this->slice, $this->cache);
         }
 
-        return $this->selfRoutes[$this->path];
+        return $this->configure;
     }
 
-    /**
-     * @param string $rulePath
-     *
-     * @return string
-     */
-    protected function optional($rulePath)
+    public function getCurrentRoute()
     {
-        return str_replace(')', ')?', $rulePath);
+        return $this->getRoute($this->path);
     }
 
-    /**
-     * @param string $test
-     *
-     * @return string[]
-     */
-    protected function test($test)
+    public function getRoute($path, $domain = null, $scheme = null)
     {
-        preg_match('~^' . $test . '$~u', $this->path, $matches);
+        $uri = ($scheme ?? $this->scheme) . '://' . ($domain ?? $this->domain) . $path;
 
-        return $matches;
+        return $this->find($this->configure(), $uri);
     }
 
-    /**
-     * @param string $path
-     *
-     * @return string
-     */
-    protected function quote($path)
+    protected function find(Configure $configure, $uri)
     {
-        $path = preg_quote($path, '()');
-        $path = strtr($path, [
-            '\\(' => '(',
-            '\\)' => ')',
-            '\\<' => '<',
-            '\\>' => '>',
-        ]);
+        // domain
+        // https://regex101.com/r/0RufFB/1
+        // https://regex101.com/r/0RufFB/3
 
-        return $this->optional($path);
-    }
+        var_dump($configure->data());
 
-    /**
-     * @param ClassRoute $route
-     *
-     * @return array
-     */
-    protected function match($route)
-    {
-        if (!$route->methodIsAllow($this->method))
-        {
-            return [];
-        }
-
-        $path = $this->quote($route->route());
-        $path = preg_replace_callback(
-            '~\<(?<key>[\w-]+)\>~',
-            function ($matches) use (&$route)
-            {
-                $key = $matches['key'];
-
-                return '(?<' . $key . '>' . $route->regExp($key) . ')';
-            },
-            $path
-        );
-
-        return $this->test($path);
-    }
-
-    /**
-     * @return Route
-     *
-     * @throws \InvalidArgumentException
-     * @throws NotFound
-     */
-    protected function run()
-    {
-        if (!$this->method)
-        {
-            throw new \InvalidArgumentException('The HTTP method isn\'t known! Use method setMethod($path)!');
-        }
-
-        foreach ($this->routes as $route)
-        {
-            $attributes = $this->match($route);
-
-            if (!empty($attributes))
-            {
-                return new Route($route, $attributes);
-            }
-        }
-
-        throw new NotFound('Path \'' . $this->path . '\' not found');
+        return null;
     }
 
 }

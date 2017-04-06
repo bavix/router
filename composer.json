@@ -11,18 +11,23 @@
   "authors": [
     {
       "name": "rez1dent3",
-      "email": "maksim.babichev95@gmail.com"
+      "email": "info@babichev.net"
     }
   ],
   "require": {
-    "deimos/route": "~0.1"
+    "deimos/slice": "~1.0",
+    "deimos/cache-helper": "~1.0"
   },
   "require-dev": {
-    "phpunit/phpunit": "5.7.5"
+    "phpunit/phpunit": "5.7.5",
+    "deimos/config": "~2.0"
   },
   "autoload": {
     "psr-4": {
       "Deimos\\": "src/"
-    }
+    },
+    "files": [
+      "libs/helper.php"
+    ]
   }
 }
