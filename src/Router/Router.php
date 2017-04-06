@@ -82,18 +82,20 @@ class Router
 
     public function getRoute($path, $domain = null, $scheme = null)
     {
-        $uri = ($scheme ?? $this->scheme) . '://' . ($domain ?? $this->domain) . $path;
-
-        return $this->find($this->configure(), $uri);
+        return $this->find($this->configure(), [
+            'scheme' => $scheme ?? $this->scheme,
+            'domain' => $domain ?? $this->domain,
+            'path'   => $path,
+        ]);
     }
 
-    protected function find(Configure $configure, $uri)
+    protected function find(Configure $configure, array $options)
     {
         // domain
         // https://regex101.com/r/0RufFB/1
         // https://regex101.com/r/0RufFB/3
 
-        var_dump($configure->data());
+        var_dump($options, $configure->data());
 
         return null;
     }
