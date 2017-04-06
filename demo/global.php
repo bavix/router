@@ -13,7 +13,7 @@ return [
 
             'cp' => [
                 'type' => 'prefix',
-                'path' => '(/<language>)/cp',
+                'path' => '(/<language:[a-z]{2}>)/cp',
 
                 'resolver' => [
 
@@ -27,7 +27,7 @@ return [
                     ],
 
                     'post' => [
-//                        'type' => 'pattern',
+                        'type' => 'pattern',
                         'path' => '/posts(/<id>)',
                     ],
 

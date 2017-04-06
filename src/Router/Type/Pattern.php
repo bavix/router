@@ -2,6 +2,7 @@
 
 namespace Deimos\Router\Type;
 
+use Deimos\Router\Route;
 use Deimos\Router\Type;
 
 class Pattern extends Type
@@ -34,7 +35,7 @@ class Pattern extends Type
         $this->slice['methods'] += $this->methods;
 
         return [
-            $this->key => $this->slice->asArray()
+            $this->key => new Route($this->slice)
         ];
     }
 

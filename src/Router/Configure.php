@@ -55,8 +55,6 @@ class Configure
             {
                 $data = $this->build();
                 $this->cache->save($this->slice, $data);
-
-                return require $data;
             }
 
             return require $this->cache->getCachePath($this->slice);

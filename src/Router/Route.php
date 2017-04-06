@@ -4,7 +4,7 @@ namespace Deimos\Router;
 
 use Deimos\Slice\Slice;
 
-class Route
+class Route implements \Serializable
 {
 
     /**
@@ -129,11 +129,108 @@ class Route
     /**
      * @return string
      */
-    protected function regex()
+    protected function pathFilter()
     {
+        return preg_replace_callback(
+            '~\<(?<key>\w+)(\:(?<value>.+?))?\>~',
+            function ($matches)
+            {
+                if (!empty($matches['value']) && empty($this->regex[$matches['key']]))
+                {
+                    $this->regex[$matches['key']] = $matches['value'];
+                }
 
+                return '<' . $matches['key'] . '>';
+            },
+            $this->path
+        );
     }
 
+    /**
+     * @param string $path
+     *
+     * @return string
+     */
+    protected function quote($path)
+    {
+        $path = preg_quote($path, '()');
+        $path = strtr($path, [
+            '\\(' => '(',
+            '\\)' => ')',
+            '\\<' => '<',
+            '\\>' => '>',
+        ]);
+
+        return $this->optional($path);
+    }
+
+    /**
+     * @param string $rulePath
+     *
+     * @return string
+     */
+    protected function optional($rulePath)
+    {
+        return str_replace(')', ')?', $rulePath);
+    }
+
+    /**
+     * @param string $route
+     *
+     * @return string
+     */
+    protected function toRegex($route)
+    {
+        $path = $this->quote($route);
+
+        return preg_replace_callback(
+            '~\<(?<key>[\w-]+)\>~',
+            function ($matches)
+            {
+                return '(?<' . $matches['key'] . '>' . ($this->regex[$matches['key']] ?? $this->defaultRegex) . ')';
+            },
+            $path
+        );
+    }
+
+    public function test($uri)
+    {
+        $result = preg_match('~^' . $this->regexPath . '$~u', $uri, $matches);
+
+        // fixme : set attributes
+    }
+
+    protected function regexUri($http, $path)
+    {
+        return $http['scheme'] . '\:\/{2}' . $http['domain'] . $path;
+    }
+
+    /**
+     * @return string
+     */
+    protected function regex()
+    {
+        $path  = $this->pathFilter();
+        $regex = $this->toRegex($path);
+
+        $http = $this->http;
+
+        if (!$this->http['scheme'])
+        {
+            $http['scheme'] = 'https?';
+        }
+
+        if (!$this->http['domain'])
+        {
+            $http['domain'] = '[^\/]+';
+        }
+
+        return $this->regexUri($http, $regex);
+    }
+
+    /**
+     * reload route
+     */
     protected function reload()
     {
         $this->defaults  = $this->slice->atData('defaults', []);
@@ -142,5 +239,37 @@ class Route
         $this->path      = $this->slice->atData('path');
         $this->regexPath = $this->regex();
     }
+
+    /**
+     * @inheritdoc
+     */
+    public function serialize()
+    {
+        return serialize([
+            'defaultRegex' => $this->defaultRegex,
+            'http'         => $this->http,
+            'path'         => $this->path,
+            'regex'        => $this->regex,
+            'regexPath'    => $this->regexPath,
+            'defaults'     => $this->defaults,
+            'methods'      => $this->methods,
+            'attributes'   => $this->attributes,
+            'slice'        => $this->slice,
+        ]);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function unserialize($serialized)
+    {
+        $data = unserialize($serialized, []);
+
+        foreach ($data as $variable => $value)
+        {
+            $this->{$variable} = $value;
+        }
+    }
+
 
 }
