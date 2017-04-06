@@ -28,6 +28,11 @@ abstract class Type
     protected $defaults;
 
     /**
+     * @var array
+     */
+    protected $methods;
+
+    /**
      * @var string
      */
     protected $scheme;
@@ -73,6 +78,7 @@ abstract class Type
         $this->path     = $options['path'] ?? $data[0];
         $this->regex    = $options['regex'] ?? $data[1];
         $this->defaults = $options['defaults'] ?? $slice->getData('defaults', []);
+        $this->methods  = $options['methods'] ?? $slice->getData('methods', []);
     }
 
     protected function path(Slice $slice)

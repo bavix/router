@@ -69,6 +69,7 @@ class Configure
      * @return Slice
      *
      * @throws \Deimos\Helper\Exceptions\ExceptionEmpty
+     * @throws \InvalidArgumentException
      */
     public function build()
     {
@@ -81,7 +82,18 @@ class Configure
 
         foreach ($this->slice->asGenerator() as $key => $slice)
         {
-            $type  = $slice->getRequired('type');
+            $type = $slice->atData('type');
+
+            if ($type === null)
+            {
+                throw new \InvalidArgumentException('Parameter `type` not found in a route of `' . $key . '`');
+            }
+
+            if (!isset($this->types[$type]))
+            {
+                throw new \InvalidArgumentException('The `' . $type . '` type isn\'t found in a route of `' . $key . '`');
+            }
+
             $class = $this->types[$type];
 
             /**

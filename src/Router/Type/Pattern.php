@@ -26,6 +26,13 @@ class Pattern extends Type
 
         $this->slice['defaults'] += $this->defaults;
 
+        if (!isset($this->slice['methods']))
+        {
+            $this->slice['methods'] = [];
+        }
+
+        $this->slice['methods'] += $this->methods;
+
         return [
             $this->key => $this->slice->asArray()
         ];

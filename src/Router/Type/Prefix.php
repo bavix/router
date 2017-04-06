@@ -13,6 +13,7 @@ class Prefix extends Http
 
         return [
             'defaults' => $this->slice->getData('defaults', []) + $this->defaults,
+            'methods'  => $this->slice->getData('methods', []) + $this->methods,
             'scheme'   => $this->scheme,
             'domain'   => $this->domain,
             'regex'    => $regex,

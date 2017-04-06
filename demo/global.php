@@ -27,7 +27,7 @@ return [
                     ],
 
                     'post' => [
-                        'type' => 'pattern',
+//                        'type' => 'pattern',
                         'path' => '/posts(/<id>)',
                     ],
 
@@ -38,7 +38,9 @@ return [
                         'defaults' => [
                             'type'       => 'list',
                             'controller' => 'posts'
-                        ]
+                        ],
+
+                        'methods' => ['GET']
                     ],
 
                 ],
@@ -52,6 +54,8 @@ return [
             ]
 
         ],
+
+        'methods' => ['POST']
 
     ],
 

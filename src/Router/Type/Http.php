@@ -21,14 +21,20 @@ class Http extends Type
         list($path, $regex) = $this->path($slice);
 
         return [
-            'scheme' => $this->slice->getData('scheme', $this->scheme),
-            'domain' => $this->slice->getData('domain', $this->domain),
-            'regex'  => $regex,
-            'path'   => $path,
-            'key'    => $this->key . '.' . $key,
+            'scheme'  => $this->slice->getData('scheme', $this->scheme),
+            'domain'  => $this->slice->getData('domain', $this->domain),
+            'regex'   => $regex,
+            'path'    => $path,
+            'key'     => $this->key . '.' . $key,
+            'methods' => $this->slice->getData('methods', []),
         ];
     }
 
+    /**
+     * @return array
+     * @throws \Deimos\Helper\Exceptions\ExceptionEmpty
+     * @throws \InvalidArgumentException
+     */
     public function build()
     {
         $routes   = [];
@@ -36,7 +42,18 @@ class Http extends Type
 
         foreach ($resolver->asGenerator() as $key => $slice)
         {
-            $type  = $slice->getRequired('type');
+            $type = $slice->atData('type');
+
+            if ($type === null)
+            {
+                throw new \InvalidArgumentException('Parameter `type` not found in a route of `' . $this->key . '.' . $key . '`');
+            }
+
+            if (!isset($this->types[$type]))
+            {
+                throw new \InvalidArgumentException('The `' . $type . '` type isn\'t found in a route of `' . $this->key . '.' . $key . '`');
+            }
+
             $class = $this->types[$type];
 
             /**
