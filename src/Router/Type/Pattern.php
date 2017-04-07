@@ -14,10 +14,9 @@ class Pattern extends Type
     protected $pathRequired = true;
 
     /**
-     * @var array
+     * @param string $key
+     * @param array  $storage
      */
-    protected $types = [];
-
     protected function merge($key, array $storage)
     {
         if (!isset($this->slice[$key]))

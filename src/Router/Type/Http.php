@@ -2,23 +2,32 @@
 
 namespace Deimos\Router\Type;
 
+use Deimos\Router\Configure;
 use Deimos\Router\Exceptions\NotFound;
-use Deimos\Router\HelperThrows;
 use Deimos\Router\Type;
 use Deimos\Slice\Slice;
 
 class Http extends Type
 {
 
-    use HelperThrows;
-
     /**
-     * @var array
+     * Http constructor.
+     *
+     * @param Configure $configure
+     * @param Slice     $slice
+     * @param array     $options
+     *
+     * @throws NotFound
      */
-    protected $types = [
-        'prefix'  => Prefix::class,
-        'pattern' => Pattern::class,
-    ];
+    public function __construct(Configure $configure, Slice $slice, array $options)
+    {
+        $this->types = [
+            'prefix'  => Prefix::class,
+            'pattern' => Pattern::class,
+        ];
+
+        parent::__construct($configure, $slice, $options);
+    }
 
     /**
      * @param string $key

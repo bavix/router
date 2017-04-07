@@ -12,15 +12,6 @@ class Configure
     use HelperThrows;
 
     /**
-     * @var array
-     */
-    protected $types = [
-        'http'    => Type\Http::class,
-        'prefix'  => Type\Prefix::class,
-        'pattern' => Type\Pattern::class,
-    ];
-
-    /**
      * @var SliceHelper
      */
     protected $cache;
@@ -45,6 +36,12 @@ class Configure
     {
         $this->slice  = $slice;
         $this->cache  = $cache;
+
+        $this->types = [
+            'http'    => Type\Http::class,
+            'prefix'  => Type\Prefix::class,
+            'pattern' => Type\Pattern::class,
+        ];
     }
 
     /**

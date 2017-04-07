@@ -7,6 +7,18 @@ use Deimos\Slice\Slice;
 trait HelperThrows
 {
 
+    /**
+     * @var array
+     */
+    protected $types = [];
+
+    /**
+     * @param Slice  $slice
+     * @param string $key
+     *
+     * @return mixed
+     * @throws Exceptions\NotFound
+     */
     public function getType(Slice $slice, $key = null)
     {
         $type = $slice->atData('type');

@@ -8,6 +8,8 @@ use Deimos\Slice\Slice;
 abstract class Type
 {
 
+    use HelperThrows;
+
     /**
      * @var bool
      */
@@ -57,11 +59,6 @@ abstract class Type
      * @var string
      */
     protected $key;
-
-    /**
-     * @var array
-     */
-    protected $types;
 
     /**
      * Type constructor.
