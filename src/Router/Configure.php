@@ -68,6 +68,33 @@ class Configure
     }
 
     /**
+     * @return Route[]
+     * @throws NotFound
+     * @throws \Deimos\Helper\Exceptions\ExceptionEmpty
+     */
+    protected function routes()
+    {
+        $routes = [];
+
+        foreach ($this->slice->asGenerator() as $key => $slice)
+        {
+            $type  = $this->getType($slice, $key);
+            $class = $this->types[$type];
+
+            /**
+             * @var $object Type
+             */
+            $object = new $class($this, $slice, [
+                'key'    => $key
+            ]);
+
+            $routes += $object->build();
+        }
+
+        return $routes;
+    }
+
+    /**
      * @return Slice
      *
      * @throws \Deimos\Helper\Exceptions\ExceptionEmpty
@@ -77,24 +104,9 @@ class Configure
     {
         if (!$this->build)
         {
-            $routes = [];
-
-            foreach ($this->slice->asGenerator() as $key => $slice)
-            {
-                $type  = $this->getType($slice, $key);
-                $class = $this->types[$type];
-
-                /**
-                 * @var $object Type
-                 */
-                $object = new $class($this, $slice, [
-                    'key'    => $key
-                ]);
-
-                $routes += $object->build();
-            }
-
-            $this->build = $this->slice->make($routes);
+            $this->build = $this->slice->make(
+                $this->routes()
+            );
         }
 
         return $this->build;
