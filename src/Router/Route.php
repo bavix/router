@@ -71,14 +71,6 @@ class Route implements \Serializable
     }
 
     /**
-     * @param array $attributes
-     */
-    public function setAttributes(array $attributes)
-    {
-        $this->attributes = $attributes;
-    }
-
-    /**
      * @return array
      */
     public function getHttp()
@@ -193,11 +185,29 @@ class Route implements \Serializable
         );
     }
 
-    public function test($uri)
+    protected function attributes($matches)
     {
+        return array_filter($matches + $this->defaults, function ($value, $key)
+        {
+            return !is_int($key) && (is_numeric($value) || !empty($value));
+        }, ARRAY_FILTER_USE_BOTH);
+    }
+
+    public function test($uri, $method)
+    {
+        if (!empty($this->methods) && !in_array($method, $this->methods, true))
+        {
+            return false;
+        }
+
         $result = preg_match('~^' . $this->regexPath . '$~u', $uri, $matches);
 
-        // fixme : set attributes
+        if ($result)
+        {
+            $this->attributes = $this->attributes($matches);
+        }
+
+        return $result !== 0;
     }
 
     protected function regexUri($http, $path)
@@ -234,6 +244,7 @@ class Route implements \Serializable
     protected function reload()
     {
         $this->defaults  = $this->slice->atData('defaults', []);
+        $this->methods   = $this->slice->atData('methods', []);
         $this->regex     = $this->slice->atData('regex', []);
         $this->http      = $this->slice->atData('http', []);
         $this->path      = $this->slice->atData('path');

@@ -75,29 +75,59 @@ class Router
         return $this->configure;
     }
 
+    /**
+     * @return Route
+     * @throws Exceptions\NotFound
+     * @throws \Deimos\CacheHelper\Exceptions\PermissionDenied
+     * @throws \Deimos\Helper\Exceptions\ExceptionEmpty
+     */
     public function getCurrentRoute()
     {
         return $this->getRoute($this->path);
     }
 
+    /**
+     * @param string $path
+     * @param string $domain
+     * @param string $scheme
+     *
+     * @return Route
+     * @throws Exceptions\NotFound
+     * @throws \Deimos\CacheHelper\Exceptions\PermissionDenied
+     * @throws \Deimos\Helper\Exceptions\ExceptionEmpty
+     */
     public function getRoute($path, $domain = null, $scheme = null)
     {
-        return $this->find($this->configure(), [
-            'scheme' => $scheme ?? $this->scheme,
-            'domain' => $domain ?? $this->domain,
-            'path'   => $path,
-        ]);
+        $uri = ($scheme ?? $this->scheme) . '://' . ($domain ?? $this->domain) . $path;
+
+        return $this->find($this->configure(), $uri);
     }
 
-    protected function find(Configure $configure, array $options)
+    /**
+     * @param Configure $configure
+     * @param string    $uri
+     *
+     * @return Route
+     * @throws Exceptions\NotFound
+     * @throws \Deimos\CacheHelper\Exceptions\PermissionDenied
+     * @throws \Deimos\Helper\Exceptions\ExceptionEmpty
+     */
+    protected function find(Configure $configure, $uri)
     {
-        // domain
-        // https://regex101.com/r/0RufFB/1
-        // https://regex101.com/r/0RufFB/3
+        $slice = $configure->data();
 
-        var_dump($options, $configure->data());
+        /**
+         * @var Route $route
+         */
+        foreach ($slice->asArray() as $key => $route)
+        {
+            if ($route->test($uri, $this->method))
+            {
+                return $route;
+            }
+        }
 
-        return null;
+        throw new Exceptions\NotFound('Page `' . $uri . '` not found', 404);
     }
 
 }

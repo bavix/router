@@ -9,7 +9,16 @@ $config  = new \Deimos\Config\Config($helper, __DIR__);
 $slice = $config->get('global');
 
 $cache  = new \Deimos\CacheHelper\SliceHelper(__DIR__ . '/cache');
-$router = new \Deimos\Router\Router($slice); //, $cache);
+$router = new \Deimos\Router\Router($slice, $cache);
 
 $route = $router->getCurrentRoute();
-var_dump($route);
+//var_dump($route);
+
+var_dump(
+    $route->getAttributes(),
+    $route->getDefaults(),
+    $route->getHttp(),
+    $route->getPath(),
+    $route->getRegex(),
+    $route->getRegexPath()
+);

@@ -88,8 +88,10 @@ return [
 
         'defaults' => [
             'controller' => 'hello',
-            'action'     => 'world'
-        ]
+            'action'     => 'world',
+            'any'        => 'hello world'
+        ],
+
     ]
 
 ];
