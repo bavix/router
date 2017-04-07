@@ -75,29 +75,27 @@ class Configure
      */
     public function build()
     {
-        if ($this->build)
+        if (!$this->build)
         {
-            return $this->build;
+            $routes = [];
+
+            foreach ($this->slice->asGenerator() as $key => $slice)
+            {
+                $type  = $this->getType($slice, $key);
+                $class = $this->types[$type];
+
+                /**
+                 * @var $object Type
+                 */
+                $object = new $class($this, $slice, [
+                    'key'    => $key
+                ]);
+
+                $routes += $object->build();
+            }
+
+            $this->build = $this->slice->make($routes);
         }
-
-        $routes = [];
-
-        foreach ($this->slice->asGenerator() as $key => $slice)
-        {
-            $type  = $this->getType($slice, $key);
-            $class = $this->types[$type];
-
-            /**
-             * @var $object Type
-             */
-            $object = new $class($this, $slice, [
-                'key'    => $key
-            ]);
-
-            $routes += $object->build();
-        }
-
-        $this->build = $this->slice->make($routes);
 
         return $this->build;
     }
