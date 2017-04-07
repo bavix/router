@@ -28,7 +28,7 @@ return [
 
                     'post' => [
                         'type' => 'pattern',
-                        'path' => '/posts(/<id>)',
+                        'path' => '/post(/<id>)',
                     ],
 
                     'posts' => [
@@ -89,7 +89,7 @@ return [
         'defaults' => [
             'controller' => 'hello',
             'action'     => 'world',
-            'any'        => 'hello world'
+            'any'        => 'hello-world'
         ],
 
     ]

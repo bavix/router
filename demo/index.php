@@ -12,9 +12,9 @@ $cache  = new \Deimos\CacheHelper\SliceHelper(__DIR__ . '/cache');
 $router = new \Deimos\Router\Router($slice, $cache);
 
 $route = $router->getCurrentRoute();
-//var_dump($route);
 
 var_dump(
+    \Deimos\Router\route($route),
     $route->getAttributes(),
     $route->getDefaults(),
     $route->getHttp(),

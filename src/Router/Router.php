@@ -18,6 +18,16 @@ class Router
     protected $slice;
 
     /**
+     * @var Slice
+     */
+    protected $configureSlice;
+
+    /**
+     * @var Route[]
+     */
+    protected $routes;
+
+    /**
      * @var Configure
      */
     protected $configure;
@@ -100,11 +110,52 @@ class Router
     {
         $uri = ($scheme ?? $this->scheme) . '://' . ($domain ?? $this->domain) . $path;
 
-        return $this->find($this->configure(), $uri);
+        return $this->find($uri);
     }
 
     /**
-     * @param Configure $configure
+     * @return Slice
+     * @throws \Deimos\CacheHelper\Exceptions\PermissionDenied
+     * @throws \Deimos\Helper\Exceptions\ExceptionEmpty
+     */
+    protected function configureSlice()
+    {
+        if (!$this->configureSlice)
+        {
+            $this->configureSlice = $this->configure()->data();
+        }
+
+        return $this->configureSlice;
+    }
+
+    /**
+     * @return Route[]
+     * @throws \Deimos\CacheHelper\Exceptions\PermissionDenied
+     * @throws \Deimos\Helper\Exceptions\ExceptionEmpty
+     */
+    public function routes()
+    {
+        if (!$this->routes)
+        {
+            $this->routes = $this->configureSlice()->asArray();
+        }
+
+        return $this->routes;
+    }
+
+    public function route($path)
+    {
+        $route = $this->configureSlice()->atData($path);
+
+        if (!$route)
+        {
+            throw new Exceptions\NotFound('Route `' . $path . '` not found');
+        }
+
+        return $route;
+    }
+
+    /**
      * @param string    $uri
      *
      * @return Route
@@ -112,14 +163,12 @@ class Router
      * @throws \Deimos\CacheHelper\Exceptions\PermissionDenied
      * @throws \Deimos\Helper\Exceptions\ExceptionEmpty
      */
-    protected function find(Configure $configure, $uri)
+    protected function find($uri)
     {
-        $slice = $configure->data();
-
         /**
          * @var Route $route
          */
-        foreach ($slice->asArray() as $key => $route)
+        foreach ($this->routes() as $key => $route)
         {
             if ($route->test($uri, $this->method))
             {

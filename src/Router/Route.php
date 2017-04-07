@@ -33,6 +33,11 @@ class Route implements \Serializable
     protected $regexPath;
 
     /**
+     * @var string
+     */
+    protected $filterPath;
+
+    /**
      * @var array
      */
     protected $defaults;
@@ -100,6 +105,14 @@ class Route implements \Serializable
     public function getRegexPath()
     {
         return $this->regexPath;
+    }
+
+    /**
+     * @return string
+     */
+    public function getFilterPath()
+    {
+        return $this->filterPath;
     }
 
     /**
@@ -220,10 +233,10 @@ class Route implements \Serializable
      */
     protected function regex()
     {
-        $path  = $this->pathFilter();
-        $regex = $this->toRegex($path);
+        $this->filterPath = $this->pathFilter();
 
-        $http = $this->http;
+        $regex = $this->toRegex($this->filterPath);
+        $http  = $this->http;
 
         if (!$this->http['scheme'])
         {
@@ -262,6 +275,7 @@ class Route implements \Serializable
             'path'         => $this->path,
             'regex'        => $this->regex,
             'regexPath'    => $this->regexPath,
+            'filterPath'   => $this->filterPath,
             'defaults'     => $this->defaults,
             'methods'      => $this->methods,
             'attributes'   => $this->attributes,

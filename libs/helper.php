@@ -22,11 +22,17 @@ function server($variableName, $default = null)
     return $storage[$variableName];
 }
 
+/**
+ * @return string
+ */
 function method()
 {
     return server('REQUEST_METHOD');
 }
 
+/**
+ * @return string
+ */
 function scheme()
 {
     $scheme = server('HTTP_CF_VISITOR'); // cloudFlare
@@ -46,12 +52,36 @@ function scheme()
         server('REQUEST_SCHEME');
 }
 
+/**
+ * @return string
+ */
 function domain()
 {
     return server('HTTP_HOST');
 }
 
+/**
+ * @return string
+ */
 function path()
 {
     return server('REQUEST_URI');
+}
+
+/**
+ * @param Route $route
+ * @param array $attributes
+ *
+ * @return string
+ */
+function route(Route $route, array $attributes = [])
+{
+    $attributes = $route->getDefaults() + $attributes;
+
+    $path = preg_replace_callback('~\<(\w+)\>~', function ($matches) use ($attributes)
+    {
+        return $attributes[$matches[1]] ?? null;
+    }, $route->getFilterPath());
+
+    return preg_replace('~(\(/\)|\(|\)|//)~', '', $path);
 }
