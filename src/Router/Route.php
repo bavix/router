@@ -278,7 +278,7 @@ class Route implements \Serializable
             'domain' => null
         ];
 
-        $this->http      = $this->slice->atData('http', $http);
+        $this->http      = (array)$this->slice->atData('http', $http);
         $this->defaults  = (array)$this->slice->atData('defaults');
         $this->methods   = (array)$this->slice->atData('methods');
         $this->regex     = (array)$this->slice->atData('regex');
