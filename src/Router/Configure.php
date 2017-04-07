@@ -48,8 +48,9 @@ class Configure
     }
 
     /**
-     * @return Slice[Route]
+     * @return Slice
      *
+     * @throws NotFound
      * @throws \Deimos\CacheHelper\Exceptions\PermissionDenied
      * @throws \Deimos\Helper\Exceptions\ExceptionEmpty
      */
