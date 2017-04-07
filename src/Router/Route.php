@@ -199,7 +199,7 @@ class Route implements \Serializable
     }
 
     /**
-     * @param array $matches
+     * @param string[] $matches
      *
      * @return array
      */
