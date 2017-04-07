@@ -18,6 +18,16 @@ class Pattern extends Type
      */
     protected $types = [];
 
+    protected function merge($key, array $storage)
+    {
+        if (!isset($this->slice[$key]))
+        {
+            $this->slice[$key] = [];
+        }
+
+        $this->slice[$key] += $storage;
+    }
+
     /**
      * @return array
      */
@@ -28,19 +38,8 @@ class Pattern extends Type
         $this->slice['path']        = $this->path;
         $this->slice['regex']       = $this->regex;
 
-        if (!isset($this->slice['defaults']))
-        {
-            $this->slice['defaults'] = [];
-        }
-
-        $this->slice['defaults'] += $this->defaults;
-
-        if (!isset($this->slice['methods']))
-        {
-            $this->slice['methods'] = [];
-        }
-
-        $this->slice['methods'] += $this->methods;
+        $this->merge('defaults', $this->defaults);
+        $this->merge('methods', $this->methods);
 
         return [
             $this->key => new Route($this->slice)
