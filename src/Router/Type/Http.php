@@ -2,6 +2,7 @@
 
 namespace Deimos\Router\Type;
 
+use Deimos\Router\Exceptions\NotFound;
 use Deimos\Router\Type;
 use Deimos\Slice\Slice;
 
@@ -33,7 +34,7 @@ class Http extends Type
     /**
      * @return array
      * @throws \Deimos\Helper\Exceptions\ExceptionEmpty
-     * @throws \InvalidArgumentException
+     * @throws NotFound
      */
     public function build()
     {
@@ -46,12 +47,12 @@ class Http extends Type
 
             if ($type === null)
             {
-                throw new \InvalidArgumentException('Parameter `type` not found in a route of `' . $this->key . '.' . $key . '`');
+                throw new NotFound('Parameter `type` not found in a route of `' . $this->key . '.' . $key . '`');
             }
 
             if (!isset($this->types[$type]))
             {
-                throw new \InvalidArgumentException('The `' . $type . '` type isn\'t found in a route of `' . $this->key . '.' . $key . '`');
+                throw new NotFound('The `' . $type . '` type isn\'t found in a route of `' . $this->key . '.' . $key . '`');
             }
 
             $class = $this->types[$type];

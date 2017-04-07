@@ -7,6 +7,8 @@ use Deimos\Slice\Slice;
 class Prefix extends Http
 {
 
+    protected $pathRequired = true;
+
     protected function storage($key, Slice $slice)
     {
         list($path, $regex) = $this->path($slice);

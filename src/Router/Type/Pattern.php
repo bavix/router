@@ -8,6 +8,8 @@ use Deimos\Router\Type;
 class Pattern extends Type
 {
 
+    protected $pathRequired = true;
+
     /**
      * @var array
      */

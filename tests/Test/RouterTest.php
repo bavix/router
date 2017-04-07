@@ -2,66 +2,62 @@
 
 namespace Test;
 
+use Deimos\Builder\Builder;
+use Deimos\Helper\Helper;
+use Deimos\Router\Route;
 use Deimos\Router\Router;
+use Deimos\Slice\Slice;
 
-class RouterTest extends \PHPUnit_Framework_TestCase
+class RouterTest extends \TestCase
 {
 
-    public function testRouter()
+    public function testRoute()
     {
 
-        $route2 = new \Deimos\Route\Route(
-            ['/<controller>(/<action>/<value:\w+>)'],
-            [
+        $builder = new Builder();
+        $helper  = new Helper($builder);
+
+        $slice = new Slice($helper, [
+            'type' => 'pattern',
+            'path' => '/<controller>(/<action>/<value:\w+>)',
+
+            'defaults' => [
                 'action' => 'default2'
             ]
-        );
-
-        $router = new \Deimos\Router\Router();
-
-        $router->setMethod('GET');
-        $router->setRoutes([
-            [
-                'type'     => 'pattern',
-                'path'     => '/<controller>(/<action>(/<id:\d+>))',
-
-                'defaults' => [
-                    'action' => 'default'
-                ],
-
-                'methods'  => ['GET', 'POST']
-            ]
-
         ]);
-        $router->addRoute($route2);
 
-        $attributes  = $router->getCurrentRoute('/hello-world')->attributes();
-        $attributes2 = $router->getCurrentRoute('/hello-world2/test/string')->attributes();
+        $route1 = new Route($slice);
+
+        $route2 = new Route($slice->make([
+            'type' => 'pattern',
+            'path' => '/<controller>(/<action>(/<id:\d+>))',
+
+            'defaults' => [
+                'action' => 'default'
+            ],
+
+            'methods' => ['GET', 'POST']
+
+        ]));
+
+        $this->assertTrue($route1->test('https://example.com/hello-world', 'GET'));
+        $this->assertFalse($route2->test('https://example.com/hello-world2/test/string', 'GET'));
+
+        $attributes  = $route1->getAttributes();
+        $attributes2 = $route2->getAttributes();
 
         $this->assertEquals(
             'hello-world',
             $attributes['controller']
         );
         $this->assertEquals(
-            'default',
+            'default2',
             $attributes['action']
         );
-
         $this->assertEquals(
-            'hello-world2',
-            $attributes2['controller']
+            $route2->getDefaults(),
+            $attributes2
         );
-        $this->assertEquals(
-            'test',
-            $attributes2['action']
-        );
-
-        $this->assertFalse(isset($attributes['id']));
-        $this->assertEquals(
-            'string',
-            $attributes2['value']
-        );
-
     }
 
     /**
@@ -69,20 +65,39 @@ class RouterTest extends \PHPUnit_Framework_TestCase
      */
     public function testErrorNotFound()
     {
-        $route = new \Deimos\Route\Route(
-            ['/<controller>(/<action>)'],
-            [
-                'action' => 'default'
-            ],
-            ['FLASH']
-        );
+        $builder = new Builder();
+        $helper  = new Helper($builder);
 
-        $router = new \Deimos\Router\Router();
+        $slice = new Slice($helper, [
+            'fake' => [
+                'type' => 'pattern',
+                'path' => '/<controller>(/<action>)',
 
-        $router->setMethod('GET');
-        $router->addRoute($route);
+                'defaults' => [
+                    'action' => 'default'
+                ],
 
-        $router->getCurrentRoute('/hello-world');
+                'methods' => ['FAKE']
+            ]
+        ]);
+
+        $router = new \Deimos\Router\Router($slice);
+
+        $class = (new \ReflectionClass(Router::class));
+
+        $property = $class->getProperty('method');
+        $property->setAccessible(true);
+        $property->setValue($router, 'GET');
+
+        $property = $class->getProperty('domain');
+        $property->setAccessible(true);
+        $property->setValue($router, 'router.deimos');
+
+        $property = $class->getProperty('scheme');
+        $property->setAccessible(true);
+        $property->setValue($router, 'https');
+
+        $router->getRoute('/hello-world');
     }
 
     /**
@@ -90,26 +105,23 @@ class RouterTest extends \PHPUnit_Framework_TestCase
      */
     public function testErrorWithoutType()
     {
-        $route = new Router();
+        $builder = new Builder();
+        $helper  = new Helper($builder);
 
-        $route->setRoutes([
-            [
-                'type' => 'prefix',
-                'path' => '/demo',
-                'resolver' => [
-                    __METHOD__ => [
-//                        'type' => 'pattern',
-                        'path' => '/many.php',
-                        'defaults' => [
-                            'p1'     => 'hello',
-                            'p2'     => 'world',
-                            'action' => 'default'
-                        ],
-                    ]
-                ]
+        $slice = new Slice($helper, [
+            'fake' => [
+                // 'type' => 'pattern',
+                'path' => '/<controller>(/<action>)',
+
+                'defaults' => [
+                    'action' => 'default'
+                ],
+
+                'methods' => ['FAKE']
             ]
         ]);
 
+        (new Router($slice))->routes();
     }
 
     /**
@@ -117,49 +129,47 @@ class RouterTest extends \PHPUnit_Framework_TestCase
      */
     public function testErrorWithoutPath()
     {
-        $route = new Router();
+        $builder = new Builder();
+        $helper  = new Helper($builder);
 
-        $route->setRoutes([
-            [
-                'type' => 'prefix',
-                'path' => '/demo',
-                'resolver' => [
-                    __METHOD__ => [
-                        'type' => 'pattern',
-//                        'path' => '/many.php',
-                        'defaults' => [
-                            'p1'     => 'hello',
-                            'p2'     => 'world',
-                            'action' => 'default'
-                        ],
-                    ]
-                ]
+        $slice = new Slice($helper, [
+            'fake' => [
+                'type' => 'pattern',
+                //'path' => '/<controller>(/<action>)',
+
+                'defaults' => [
+                    'action' => 'default'
+                ],
+
+                'methods' => ['FAKE']
             ]
         ]);
 
+        (new Router($slice))->routes();
     }
 
     public function testPrefixSuccess()
     {
-        $route = new Router();
+        $builder = new Builder();
+        $helper  = new Helper($builder);
 
-        $route->setRoutes([
-            [
-                'type' => 'prefix',
-                'path' => '/demo',
+        $slice = new Slice($helper, [
+            __METHOD__ => [
+                'type'     => 'prefix',
+                'path'     => '/demo',
                 'resolver' => [
                     __FUNCTION__ => [
-                        'type' => 'pattern',
-                        'path' => '/many.php',
+                        'type'     => 'pattern',
+                        'path'     => '/many.php',
                         'defaults' => [
                             'p1'     => 'hello',
                             'p2'     => 'world',
                             'action' => 'default'
                         ],
                     ],
-                    __METHOD__ => [
-                        'type' => 'pattern',
-                        'path' => '/<p1>',
+                    __METHOD__   => [
+                        'type'     => 'pattern',
+                        'path'     => '/<p1>',
                         'defaults' => [
                             'p1'     => 'hello',
                             'p2'     => 'world',
@@ -170,16 +180,30 @@ class RouterTest extends \PHPUnit_Framework_TestCase
             ]
         ]);
 
-        $route->setMethod('GET');
+        $router = new Router($slice);
 
-        $attributes = $route->getCurrentRoute('/demo/many.php')->attributes();
+        $class = (new \ReflectionClass(Router::class));
+
+        $property = $class->getProperty('method');
+        $property->setAccessible(true);
+        $property->setValue($router, 'GET');
+
+        $property = $class->getProperty('domain');
+        $property->setAccessible(true);
+        $property->setValue($router, 'router.deimos');
+
+        $property = $class->getProperty('scheme');
+        $property->setAccessible(true);
+        $property->setValue($router, 'https');
+
+        $attributes = $router->getRoute('/demo/many.php')->getAttributes();
 
         $this->assertEquals(
             'hello',
             $attributes['p1']
         );
 
-        $attributes = $route->getCurrentRoute('/demo/deimos')->attributes();
+        $attributes = $router->getRoute('/demo/deimos')->getAttributes();
 
         $this->assertEquals(
             'deimos',
@@ -188,56 +212,62 @@ class RouterTest extends \PHPUnit_Framework_TestCase
 
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     */
-    public function testInvalidMethod()
-    {
-        $route = new \Deimos\Route\Route(
-            ['/<controller>(/<action>)'],
-            [
-                'action' => 'default'
-            ]
-        );
-
-        $router = new \Deimos\Router\Router();
-
-        $router->addRoute($route);
-
-        $router->getCurrentRoute('/hello-world');
-    }
-
     public function testLanguage()
     {
-        $route = new \Deimos\Route\Route(
-            [
-                '(/<lang:[a-z]{2}>)/<controller>(/<action>(/<id:\d+>))'
-            ],
-            [
-                'lang'   => 'ru',
-                'action' => 'default'
+
+        $builder = new Builder();
+        $helper  = new Helper($builder);
+
+        $slice = new Slice($helper, [
+            __METHOD__ => [
+                'type'     => 'prefix',
+                'path'     => '(/<lang:[a-z]{2}>)',
+                'resolver' => [
+                    __FUNCTION__ => [
+                        'type'     => 'pattern',
+                        'path'     => '/<controller>(/<action>(/<id:\d+>))',
+                        'defaults' => [
+                            'action' => 'default'
+                        ],
+                    ],
+                ],
+
+                'defaults' => [
+                    'lang' => 'ru'
+                ]
             ]
-        );
+        ]);
 
-        $router = new \Deimos\Router\Router();
+        $router = new Router($slice);
 
-        $router->setMethod('GET');
-        $router->addRoute($route);
+        $class = (new \ReflectionClass(Router::class));
+
+        $property = $class->getProperty('method');
+        $property->setAccessible(true);
+        $property->setValue($router, 'GET');
+
+        $property = $class->getProperty('domain');
+        $property->setAccessible(true);
+        $property->setValue($router, 'router.deimos');
+
+        $property = $class->getProperty('scheme');
+        $property->setAccessible(true);
+        $property->setValue($router, 'https');
 
         // lang:default -> ru
-        $route = $router->getCurrentRoute('/hello-world');
-        $this->assertEquals($route->attributes(), [
-            'lang'       => 'ru',
-            'action'     => 'default',
+        $route = $router->getRoute('/hello-world');
+        $this->assertEquals($route->getAttributes(), [
             'controller' => 'hello-world',
+            'action'     => 'default',
+            'lang'       => 'ru',
         ]);
 
         // lang -> en
-        $route = $router->getCurrentRoute('/en/hello-world');
-        $this->assertEquals($route->attributes(), [
-            'lang'       => 'en',
-            'action'     => 'default',
+        $route = $router->getRoute('/en/hello-world');
+        $this->assertEquals($route->getAttributes(), [
             'controller' => 'hello-world',
+            'action'     => 'default',
+            'lang'       => 'en',
         ]);
     }
 

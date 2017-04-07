@@ -3,6 +3,7 @@
 namespace Deimos\Router;
 
 use Deimos\CacheHelper\SliceHelper;
+use Deimos\Router\Exceptions\NotFound;
 use Deimos\Slice\Slice;
 
 class Configure
@@ -67,7 +68,7 @@ class Configure
      * @return Slice
      *
      * @throws \Deimos\Helper\Exceptions\ExceptionEmpty
-     * @throws \InvalidArgumentException
+     * @throws NotFound
      */
     public function build()
     {
@@ -84,12 +85,12 @@ class Configure
 
             if ($type === null)
             {
-                throw new \InvalidArgumentException('Parameter `type` not found in a route of `' . $key . '`');
+                throw new NotFound('Parameter `type` not found in a route of `' . $key . '`');
             }
 
             if (!isset($this->types[$type]))
             {
-                throw new \InvalidArgumentException('The `' . $type . '` type isn\'t found in a route of `' . $key . '`');
+                throw new NotFound('The `' . $type . '` type isn\'t found in a route of `' . $key . '`');
             }
 
             $class = $this->types[$type];

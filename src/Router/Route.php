@@ -128,7 +128,7 @@ class Route implements \Serializable
      */
     public function getAttributes()
     {
-        return $this->attributes;
+        return $this->attributes ?? $this->defaults;
     }
 
     /**
@@ -200,7 +200,7 @@ class Route implements \Serializable
 
     protected function attributes($matches)
     {
-        return array_filter($matches + $this->defaults, function ($value, $key)
+        return array_filter($matches, function ($value, $key)
         {
             return !is_int($key) && (is_numeric($value) || !empty($value));
         }, ARRAY_FILTER_USE_BOTH);
@@ -217,7 +217,7 @@ class Route implements \Serializable
 
         if ($result)
         {
-            $this->attributes = $this->attributes($matches);
+            $this->attributes = $this->attributes($matches) + $this->defaults;
         }
 
         return $result !== 0;
@@ -256,10 +256,10 @@ class Route implements \Serializable
      */
     protected function reload()
     {
+        $this->http      = $this->slice->atData('http', ['scheme' => null, 'domain' => null]);
         $this->defaults  = $this->slice->atData('defaults', []);
         $this->methods   = $this->slice->atData('methods', []);
         $this->regex     = $this->slice->atData('regex', []);
-        $this->http      = $this->slice->atData('http', []);
         $this->path      = $this->slice->atData('path');
         $this->regexPath = $this->regex();
     }
