@@ -9,6 +9,8 @@ use Deimos\Slice\Slice;
 class Configure
 {
 
+    use HelperThrows;
+
     /**
      * @var array
      */
@@ -84,18 +86,7 @@ class Configure
 
         foreach ($this->slice->asGenerator() as $key => $slice)
         {
-            $type = $slice->atData('type');
-
-            if ($type === null)
-            {
-                throw new NotFound('Parameter `type` not found in a route of `' . $key . '`');
-            }
-
-            if (!isset($this->types[$type]))
-            {
-                throw new NotFound('The `' . $type . '` type isn\'t found in a route of `' . $key . '`');
-            }
-
+            $type  = $this->getType($slice, $key);
             $class = $this->types[$type];
 
             /**

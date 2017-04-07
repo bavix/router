@@ -3,11 +3,14 @@
 namespace Deimos\Router\Type;
 
 use Deimos\Router\Exceptions\NotFound;
+use Deimos\Router\HelperThrows;
 use Deimos\Router\Type;
 use Deimos\Slice\Slice;
 
 class Http extends Type
 {
+
+    use HelperThrows;
 
     /**
      * @var array
@@ -50,18 +53,7 @@ class Http extends Type
 
         foreach ($resolver->asGenerator() as $key => $slice)
         {
-            $type = $slice->atData('type');
-
-            if ($type === null)
-            {
-                throw new NotFound('Parameter `type` not found in a route of `' . $this->key . '.' . $key . '`');
-            }
-
-            if (!isset($this->types[$type]))
-            {
-                throw new NotFound('The `' . $type . '` type isn\'t found in a route of `' . $this->key . '.' . $key . '`');
-            }
-
+            $type  = $this->getType($slice, $this->key . '.' . $key);
             $class = $this->types[$type];
 
             /**
