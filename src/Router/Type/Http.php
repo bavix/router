@@ -17,6 +17,13 @@ class Http extends Type
         'pattern' => Pattern::class,
     ];
 
+    /**
+     * @param string $key
+     * @param Slice  $slice
+     *
+     * @return array
+     * @throws NotFound
+     */
     protected function storage($key, Slice $slice)
     {
         list($path, $regex) = $this->path($slice);

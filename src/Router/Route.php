@@ -67,7 +67,7 @@ class Route implements \Serializable
     {
         $this->slice = $slice;
 
-        if ($defaultRegex)
+        if ($defaultRegex !== null)
         {
             $this->defaultRegex = $defaultRegex;
         }
@@ -198,6 +198,11 @@ class Route implements \Serializable
         );
     }
 
+    /**
+     * @param array $matches
+     *
+     * @return array
+     */
     protected function attributes($matches)
     {
         return array_filter($matches, function ($value, $key)
@@ -206,6 +211,12 @@ class Route implements \Serializable
         }, ARRAY_FILTER_USE_BOTH);
     }
 
+    /**
+     * @param string $uri
+     * @param string $method
+     *
+     * @return bool
+     */
     public function test($uri, $method)
     {
         if (!empty($this->methods) && !in_array($method, $this->methods, true))
@@ -223,7 +234,13 @@ class Route implements \Serializable
         return $result !== 0;
     }
 
-    protected function regexUri($http, $path)
+    /**
+     * @param array  $http
+     * @param string $path
+     *
+     * @return string
+     */
+    protected function regexUri(array $http, $path)
     {
         return $http['scheme'] . '\:\/{2}' . $http['domain'] . $path;
     }
@@ -256,10 +273,15 @@ class Route implements \Serializable
      */
     protected function reload()
     {
-        $this->http      = $this->slice->atData('http', ['scheme' => null, 'domain' => null]);
-        $this->defaults  = $this->slice->atData('defaults', []);
-        $this->methods   = $this->slice->atData('methods', []);
-        $this->regex     = $this->slice->atData('regex', []);
+        $http = [
+            'scheme' => null,
+            'domain' => null
+        ];
+
+        $this->http      = $this->slice->atData('http', $http);
+        $this->defaults  = (array)$this->slice->atData('defaults');
+        $this->methods   = (array)$this->slice->atData('methods');
+        $this->regex     = (array)$this->slice->atData('regex');
         $this->path      = $this->slice->atData('path');
         $this->regexPath = $this->regex();
     }

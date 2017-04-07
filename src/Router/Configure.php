@@ -9,6 +9,9 @@ use Deimos\Slice\Slice;
 class Configure
 {
 
+    /**
+     * @var array
+     */
     protected $types = [
         'http'    => Type\Http::class,
         'prefix'  => Type\Prefix::class,

@@ -69,6 +69,8 @@ abstract class Type
      * @param Configure $configure
      * @param Slice     $slice
      * @param array     $options
+     *
+     * @throws NotFound
      */
     public function __construct(Configure $configure, Slice $slice, array $options)
     {
@@ -87,6 +89,12 @@ abstract class Type
         $this->methods  = $options['methods'] ?? $slice->getData('methods', []);
     }
 
+    /**
+     * @param Slice $slice
+     *
+     * @return array
+     * @throws NotFound
+     */
     protected function path(Slice $slice)
     {
         $path = $slice->getData('path', $this->path);

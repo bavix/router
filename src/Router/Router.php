@@ -8,6 +8,9 @@ use Deimos\Slice\Slice;
 class Router
 {
 
+    /**
+     * @var array
+     */
     protected $classMap = [
         'configure' => Configure::class
     ];
@@ -73,6 +76,9 @@ class Router
         $this->path   = path();
     }
 
+    /**
+     * @return Configure
+     */
     protected function configure()
     {
         if (!$this->configure)
@@ -87,9 +93,8 @@ class Router
 
     /**
      * @return Route
+     *
      * @throws Exceptions\NotFound
-     * @throws \Deimos\CacheHelper\Exceptions\PermissionDenied
-     * @throws \Deimos\Helper\Exceptions\ExceptionEmpty
      */
     public function getCurrentRoute()
     {
@@ -103,8 +108,6 @@ class Router
      *
      * @return Route
      * @throws Exceptions\NotFound
-     * @throws \Deimos\CacheHelper\Exceptions\PermissionDenied
-     * @throws \Deimos\Helper\Exceptions\ExceptionEmpty
      */
     public function getRoute($path, $domain = null, $scheme = null)
     {
@@ -130,6 +133,7 @@ class Router
 
     /**
      * @return Route[]
+     *
      * @throws \Deimos\CacheHelper\Exceptions\PermissionDenied
      * @throws \Deimos\Helper\Exceptions\ExceptionEmpty
      */
@@ -143,6 +147,14 @@ class Router
         return $this->routes;
     }
 
+    /**
+     * @param string $path
+     *
+     * @return Route
+     * @throws Exceptions\NotFound
+     * @throws \Deimos\CacheHelper\Exceptions\PermissionDenied
+     * @throws \Deimos\Helper\Exceptions\ExceptionEmpty
+     */
     public function route($path)
     {
         $route = $this->configureSlice()->atData($path);
@@ -156,7 +168,7 @@ class Router
     }
 
     /**
-     * @param string    $uri
+     * @param $uri
      *
      * @return Route
      * @throws Exceptions\NotFound

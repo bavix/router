@@ -8,6 +8,9 @@ use Deimos\Router\Type;
 class Pattern extends Type
 {
 
+    /**
+     * @var bool
+     */
     protected $pathRequired = true;
 
     /**
@@ -15,6 +18,9 @@ class Pattern extends Type
      */
     protected $types = [];
 
+    /**
+     * @return array
+     */
     public function build()
     {
         $this->slice['http.scheme'] = $this->scheme;
