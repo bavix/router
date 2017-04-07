@@ -90,6 +90,22 @@ abstract class Type
     }
 
     /**
+     * @return array
+     */
+    protected function regexData(&$storage)
+    {
+        $regex = (array)$this->regex;
+
+        if (is_array($storage) && isset($storage[1]))
+        {
+            $regex   = $storage[1] + $regex;
+            $storage = $storage[0];
+        }
+
+        return $regex;
+    }
+
+    /**
      * @param Slice $slice
      *
      * @return array
@@ -104,13 +120,7 @@ abstract class Type
             throw new NotFound('Parameter `path` not found in a route of `' . $this->key . '`');
         }
 
-        $regex = $this->regex ?? [];
-
-        if (is_array($path) && isset($path[1]))
-        {
-            $regex = $path[1] + $regex;
-            $path  = $path[0];
-        }
+        $regex = $this->regexData($path);
 
         return [$path, $regex];
     }
