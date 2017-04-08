@@ -8,3 +8,18 @@
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/DeimosProject/Router/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/DeimosProject/Router/?branch=master)
 [![Code Coverage](https://scrutinizer-ci.com/g/DeimosProject/Router/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/DeimosProject/Router/?branch=master)
 [![Build Status](https://scrutinizer-ci.com/g/DeimosProject/Router/badges/build.png?b=master)](https://scrutinizer-ci.com/g/DeimosProject/Router/build-status/master)
+
+Here is a quick demo:
+```php
+$builder = new Deimos\Builder\Builder();
+$helper  = new \Deimos\Helper\Helper($builder);
+$slice  = new \Deimos\Slice\Slice($helper, [
+  'default' => [
+    'type' => 'pattern',
+    'path' => '/demo'
+  ]
+]);
+$router = new \Deimos\Router\Router($slice);
+
+var_dump($router->getCurrentRoute());
+```
