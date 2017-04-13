@@ -159,7 +159,7 @@ class Router
     {
         $route = $this->configureSlice()->atData($path);
 
-        if ($route)
+        if (empty($route))
         {
             throw new Exceptions\NotFound('Route `' . $path . '` not found');
         }
