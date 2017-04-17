@@ -11,8 +11,7 @@
 
 Here is a quick demo:
 ```php
-$builder = new Deimos\Builder\Builder();
-$helper  = new \Deimos\Helper\Helper($builder);
+$helper  = new \Deimos\Helper\Helper();
 $slice  = new \Deimos\Slice\Slice($helper, [
   'default' => [
     'type' => 'pattern',
