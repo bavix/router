@@ -76,7 +76,7 @@ function path()
  */
 function route(Route $route, array $attributes = [])
 {
-    $attributes = $route->getDefaults() + $attributes;
+    $attributes += $route->getDefaults();
 
     $path = preg_replace_callback('~\<(\w+)\>~', function ($matches) use ($attributes)
     {
