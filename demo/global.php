@@ -7,7 +7,7 @@ return [
         'type'   => 'http',
 
         'scheme' => 'http', // optional null
-        'domain' => '(.+\.)example.com', // optional null
+        'domain' => '(.+\.)?example.com', // optional null
 
         'resolver' => [
 
@@ -23,7 +23,9 @@ return [
 
                         'defaults' => [
                             'controller' => 'dashboard'
-                        ]
+                        ],
+
+                        'methods' => ['GET', 'HEAD']
                     ],
 
                     'post' => [
@@ -39,8 +41,6 @@ return [
                             'type'       => 'list',
                             'controller' => 'posts'
                         ],
-
-                        'methods' => ['GET']
                     ],
 
                 ],
@@ -50,12 +50,14 @@ return [
                     'processor'  => 'cp',
                     'action'     => 'default',
                     'language'   => 'en'
-                ]
-            ]
+                ],
+
+                'methods' => ['FETCH', 'GET']
+            ],
 
         ],
 
-        'methods' => ['POST']
+        'methods' => ['POST', 'GET']
 
     ],
 

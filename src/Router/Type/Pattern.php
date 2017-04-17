@@ -37,8 +37,12 @@ class Pattern extends Type
         $this->slice['path']        = $this->path;
         $this->slice['regex']       = $this->regex;
 
+        if (empty($this->slice['methods']))
+        {
+            $this->slice['methods'] = $this->methods;
+        }
+
         $this->merge('defaults', $this->defaults);
-        $this->merge('methods', $this->methods);
 
         return [
             $this->key => new Route($this->slice)

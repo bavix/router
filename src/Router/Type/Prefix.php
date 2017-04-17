@@ -23,9 +23,11 @@ class Prefix extends Http
     {
         list($path, $regex) = $this->path($slice);
 
+        $methods = $this->slice->getData('methods');
+
         return [
             'defaults' => (array)$this->slice->getData('defaults') + $this->defaults,
-            'methods'  => (array)$this->slice->getData('methods') + $this->methods,
+            'methods'  => empty($methods) ? $this->methods : $methods,
             'scheme'   => $this->scheme,
             'domain'   => $this->domain,
             'regex'    => $regex,

@@ -83,7 +83,7 @@ abstract class Type
         $this->path     = $options['path'] ?? $data[0];
         $this->regex    = $options['regex'] ?? $data[1];
         $this->defaults = (array)($options['defaults'] ?? $slice->getData('defaults'));
-        $this->methods  = (array)($options['methods'] ?? $slice->getData('methods'));
+        $this->methods  = (array)(empty($options['methods']) ? $slice->getData('methods') : $options['methods']);
     }
 
     /**
