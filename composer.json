@@ -1,11 +1,10 @@
 {
-  "name": "deimos/router",
-  "description": "Deimos Router.",
+  "name": "bavix/router",
+  "description": "router",
   "keywords": [
-    "deimos",
     "router"
   ],
-  "homepage": "https://github.com/REZ1DENT3/DeimosRouter",
+  "homepage": "https://github.com/bavix/router",
   "license": "MIT",
   "type": "library",
   "authors": [
@@ -15,16 +14,15 @@
     }
   ],
   "require": {
-    "deimos/slice": "~1.0",
-    "deimos/cache-helper": "~1.0"
+    "psr/cache": "^1.0",
+    "bavix/slice": "^1.0"
   },
   "require-dev": {
-    "phpunit/phpunit": "5.7.5",
-    "deimos/config": "~2.0"
+    "tedivm/stash": "^0.14"
   },
   "autoload": {
     "psr-4": {
-      "Deimos\\": "src/"
+      "Bavix\\": "src/"
     },
     "files": [
       "libs/helper.php"

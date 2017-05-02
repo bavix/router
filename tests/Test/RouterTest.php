@@ -2,11 +2,9 @@
 
 namespace Test;
 
-use Deimos\Builder\Builder;
-use Deimos\Helper\Helper;
-use Deimos\Router\Route;
-use Deimos\Router\Router;
-use Deimos\Slice\Slice;
+use Bavix\Router\Route;
+use Bavix\Router\Router;
+use Bavix\Slice\Slice;
 
 class RouterTest extends \TestCase
 {
@@ -14,10 +12,7 @@ class RouterTest extends \TestCase
     public function testRoute()
     {
 
-        $builder = new Builder();
-        $helper  = new Helper($builder);
-
-        $slice = new Slice($helper, [
+        $slice = new Slice([
             'type' => 'pattern',
             'path' => '/<controller>(/<action>/<value:\w+>)',
 
@@ -61,14 +56,11 @@ class RouterTest extends \TestCase
     }
 
     /**
-     * @expectedException \Deimos\Router\Exceptions\NotFound
+     * @expectedException \Bavix\Exceptions\NotFound\Page
      */
     public function testErrorNotFound()
     {
-        $builder = new Builder();
-        $helper  = new Helper($builder);
-
-        $slice = new Slice($helper, [
+        $slice = new Slice([
             'fake' => [
                 'type' => 'pattern',
                 'path' => '/<controller>(/<action>)',
@@ -81,7 +73,7 @@ class RouterTest extends \TestCase
             ]
         ]);
 
-        $router = new \Deimos\Router\Router($slice);
+        $router = new \Bavix\Router\Router($slice);
 
         $class = (new \ReflectionClass(Router::class));
 
@@ -101,14 +93,11 @@ class RouterTest extends \TestCase
     }
 
     /**
-     * @expectedException \Deimos\Router\Exceptions\NotFound
+     * @expectedException \Bavix\Exceptions\NotFound\Data
      */
     public function testErrorWithoutType()
     {
-        $builder = new Builder();
-        $helper  = new Helper($builder);
-
-        $slice = new Slice($helper, [
+        $slice = new Slice([
             'fake' => [
                 // 'type' => 'pattern',
                 'path' => '/<controller>(/<action>)',
@@ -125,14 +114,11 @@ class RouterTest extends \TestCase
     }
 
     /**
-     * @expectedException \Deimos\Router\Exceptions\NotFound
+     * @expectedException \Bavix\Exceptions\NotFound\Path
      */
     public function testErrorWithoutPath()
     {
-        $builder = new Builder();
-        $helper  = new Helper($builder);
-
-        $slice = new Slice($helper, [
+        $slice = new Slice([
             'fake' => [
                 'type' => 'pattern',
                 //'path' => '/<controller>(/<action>)',
@@ -150,10 +136,7 @@ class RouterTest extends \TestCase
 
     public function testPrefixSuccess()
     {
-        $builder = new Builder();
-        $helper  = new Helper($builder);
-
-        $slice = new Slice($helper, [
+        $slice = new Slice([
             __METHOD__ => [
                 'type'     => 'prefix',
                 'path'     => '/demo',
@@ -214,11 +197,7 @@ class RouterTest extends \TestCase
 
     public function testLanguage()
     {
-
-        $builder = new Builder();
-        $helper  = new Helper($builder);
-
-        $slice = new Slice($helper, [
+        $slice = new Slice([
             __METHOD__ => [
                 'type'     => 'prefix',
                 'path'     => '(/<lang:[a-z]{2}>)',

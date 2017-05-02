@@ -1,10 +1,10 @@
 <?php
 
-namespace Deimos\Router;
+namespace Bavix\Router;
 
-use Deimos\CacheHelper\SliceHelper;
-use Deimos\Router\Exceptions\NotFound;
-use Deimos\Slice\Slice;
+use Bavix\Slice\Slice;
+use Bavix\Exceptions;
+use Psr\Cache\CacheItemPoolInterface;
 
 class Configure
 {
@@ -12,9 +12,9 @@ class Configure
     use HelperThrows;
 
     /**
-     * @var SliceHelper
+     * @var CacheItemPoolInterface
      */
-    protected $cache;
+    protected $pool;
 
     /**
      * @var Slice
@@ -29,13 +29,13 @@ class Configure
     /**
      * Configure constructor.
      *
-     * @param Slice            $slice
-     * @param SliceHelper|null $cache
+     * @param Slice                       $slice
+     * @param CacheItemPoolInterface|null $pool
      */
-    public function __construct(Slice $slice, SliceHelper $cache = null)
+    public function __construct(Slice $slice, CacheItemPoolInterface $pool = null)
     {
-        $this->slice  = $slice;
-        $this->cache  = $cache;
+        $this->slice = $slice;
+        $this->pool  = $pool;
 
         $this->types = [
             'http'    => Type\Http::class,
@@ -47,21 +47,24 @@ class Configure
     /**
      * @return Slice
      *
-     * @throws NotFound
-     * @throws \Deimos\CacheHelper\Exceptions\PermissionDenied
-     * @throws \Deimos\Helper\Exceptions\ExceptionEmpty
+     * @return Slice|mixed
+     * @throws \Psr\Cache\InvalidArgumentException
      */
     public function data()
     {
-        if ($this->cache)
+        if ($this->pool instanceof CacheItemPoolInterface)
         {
-            if (!$this->cache->valid($this->slice))
+            $item = $this->pool->getItem($this->slice);
+
+            if (!$item->isHit())
             {
-                $data = $this->build();
-                $this->cache->save($this->slice, $data);
+                $item->set($result = $this->build());
+                $this->pool->save($item);
+
+                return $result;
             }
 
-            return require $this->cache->getCachePath($this->slice);
+            return $item->get();
         }
 
         return $this->build();
@@ -69,8 +72,8 @@ class Configure
 
     /**
      * @return Route[]
-     * @throws NotFound
-     * @throws \Deimos\Helper\Exceptions\ExceptionEmpty
+     *
+     * @throws Exceptions\NotFound\Data
      */
     protected function routes()
     {
@@ -96,9 +99,6 @@ class Configure
 
     /**
      * @return Slice
-     *
-     * @throws \Deimos\Helper\Exceptions\ExceptionEmpty
-     * @throws NotFound
      */
     public function build()
     {

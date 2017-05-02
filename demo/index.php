@@ -2,19 +2,17 @@
 
 include_once __DIR__ . '/../vendor/autoload.php';
 
-$builder = new Deimos\Builder\Builder();
-$helper  = new \Deimos\Helper\Helper($builder);
-$config  = new \Deimos\Config\Config($helper, __DIR__);
+$data = require __DIR__ . '/global.php';
+$slice = new \Bavix\Slice\Slice($data);
 
-$slice = $config->get('global');
-
-$cache  = new \Deimos\CacheHelper\SliceHelper(__DIR__ . '/cache');
-$router = new \Deimos\Router\Router($slice, $cache);
+$driver = new \Stash\Driver\FileSystem();
+$pool   = new \Stash\Pool($driver);
+$router = new \Bavix\Router\Router($slice, $pool);
 
 $route = $router->getCurrentRoute();
 
 var_dump(
-    \Deimos\Router\route($route),
+    \Bavix\Router\route($route),
     $route->getAttributes(),
     $route->getDefaults(),
     $route->getHttp(),

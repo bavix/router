@@ -1,9 +1,9 @@
 <?php
 
-namespace Deimos\Router;
+namespace Bavix\Router;
 
-use Deimos\Router\Exceptions\NotFound;
-use Deimos\Slice\Slice;
+use Bavix\Exceptions\NotFound;
+use Bavix\Slice\Slice;
 
 abstract class Type
 {
@@ -67,7 +67,7 @@ abstract class Type
      * @param Slice     $slice
      * @param array     $options
      *
-     * @throws NotFound
+     * @throws NotFound\Data
      */
     public function __construct(Configure $configure, Slice $slice, array $options)
     {
@@ -106,7 +106,7 @@ abstract class Type
      * @param Slice $slice
      *
      * @return array
-     * @throws NotFound
+     * @throws NotFound\Path
      */
     protected function path(Slice $slice)
     {
@@ -114,7 +114,7 @@ abstract class Type
 
         if ($this->pathRequired && !$path)
         {
-            throw new NotFound('Parameter `path` not found in a route of `' . $this->key . '`');
+            throw new NotFound\Path('Parameter `path` not found in a route of `' . $this->key . '`');
         }
 
         $regex = $this->regexData($path);

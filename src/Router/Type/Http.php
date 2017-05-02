@@ -1,11 +1,11 @@
 <?php
 
-namespace Deimos\Router\Type;
+namespace Bavix\Router\Type;
 
-use Deimos\Router\Configure;
-use Deimos\Router\Exceptions\NotFound;
-use Deimos\Router\Type;
-use Deimos\Slice\Slice;
+use Bavix\Exceptions\NotFound;
+use Bavix\Router\Configure;
+use Bavix\Router\Type;
+use Bavix\Slice\Slice;
 
 class Http extends Type
 {
@@ -17,7 +17,7 @@ class Http extends Type
      * @param Slice     $slice
      * @param array     $options
      *
-     * @throws NotFound
+     * @throws NotFound\Data
      */
     public function __construct(Configure $configure, Slice $slice, array $options)
     {
@@ -34,7 +34,7 @@ class Http extends Type
      * @param Slice  $slice
      *
      * @return array
-     * @throws NotFound
+     * @throws NotFound\Data
      */
     protected function storage($key, Slice $slice)
     {
@@ -53,8 +53,6 @@ class Http extends Type
 
     /**
      * @return array
-     * @throws \Deimos\Helper\Exceptions\ExceptionEmpty
-     * @throws NotFound
      */
     public function build()
     {

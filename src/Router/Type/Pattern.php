@@ -1,9 +1,9 @@
 <?php
 
-namespace Deimos\Router\Type;
+namespace Bavix\Router\Type;
 
-use Deimos\Router\Route;
-use Deimos\Router\Type;
+use Bavix\Router\Route;
+use Bavix\Router\Type;
 
 class Pattern extends Type
 {

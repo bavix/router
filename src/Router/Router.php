@@ -1,9 +1,10 @@
 <?php
 
-namespace Deimos\Router;
+namespace Bavix\Router;
 
-use Deimos\CacheHelper\SliceHelper;
-use Deimos\Slice\Slice;
+use Bavix\Exceptions;
+use Bavix\Slice\Slice;
+use Psr\Cache\CacheItemPoolInterface;
 
 class Router
 {
@@ -56,20 +57,20 @@ class Router
     protected $path;
 
     /**
-     * @var SliceHelper
+     * @var CacheItemPoolInterface
      */
-    protected $cache;
+    protected $pool;
 
     /**
      * Router constructor.
      *
-     * @param Slice       $slice
-     * @param SliceHelper $cache
+     * @param Slice                  $slice
+     * @param CacheItemPoolInterface $pool
      */
-    public function __construct(Slice $slice, SliceHelper $cache = null)
+    public function __construct(Slice $slice, CacheItemPoolInterface $pool = null)
     {
         $this->slice  = $slice;
-        $this->cache  = $cache;
+        $this->pool   = $pool;
         $this->method = method();
         $this->scheme = scheme();
         $this->domain = domain();
@@ -85,7 +86,7 @@ class Router
         {
             $class = $this->classMap['configure'];
 
-            $this->configure = new $class($this->slice, $this->cache);
+            $this->configure = new $class($this->slice, $this->pool);
         }
 
         return $this->configure;
@@ -94,7 +95,7 @@ class Router
     /**
      * @return Route
      *
-     * @throws Exceptions\NotFound
+     * @throws Exceptions\NotFound\Data
      */
     public function getCurrentRoute()
     {
@@ -107,7 +108,7 @@ class Router
      * @param string $scheme
      *
      * @return Route
-     * @throws Exceptions\NotFound
+     * @throws Exceptions\NotFound\Data
      */
     public function getRoute($path, $domain = null, $scheme = null)
     {
@@ -118,8 +119,6 @@ class Router
 
     /**
      * @return Slice
-     * @throws \Deimos\CacheHelper\Exceptions\PermissionDenied
-     * @throws \Deimos\Helper\Exceptions\ExceptionEmpty
      */
     protected function configureSlice()
     {
@@ -133,9 +132,6 @@ class Router
 
     /**
      * @return Route[]
-     *
-     * @throws \Deimos\CacheHelper\Exceptions\PermissionDenied
-     * @throws \Deimos\Helper\Exceptions\ExceptionEmpty
      */
     public function routes()
     {
@@ -151,9 +147,8 @@ class Router
      * @param string $path
      *
      * @return Route
-     * @throws Exceptions\NotFound
-     * @throws \Deimos\CacheHelper\Exceptions\PermissionDenied
-     * @throws \Deimos\Helper\Exceptions\ExceptionEmpty
+     *
+     * @throws Exceptions\NotFound\Path
      */
     public function route($path)
     {
@@ -161,7 +156,7 @@ class Router
 
         if (empty($route))
         {
-            throw new Exceptions\NotFound('Route `' . $path . '` not found');
+            throw new Exceptions\NotFound\Path('Route `' . $path . '` not found');
         }
 
         return $route;
@@ -171,9 +166,8 @@ class Router
      * @param $uri
      *
      * @return Route
-     * @throws Exceptions\NotFound
-     * @throws \Deimos\CacheHelper\Exceptions\PermissionDenied
-     * @throws \Deimos\Helper\Exceptions\ExceptionEmpty
+     *
+     * @throws Exceptions\NotFound\Page
      */
     protected function find($uri)
     {
@@ -188,7 +182,7 @@ class Router
             }
         }
 
-        throw new Exceptions\NotFound('Page `' . $uri . '` not found', 404);
+        throw new Exceptions\NotFound\Page('Page `' . $uri . '` not found', 404);
     }
 
 }

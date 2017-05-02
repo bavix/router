@@ -1,6 +1,6 @@
 <?php
 
-namespace Deimos\Router;
+namespace Bavix\Router;
 
 /**
  * @param string $variableName

@@ -1,8 +1,8 @@
 <?php
 
-namespace Deimos\Router\Type;
+namespace Bavix\Router\Type;
 
-use Deimos\Slice\Slice;
+use Bavix\Slice\Slice;
 
 class Prefix extends Http
 {
@@ -17,7 +17,6 @@ class Prefix extends Http
      * @param Slice  $slice
      *
      * @return array
-     * @throws \Deimos\Router\Exceptions\NotFound
      */
     protected function storage($key, Slice $slice)
     {

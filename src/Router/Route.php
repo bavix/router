@@ -1,8 +1,8 @@
 <?php
 
-namespace Deimos\Router;
+namespace Bavix\Router;
 
-use Deimos\Slice\Slice;
+use Bavix\Slice\Slice;
 
 class Route implements \Serializable
 {
@@ -228,7 +228,7 @@ class Route implements \Serializable
 
         if ($result)
         {
-            $this->attributes = $this->attributes($matches) + $this->defaults;
+            $this->attributes = array_merge($this->defaults, $this->attributes($matches));
         }
 
         return $result !== 0;

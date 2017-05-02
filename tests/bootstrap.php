@@ -5,7 +5,7 @@
  */
 $loader = require dirname(__DIR__) . '/vendor/autoload.php';
 
-$loader->addPsr4('DeimosTest\\', 'tests/src/');
+$loader->addPsr4('BavixTest\\', 'tests/src/');
 
 if (class_exists('\PHPUnit\Framework\TestCase'))
 {

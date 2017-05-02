@@ -1,8 +1,9 @@
 <?php
 
-namespace Deimos\Router;
+namespace Bavix\Router;
 
-use Deimos\Slice\Slice;
+use Bavix\Slice\Slice;
+use Bavix\Exceptions;
 
 trait HelperThrows
 {
@@ -17,7 +18,7 @@ trait HelperThrows
      * @param string $key
      *
      * @return mixed
-     * @throws Exceptions\NotFound
+     * @throws Exceptions\NotFound\Data
      */
     public function getType(Slice $slice, $key = null)
     {
@@ -25,12 +26,12 @@ trait HelperThrows
 
         if ($type === null)
         {
-            throw new Exceptions\NotFound('Parameter `type` not found in a route of `' . $key . '`');
+            throw new Exceptions\NotFound\Data('Parameter `type` not found in a route of `' . $key . '`');
         }
 
         if (!isset($this->types[$type]))
         {
-            throw new Exceptions\NotFound('The `' . $type . '` type isn\'t found in a route of `' . $key . '`');
+            throw new Exceptions\NotFound\Data('The `' . $type . '` type isn\'t found in a route of `' . $key . '`');
         }
 
         return $type;
