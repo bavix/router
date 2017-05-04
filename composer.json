@@ -20,6 +20,7 @@
   "require-dev": {
     "tedivm/stash": "^0.14",
     "bavix/config": "^1.0",
+    "bavix/xml": "^1.0",
     "symfony/yaml": "^3.2"
   },
   "autoload": {

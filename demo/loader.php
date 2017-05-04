@@ -7,7 +7,8 @@ $pool   = new \Stash\Pool($driver);
 
 //$loader = new \Bavix\SDK\FileLoader\PHPLoader(__DIR__ . '/global.php');
 //$loader = new \Bavix\SDK\FileLoader\JSONLoader(__DIR__ . '/global.json');
-$loader = new \Bavix\SDK\FileLoader\YamlLoader(__DIR__ . '/global.yaml');
+//$loader = new \Bavix\SDK\FileLoader\YamlLoader(__DIR__ . '/global.yaml');
+$loader = new \Bavix\SDK\FileLoader\XmlLoader(__DIR__ . '/global.xml');
 $slice = $loader->asSlice();
 
 $router = new \Bavix\Router\Router($slice, $pool);

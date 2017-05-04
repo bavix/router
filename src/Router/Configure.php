@@ -81,6 +81,12 @@ class Configure
 
         foreach ($this->slice->asGenerator() as $key => $slice)
         {
+            if ($key{0} === '@')
+            {
+                // for xml
+                continue;
+            }
+
             $type  = $this->getType($slice, $key);
             $class = $this->types[$type];
 
