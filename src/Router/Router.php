@@ -44,12 +44,12 @@ class Router
     /**
      * @var string
      */
-    protected $scheme;
+    protected $protocol;
 
     /**
      * @var string
      */
-    protected $domain;
+    protected $host;
 
     /**
      * @var string
@@ -69,12 +69,12 @@ class Router
      */
     public function __construct(Slice $slice, CacheItemPoolInterface $pool = null)
     {
-        $this->slice  = $slice;
-        $this->pool   = $pool;
-        $this->method = method();
-        $this->scheme = scheme();
-        $this->domain = domain();
-        $this->path   = path();
+        $this->slice    = $slice;
+        $this->pool     = $pool;
+        $this->method   = method();
+        $this->protocol = protocol();
+        $this->host     = host();
+        $this->path     = path();
     }
 
     /**
@@ -104,15 +104,15 @@ class Router
 
     /**
      * @param string $path
-     * @param string $domain
-     * @param string $scheme
+     * @param string $host
+     * @param string $protocol
      *
      * @return Route
      * @throws Exceptions\NotFound\Data
      */
-    public function getRoute($path, $domain = null, $scheme = null)
+    public function getRoute($path, $host = null, $protocol = null)
     {
-        $uri = ($scheme ?? $this->scheme) . '://' . ($domain ?? $this->domain) . $path;
+        $uri = ($protocol ?? $this->protocol) . '://' . ($host ?? $this->host) . $path;
 
         return $this->find($uri);
     }

@@ -27,8 +27,8 @@ class Prefix extends Http
         return [
             'defaults' => (array)$this->slice->getData('defaults') + $this->defaults,
             'methods'  => empty($methods) ? $this->methods : $methods,
-            'scheme'   => $this->scheme,
-            'domain'   => $this->domain,
+            'protocol' => $this->protocol,
+            'host'     => $this->host,
             'regex'    => $regex,
             'path'     => $this->path . $path,
             'key'      => $this->key . '.' . $key,

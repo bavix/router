@@ -33,21 +33,21 @@ function method()
 /**
  * @return string
  */
-function scheme()
+function protocol()
 {
-    $scheme = server('HTTP_CF_VISITOR'); // cloudFlare
+    $protocol = server('HTTP_CF_VISITOR'); // cloudFlare
 
-    if ($scheme)
+    if ($protocol)
     {
         /**
          * { scheme: "https" }
          *
-         * @var string $scheme
+         * @var string $protocol
          */
-        $scheme = json_decode($scheme);
+        $protocol = json_decode($protocol);
     }
 
-    return $scheme['scheme'] ??
+    return $protocol['scheme'] ??
         server('HTTP_X_FORWARDED_PROTO') ??
         server('REQUEST_SCHEME');
 }
@@ -55,7 +55,7 @@ function scheme()
 /**
  * @return string
  */
-function domain()
+function host()
 {
     return server('HTTP_HOST');
 }

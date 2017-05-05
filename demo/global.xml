@@ -2,8 +2,8 @@
 <bavix created-with="https://github.com/bavix/xml" created-at="2017-05-04 10:51:07">
   <http>
     <type>http</type>
-    <scheme>http</scheme>
-    <domain>(.+\.)?example.com</domain>
+    <protocol>http</protocol>
+    <host>(.+\.)?example.com</host>
     <resolver>
       <cp>
         <type>prefix</type>

@@ -242,7 +242,7 @@ class Route implements \Serializable
      */
     protected function regexUri(array $http, $path)
     {
-        return $http['scheme'] . '\:\/{2}' . $http['domain'] . $path;
+        return $http['protocol'] . '\:\/{2}' . $http['host'] . $path;
     }
 
     /**
@@ -255,14 +255,14 @@ class Route implements \Serializable
         $regex = $this->toRegex($this->filterPath);
         $http  = $this->http;
 
-        if (!$this->http['scheme'])
+        if (!$this->http['protocol'])
         {
-            $http['scheme'] = 'https?';
+            $http['protocol'] = 'https?';
         }
 
-        if (!$this->http['domain'])
+        if (!$this->http['host'])
         {
-            $http['domain'] = '[^\/]+';
+            $http['host'] = '[^\/]+';
         }
 
         return $this->regexUri($http, $regex);
@@ -274,8 +274,8 @@ class Route implements \Serializable
     protected function reload()
     {
         $http = [
-            'scheme' => null,
-            'domain' => null
+            'protocol' => null,
+            'host'     => null
         ];
 
         $this->http      = (array)$this->slice->atData('http', $http);

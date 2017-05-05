@@ -43,12 +43,12 @@ abstract class Type
     /**
      * @var string
      */
-    protected $scheme;
+    protected $protocol;
 
     /**
      * @var string
      */
-    protected $domain;
+    protected $host;
 
     /**
      * @var string
@@ -74,9 +74,9 @@ abstract class Type
         $this->configure = $configure;
         $this->slice     = $slice;
 
-        $this->scheme = $options['scheme'] ?? null;
-        $this->domain = $options['domain'] ?? null;
-        $this->key    = $options['key'] ?? null;
+        $this->protocol = $options['protocol'] ?? null;
+        $this->host     = $options['host'] ?? null;
+        $this->key      = $options['key'] ?? null;
 
         $data = $this->path($slice);
 

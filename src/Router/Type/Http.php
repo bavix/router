@@ -41,13 +41,13 @@ class Http extends Type
         list($path, $regex) = $this->path($slice);
 
         return [
-            'scheme'    => $this->slice->getData('scheme', $this->scheme),
-            'domain'    => $this->slice->getData('domain', $this->domain),
-            'regex'     => $regex,
-            'path'      => $path,
-            'key'       => $this->key . '.' . $key,
-            'defaults'  => $this->slice->getData('defaults', []),
-            'methods'   => $this->slice->getData('methods', []),
+            'protocol' => $this->slice->getData('protocol', $this->protocol),
+            'host'     => $this->slice->getData('host', $this->host),
+            'regex'    => $regex,
+            'path'     => $path,
+            'key'      => $this->key . '.' . $key,
+            'defaults' => $this->slice->getData('defaults', []),
+            'methods'  => $this->slice->getData('methods', []),
         ];
     }
 

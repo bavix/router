@@ -1,8 +1,8 @@
 {
     "http": {
         "type": "http",
-        "scheme": "http",
-        "domain": "(.+\\.)?example.com",
+        "protocol": "http",
+        "host": "(.+\\.)?example.com",
         "resolver": {
             "cp": {
                 "type": "prefix",

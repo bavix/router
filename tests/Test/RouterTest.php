@@ -81,11 +81,11 @@ class RouterTest extends \TestCase
         $property->setAccessible(true);
         $property->setValue($router, 'GET');
 
-        $property = $class->getProperty('domain');
+        $property = $class->getProperty('host');
         $property->setAccessible(true);
         $property->setValue($router, 'router.deimos');
 
-        $property = $class->getProperty('scheme');
+        $property = $class->getProperty('protocol');
         $property->setAccessible(true);
         $property->setValue($router, 'https');
 
@@ -171,11 +171,11 @@ class RouterTest extends \TestCase
         $property->setAccessible(true);
         $property->setValue($router, 'GET');
 
-        $property = $class->getProperty('domain');
+        $property = $class->getProperty('host');
         $property->setAccessible(true);
         $property->setValue($router, 'router.deimos');
 
-        $property = $class->getProperty('scheme');
+        $property = $class->getProperty('protocol');
         $property->setAccessible(true);
         $property->setValue($router, 'https');
 
@@ -225,11 +225,11 @@ class RouterTest extends \TestCase
         $property->setAccessible(true);
         $property->setValue($router, 'GET');
 
-        $property = $class->getProperty('domain');
+        $property = $class->getProperty('host');
         $property->setAccessible(true);
         $property->setValue($router, 'router.deimos');
 
-        $property = $class->getProperty('scheme');
+        $property = $class->getProperty('protocol');
         $property->setAccessible(true);
         $property->setValue($router, 'https');
 

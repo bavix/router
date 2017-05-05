@@ -32,10 +32,10 @@ class Pattern extends Type
      */
     public function build()
     {
-        $this->slice['http.scheme'] = $this->scheme;
-        $this->slice['http.domain'] = $this->domain;
-        $this->slice['path']        = $this->path;
-        $this->slice['regex']       = $this->regex;
+        $this->slice['http.protocol'] = $this->protocol;
+        $this->slice['http.host']     = $this->host;
+        $this->slice['path']          = $this->path;
+        $this->slice['regex']         = $this->regex;
 
         if (empty($this->slice['methods']))
         {

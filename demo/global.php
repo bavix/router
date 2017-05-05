@@ -6,8 +6,8 @@ return [
 
         'type'   => 'http',
 
-        'scheme' => 'http', // optional null
-        'domain' => '(.+\.)?example.com', // optional null
+        'protocol' => 'http', // optional null
+        'host'     => '(.+\.)?example.com', // optional null
 
         'resolver' => [
 
