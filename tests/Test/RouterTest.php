@@ -31,11 +31,12 @@ class RouterTest extends \TestCase
                 'action' => 'default'
             ],
 
-            'methods' => ['GET', 'POST']
+            'methods' => ['GET', 'POST', 'AJAX']
 
         ]));
 
         $this->assertTrue($route1->test('https://example.com/hello-world', 'GET'));
+        $this->assertTrue($route1->test('https://example.com/hello-world', 'AJAX'));
         $this->assertFalse($route2->test('https://example.com/hello-world2/test/string', 'GET'));
 
         $attributes  = $route1->getAttributes();

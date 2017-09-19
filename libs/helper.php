@@ -63,6 +63,14 @@ function host()
 /**
  * @return string
  */
+function isAjax()
+{
+    return server('HTTP_X_REQUESTED_WITH') === 'xmlhttprequest';
+}
+
+/**
+ * @return string
+ */
 function path()
 {
     return server('REQUEST_URI');

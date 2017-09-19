@@ -212,18 +212,24 @@ class Route implements \Serializable
     }
 
     /**
-     * @param string $uri
      * @param string $method
      *
      * @return bool
      */
-    public function test($uri, $method)
+    public function methodValid($method)
     {
-        if (!empty($this->methods) && !in_array($method, $this->methods, true))
-        {
-            return false;
-        }
+        return empty($this->methods) ||
+            in_array($method, $this->methods, true) ||
+            ($method === 'AJAX' && isAjax());
+    }
 
+    /**
+     * @param string $uri
+     *
+     * @return bool
+     */
+    public function uriValid($uri)
+    {
         $result = preg_match('~^' . $this->regexPath . '$~u', $uri, $matches);
 
         if ($result)
@@ -232,6 +238,22 @@ class Route implements \Serializable
         }
 
         return $result !== 0;
+    }
+
+    /**
+     * @param string $uri
+     * @param string $method
+     *
+     * @return bool
+     */
+    public function test($uri, $method)
+    {
+        if (!$this->methodValid($method))
+        {
+            return false;
+        }
+
+        return $this->uriValid($uri);
     }
 
     /**
