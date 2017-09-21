@@ -73,7 +73,7 @@ function isAjax()
  */
 function path()
 {
-    return server('REQUEST_URI');
+    return parse_url(server('REQUEST_URI'), PHP_URL_PATH);
 }
 
 /**
