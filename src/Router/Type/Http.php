@@ -44,7 +44,7 @@ class Http extends Type
             'protocol' => $this->slice->getData('protocol', $this->protocol),
             'host'     => $this->slice->getData('host', $this->host),
             'regex'    => $regex,
-            'path'     => $path,
+            'path'     => $this->path . $path, // http add path
             'key'      => $this->key . '.' . $key,
             'defaults' => $this->slice->getData('defaults', []),
             'methods'  => $this->slice->getData('methods', []),
