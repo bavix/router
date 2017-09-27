@@ -1,8 +1,8 @@
-<phpunit bootstrap="tests/bootstrap.php">
+<phpunit bootstrap="vendor/autoload.php">
 
     <testsuites>
-        <testsuite name="Router">
-            <directory>tests/Test</directory>
+        <testsuite name="bavix">
+            <directory suffix=".php">tests</directory>
         </testsuite>
     </testsuites>
 
@@ -11,7 +11,7 @@
                 addUncoveredFilesFromWhitelist="true"
                 processUncoveredFilesFromWhitelist="true">
 
-            <directory suffix=".php">./src/Router/</directory>
+            <directory suffix=".php">./src/</directory>
         </whitelist>
     </filter>
 
