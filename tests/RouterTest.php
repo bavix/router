@@ -1,12 +1,13 @@
 <?php
 
-namespace Test;
+namespace Tests;
 
 use Bavix\Router\Route;
 use Bavix\Router\Router;
 use Bavix\Slice\Slice;
+use Bavix\Tests\Unit;
 
-class RouterTest extends \TestCase
+class RouterTest extends Unit
 {
 
     public function testRoute()
