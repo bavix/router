@@ -6,6 +6,7 @@ use Bavix\Router\Route;
 use Bavix\Router\Router;
 use Bavix\Slice\Slice;
 use Bavix\Tests\Unit;
+use Bavix\Tests\Bind;
 
 class RouterTest extends Unit
 {
@@ -77,19 +78,9 @@ class RouterTest extends Unit
 
         $router = new \Bavix\Router\Router($slice);
 
-        $class = (new \ReflectionClass(Router::class));
-
-        $property = $class->getProperty('method');
-        $property->setAccessible(true);
-        $property->setValue($router, 'GET');
-
-        $property = $class->getProperty('host');
-        $property->setAccessible(true);
-        $property->setValue($router, 'router.deimos');
-
-        $property = $class->getProperty('protocol');
-        $property->setAccessible(true);
-        $property->setValue($router, 'https');
+        Bind::setProperty($router, 'method', 'GET');
+        Bind::setProperty($router, 'host', 'router.deimos');
+        Bind::setProperty($router, 'protocol', 'https');
 
         $router->getRoute('/hello-world');
     }
@@ -167,19 +158,9 @@ class RouterTest extends Unit
 
         $router = new Router($slice);
 
-        $class = (new \ReflectionClass(Router::class));
-
-        $property = $class->getProperty('method');
-        $property->setAccessible(true);
-        $property->setValue($router, 'GET');
-
-        $property = $class->getProperty('host');
-        $property->setAccessible(true);
-        $property->setValue($router, 'router.deimos');
-
-        $property = $class->getProperty('protocol');
-        $property->setAccessible(true);
-        $property->setValue($router, 'https');
+        Bind::setProperty($router, 'method', 'GET');
+        Bind::setProperty($router, 'host', 'router.deimos');
+        Bind::setProperty($router, 'protocol', 'https');
 
         $attributes = $router->getRoute('/demo/many.php')->getAttributes();
 
@@ -221,19 +202,9 @@ class RouterTest extends Unit
 
         $router = new Router($slice);
 
-        $class = (new \ReflectionClass(Router::class));
-
-        $property = $class->getProperty('method');
-        $property->setAccessible(true);
-        $property->setValue($router, 'GET');
-
-        $property = $class->getProperty('host');
-        $property->setAccessible(true);
-        $property->setValue($router, 'router.deimos');
-
-        $property = $class->getProperty('protocol');
-        $property->setAccessible(true);
-        $property->setValue($router, 'https');
+        Bind::setProperty($router, 'method', 'GET');
+        Bind::setProperty($router, 'host', 'router.deimos');
+        Bind::setProperty($router, 'protocol', 'https');
 
         // lang:default -> ru
         $route = $router->getRoute('/hello-world');
