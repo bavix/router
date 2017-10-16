@@ -60,12 +60,12 @@ class Route implements \Serializable
     /**
      * Route constructor.
      *
-     * @param Slice  $slice
-     * @param string $defaultRegex
+     * @param array|\Traversable|Slice $data
+     * @param string                   $defaultRegex
      */
-    public function __construct(Slice $slice, $defaultRegex = null)
+    public function __construct($data, $defaultRegex = null)
     {
-        $this->slice = $slice;
+        $this->slice = Slice::from($data);
 
         if ($defaultRegex !== null)
         {
@@ -138,8 +138,7 @@ class Route implements \Serializable
     {
         return preg_replace_callback(
             '~\<(?<key>\w+)(\:(?<value>.+?))?\>~',
-            function ($matches)
-            {
+            function ($matches) {
                 if (!empty($matches['value']) && empty($this->regex[$matches['key']]))
                 {
                     $this->regex[$matches['key']] = $matches['value'];
@@ -190,8 +189,7 @@ class Route implements \Serializable
 
         return preg_replace_callback(
             '~\<(?<key>[\w-]+)\>~',
-            function ($matches)
-            {
+            function ($matches) {
                 return '(?<' . $matches['key'] . '>' . ($this->regex[$matches['key']] ?? $this->defaultRegex) . ')';
             },
             $path
@@ -205,8 +203,7 @@ class Route implements \Serializable
      */
     protected function attributes($matches)
     {
-        return array_filter($matches, function ($value, $key)
-        {
+        return array_filter($matches, function ($value, $key) {
             return !is_int($key) && (is_numeric($value) || !empty($value));
         }, ARRAY_FILTER_USE_BOTH);
     }

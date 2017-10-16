@@ -2,8 +2,8 @@
 
 namespace Bavix\Router;
 
-use Bavix\Slice\Slice;
 use Bavix\Exceptions;
+use Bavix\Slice\Slice;
 
 trait HelperThrows
 {

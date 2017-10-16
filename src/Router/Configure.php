@@ -2,8 +2,8 @@
 
 namespace Bavix\Router;
 
-use Bavix\Slice\Slice;
 use Bavix\Exceptions;
+use Bavix\Slice\Slice;
 use Psr\Cache\CacheItemPoolInterface;
 
 class Configure
@@ -29,12 +29,12 @@ class Configure
     /**
      * Configure constructor.
      *
-     * @param Slice                       $slice
+     * @param array|\Traversable|Slice $data
      * @param CacheItemPoolInterface|null $pool
      */
-    public function __construct(Slice $slice, CacheItemPoolInterface $pool = null)
+    public function __construct($data, CacheItemPoolInterface $pool = null)
     {
-        $this->slice = $slice;
+        $this->slice = Slice::from($data);
         $this->pool  = $pool;
 
         $this->types = [
@@ -94,7 +94,7 @@ class Configure
              * @var $object Type
              */
             $object = new $class($this, $slice, [
-                'key'    => $key
+                'key' => $key
             ]);
 
             $routes += $object->build();

@@ -64,12 +64,12 @@ class Router
     /**
      * Router constructor.
      *
-     * @param Slice                  $slice
-     * @param CacheItemPoolInterface $pool
+     * @param array|\Traversable|Slice $data
+     * @param CacheItemPoolInterface   $pool
      */
-    public function __construct(Slice $slice, CacheItemPoolInterface $pool = null)
+    public function __construct($data, CacheItemPoolInterface $pool = null)
     {
-        $this->slice    = $slice;
+        $this->slice    = Slice::from($data);
         $this->pool     = $pool;
         $this->method   = method();
         $this->protocol = protocol();
