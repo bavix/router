@@ -24,6 +24,12 @@
     "bavix/tests": "^1.0",
     "bavix/xml": "^1.0"
   },
+  "suggest": {
+    "ext-memcached": "*",
+    "ext-redis": "*",
+    "ext-apcu": "*",
+    "ext-xml": "*"
+  },
   "autoload": {
     "psr-4": {
       "Bavix\\": "src/"
