@@ -163,7 +163,7 @@ class Router
     }
 
     /**
-     * @param $uri
+     * @param string $uri
      *
      * @return Route
      *
