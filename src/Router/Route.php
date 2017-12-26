@@ -60,7 +60,7 @@ class Route implements \Serializable
     /**
      * Route constructor.
      *
-     * @param array|\Traversable|Slice $data
+     * @param Slice $data
      * @param string                   $defaultRegex
      */
     public function __construct($data, $defaultRegex = null)
