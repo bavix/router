@@ -18,7 +18,7 @@ class Prefix extends Http
      *
      * @return array
      */
-    protected function storage($key, Slice $slice)
+    protected function storage(string $key, Slice $slice): array
     {
         list($path, $regex) = $this->path($slice);
 

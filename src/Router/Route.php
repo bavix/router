@@ -61,9 +61,9 @@ class Route implements \Serializable
      * Route constructor.
      *
      * @param Slice $data
-     * @param string                   $defaultRegex
+     * @param string $defaultRegex
      */
-    public function __construct($data, $defaultRegex = null)
+    public function __construct($data, string $defaultRegex = null)
     {
         $this->slice = Slice::from($data);
 
@@ -78,7 +78,7 @@ class Route implements \Serializable
     /**
      * @return array
      */
-    public function getHttp()
+    public function getHttp(): array
     {
         return $this->http;
     }
@@ -86,7 +86,7 @@ class Route implements \Serializable
     /**
      * @return string
      */
-    public function getPath()
+    public function getPath(): string
     {
         return $this->path;
     }
@@ -94,7 +94,7 @@ class Route implements \Serializable
     /**
      * @return array
      */
-    public function getRegex()
+    public function getRegex(): array
     {
         return $this->regex;
     }
@@ -102,7 +102,7 @@ class Route implements \Serializable
     /**
      * @return string
      */
-    public function getRegexPath()
+    public function getRegexPath(): string
     {
         return $this->regexPath;
     }
@@ -110,7 +110,7 @@ class Route implements \Serializable
     /**
      * @return string
      */
-    public function getFilterPath()
+    public function getFilterPath(): string
     {
         return $this->filterPath;
     }
@@ -118,15 +118,15 @@ class Route implements \Serializable
     /**
      * @return array
      */
-    public function getDefaults()
+    public function getDefaults(): array
     {
-        return $this->defaults;
+        return (array)$this->defaults;
     }
 
     /**
      * @return array
      */
-    public function getAttributes()
+    public function getAttributes(): array
     {
         return $this->attributes ?? $this->defaults;
     }
@@ -134,9 +134,9 @@ class Route implements \Serializable
     /**
      * @return string
      */
-    protected function pathFilter()
+    protected function pathFilter(): string
     {
-        return preg_replace_callback(
+        return \preg_replace_callback(
             '~\<(?<key>\w+)(\:(?<value>.+?))?\>~',
             function ($matches) {
                 if (!empty($matches['value']) && empty($this->regex[$matches['key']]))
@@ -155,10 +155,10 @@ class Route implements \Serializable
      *
      * @return string
      */
-    protected function quote($path)
+    protected function quote(string $path): string
     {
-        $path = preg_quote($path, '()');
-        $path = strtr($path, [
+        $path = \preg_quote($path, '()');
+        $path = \strtr($path, [
             '\\(' => '(',
             '\\)' => ')',
             '\\<' => '<',
@@ -173,9 +173,9 @@ class Route implements \Serializable
      *
      * @return string
      */
-    protected function optional($rulePath)
+    protected function optional(string $rulePath): string
     {
-        return str_replace(')', ')?', $rulePath);
+        return \str_replace(')', ')?', $rulePath);
     }
 
     /**
@@ -183,11 +183,11 @@ class Route implements \Serializable
      *
      * @return string
      */
-    protected function toRegex($route)
+    protected function toRegex(string $route): string
     {
         $path = $this->quote($route);
 
-        return preg_replace_callback(
+        return \preg_replace_callback(
             '~\<(?<key>[\w-]+)\>~',
             function ($matches) {
                 return '(?<' . $matches['key'] . '>' . ($this->regex[$matches['key']] ?? $this->defaultRegex) . ')';
@@ -201,10 +201,10 @@ class Route implements \Serializable
      *
      * @return array
      */
-    protected function attributes($matches)
+    protected function attributes(array $matches): array
     {
-        return array_filter($matches, function ($value, $key) {
-            return !is_int($key) && (is_numeric($value) || !empty($value));
+        return \array_filter($matches, function ($value, $key) {
+            return !\is_int($key) && (\is_numeric($value) || !empty($value));
         }, ARRAY_FILTER_USE_BOTH);
     }
 
@@ -213,10 +213,10 @@ class Route implements \Serializable
      *
      * @return bool
      */
-    public function methodValid($method)
+    public function methodValid(string $method): bool
     {
         return empty($this->methods) ||
-            in_array($method, $this->methods, true) ||
+            \in_array($method, $this->methods, true) ||
             ($method === 'AJAX' && isAjax());
     }
 
@@ -225,7 +225,7 @@ class Route implements \Serializable
      *
      * @return bool
      */
-    public function uriValid($uri)
+    public function uriValid(string $uri): bool
     {
         $result = preg_match('~^' . $this->regexPath . '$~u', $uri, $matches);
 
@@ -243,7 +243,7 @@ class Route implements \Serializable
      *
      * @return bool
      */
-    public function test($uri, $method)
+    public function test(string $uri, string $method): bool
     {
         if (!$this->methodValid($method))
         {
@@ -259,7 +259,7 @@ class Route implements \Serializable
      *
      * @return string
      */
-    protected function regexUri(array $http, $path)
+    protected function regexUri(array $http, string $path): string
     {
         return $http['protocol'] . '\:\/{2}' . $http['host'] . $path;
     }
@@ -267,7 +267,7 @@ class Route implements \Serializable
     /**
      * @return string
      */
-    protected function regex()
+    protected function regex(): string
     {
         $this->filterPath = $this->pathFilter();
 
@@ -290,7 +290,7 @@ class Route implements \Serializable
     /**
      * reload route
      */
-    protected function reload()
+    protected function reload(): void
     {
         $http = [
             'protocol' => null,
@@ -308,9 +308,9 @@ class Route implements \Serializable
     /**
      * @inheritdoc
      */
-    public function serialize()
+    public function serialize(): string
     {
-        return serialize([
+        return \serialize([
             'defaultRegex' => $this->defaultRegex,
             'http'         => $this->http,
             'path'         => $this->path,
@@ -327,9 +327,9 @@ class Route implements \Serializable
     /**
      * @inheritdoc
      */
-    public function unserialize($serialized)
+    public function unserialize($serialized): void
     {
-        $data = unserialize($serialized, []);
+        $data = (array)\unserialize($serialized, null);
 
         foreach ($data as $variable => $value)
         {

@@ -17,7 +17,7 @@ class Pattern extends Type
      * @param string $key
      * @param array  $storage
      */
-    protected function merge($key, array $storage)
+    protected function merge(string $key, array $storage): void
     {
         if (!isset($this->slice[$key]))
         {
@@ -30,7 +30,7 @@ class Pattern extends Type
     /**
      * @return array
      */
-    public function build()
+    public function build(): array
     {
         $this->slice['http.protocol'] = $this->protocol;
         $this->slice['http.host']     = $this->host;

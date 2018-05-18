@@ -47,10 +47,10 @@ class Configure
     /**
      * @return Slice
      *
-     * @return Slice|mixed
+     * @return Slice
      * @throws \Psr\Cache\InvalidArgumentException
      */
-    public function data()
+    public function data(): Slice
     {
         if ($this->pool instanceof CacheItemPoolInterface)
         {
@@ -75,7 +75,7 @@ class Configure
      *
      * @throws Exceptions\NotFound\Data
      */
-    protected function routes()
+    protected function routes(): array
     {
         $routes = [];
 
@@ -106,7 +106,7 @@ class Configure
     /**
      * @return Slice
      */
-    public function build()
+    public function build(): Slice
     {
         if (!$this->build)
         {

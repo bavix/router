@@ -80,7 +80,7 @@ class Router
     /**
      * @return Configure
      */
-    protected function configure()
+    protected function configure(): Configure
     {
         if (!$this->configure)
         {
@@ -97,7 +97,7 @@ class Router
      *
      * @throws Exceptions\NotFound\Data
      */
-    public function getCurrentRoute()
+    public function getCurrentRoute(): Route
     {
         return $this->getRoute($this->path);
     }
@@ -110,7 +110,7 @@ class Router
      * @return Route
      * @throws Exceptions\NotFound\Data
      */
-    public function getRoute($path, $host = null, $protocol = null)
+    public function getRoute(string $path, string $host = null, string $protocol = null): Route
     {
         $uri = ($protocol ?? $this->protocol) . '://' . ($host ?? $this->host) . $path;
 
@@ -120,7 +120,7 @@ class Router
     /**
      * @return Slice
      */
-    protected function configureSlice()
+    protected function configureSlice(): Slice
     {
         if (!$this->configureSlice)
         {
@@ -133,7 +133,7 @@ class Router
     /**
      * @return Route[]
      */
-    public function routes()
+    public function routes(): array 
     {
         if (empty($this->routes))
         {
@@ -150,7 +150,7 @@ class Router
      *
      * @throws Exceptions\NotFound\Path
      */
-    public function route($path)
+    public function route(string $path): Route
     {
         $route = $this->configureSlice()->atData($path);
 
@@ -169,7 +169,7 @@ class Router
      *
      * @throws Exceptions\NotFound\Page
      */
-    protected function find($uri)
+    protected function find(string $uri): Route
     {
         /**
          * @var Route $route

@@ -17,10 +17,10 @@ trait HelperThrows
      * @param Slice  $slice
      * @param string $key
      *
-     * @return mixed
+     * @return string
      * @throws Exceptions\NotFound\Data
      */
-    public function getType(Slice $slice, $key = null)
+    public function getType(Slice $slice, string $key = null): string
     {
         $type = $slice->atData('type');
 

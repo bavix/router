@@ -36,7 +36,7 @@ class Http extends Type
      * @return array
      * @throws NotFound\Data
      */
-    protected function storage($key, Slice $slice)
+    protected function storage(string $key, Slice $slice): array
     {
         list($path, $regex) = $this->path($slice);
 
@@ -54,7 +54,7 @@ class Http extends Type
     /**
      * @return array
      */
-    public function build()
+    public function build(): array
     {
         $routes   = [];
         $resolver = $this->slice->getSlice('resolver');

@@ -87,13 +87,15 @@ abstract class Type
     }
 
     /**
-     * @return array
+     * @param string|array $storage
+     * 
+     * @return string
      */
-    protected function regexData(&$storage)
+    protected function regexData(&$storage): array
     {
         $regex = (array)$this->regex;
 
-        if (is_array($storage) && isset($storage[1]))
+        if (\is_array($storage) && isset($storage[1]))
         {
             $regex   = $storage[1] + $regex;
             $storage = $storage[0];
@@ -108,7 +110,7 @@ abstract class Type
      * @return array
      * @throws NotFound\Path
      */
-    protected function path(Slice $slice)
+    protected function path(Slice $slice): array 
     {
         $path = $slice->getData('path', $this->path);
 
@@ -125,6 +127,6 @@ abstract class Type
     /**
      * @return array
      */
-    abstract public function build();
+    abstract public function build(): array;
 
 }
