@@ -213,7 +213,7 @@ class Route implements \Serializable
      *
      * @return bool
      */
-    public function methodValid(string $method): bool
+    public function methodValid(?string $method): bool
     {
         return empty($this->methods) ||
             \in_array($method, $this->methods, true) ||
@@ -231,7 +231,7 @@ class Route implements \Serializable
 
         if ($result)
         {
-            $this->attributes = array_merge($this->defaults, $this->attributes($matches));
+            $this->attributes = \array_merge($this->defaults, $this->attributes($matches));
         }
 
         return $result !== 0;
@@ -243,7 +243,7 @@ class Route implements \Serializable
      *
      * @return bool
      */
-    public function test(string $uri, string $method): bool
+    public function test(string $uri, ?string $method): bool
     {
         if (!$this->methodValid($method))
         {

@@ -11,7 +11,7 @@ use Bavix\Tests\Bind;
 class RouterTest extends Unit
 {
 
-    public function testRoute()
+    public function testRoute(): void
     {
 
         $slice = new Slice([
@@ -61,7 +61,7 @@ class RouterTest extends Unit
     /**
      * @expectedException \Bavix\Exceptions\NotFound\Page
      */
-    public function testErrorNotFound()
+    public function testErrorNotFound(): void
     {
         $slice = new Slice([
             'fake' => [
@@ -88,7 +88,7 @@ class RouterTest extends Unit
     /**
      * @expectedException \Bavix\Exceptions\NotFound\Data
      */
-    public function testErrorWithoutType()
+    public function testErrorWithoutType(): void
     {
         $slice = new Slice([
             'fake' => [
@@ -109,7 +109,7 @@ class RouterTest extends Unit
     /**
      * @expectedException \Bavix\Exceptions\NotFound\Path
      */
-    public function testErrorWithoutPath()
+    public function testErrorWithoutPath(): void
     {
         $slice = new Slice([
             'fake' => [
@@ -127,7 +127,7 @@ class RouterTest extends Unit
         (new Router($slice))->routes();
     }
 
-    public function testPrefixSuccess()
+    public function testPrefixSuccess(): void
     {
         $slice = new Slice([
             __METHOD__ => [
@@ -178,7 +178,7 @@ class RouterTest extends Unit
 
     }
 
-    public function testLanguage()
+    public function testLanguage(): void
     {
         $slice = new Slice([
             __METHOD__ => [
