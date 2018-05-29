@@ -5,6 +5,12 @@ namespace Bavix\Router;
 use Bavix\Exceptions;
 use Bavix\Slice\Slice;
 
+/**
+ * Trait HelperThrows
+ * @package Bavix\Router
+ *
+ * @deprecated
+ */
 trait HelperThrows
 {
 

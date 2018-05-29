@@ -6,6 +6,12 @@ use Bavix\Exceptions;
 use Bavix\Slice\Slice;
 use Psr\Cache\CacheItemPoolInterface;
 
+/**
+ * Class Configure
+ * @package Bavix\Router
+ *
+ * @deprecated
+ */
 class Configure
 {
 

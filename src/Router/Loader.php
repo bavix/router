@@ -2,7 +2,7 @@
 
 namespace Bavix\Router;
 
-use Bavix\Exceptions\Invalid;
+use Bavix\Exceptions;
 use Bavix\Exceptions\Runtime;
 use Bavix\Router\Rules\PatternRule;
 use Bavix\Router\Rules\PrefixRule;
@@ -48,7 +48,7 @@ class Loader
     {
         foreach ($this->config as $key => $item) {
             if (empty($item['type'])) {
-                throw new Invalid(
+                throw new Exceptions\NotFound\Data(
                     \sprintf('The type parameter for key `%s` is not found', $key)
                 );
             }

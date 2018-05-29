@@ -5,6 +5,12 @@ namespace Bavix\Router\Type;
 use Bavix\Router\Route;
 use Bavix\Router\Type;
 
+/**
+ * Class Pattern
+ * @package Bavix\Router\Type
+ *
+ * @deprecated
+ */
 class Pattern extends Type
 {
 

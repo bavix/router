@@ -13,7 +13,7 @@ abstract class Rule
     protected $type;
 
     /**
-     * @var null|string
+     * @var null|Path
      */
     protected $path;
 
@@ -38,8 +38,50 @@ abstract class Rule
     {
         $this->prepare();
         $this->initializer($key, $storage);
+        $this->pathInit();
         if ($parent) {
             $this->afterPrepare($parent);
+        }
+    }
+
+    /**
+     * @param Path|null $path
+     */
+    protected function hinge(?Path $path): void
+    {
+        if ($this->path && $path) {
+            $this->path->hinge($path);
+            return;
+        }
+
+        $this->path = $path ?? $this->path;
+    }
+
+    /**
+     * @param self $parent
+     * @return void
+     */
+    protected function afterPrepare(self $parent): void
+    {
+        $this->hinge($parent->path);
+        $this->_key = $parent->_key . '.' . $this->_key;
+        $this->methods = $this->methods ?? $parent->methods;
+        $this->defaults = \array_merge(
+            (array)$parent->defaults,
+            (array)$this->defaults
+        );
+    }
+
+    /**
+     * if this.path === string then new Path(string, [])
+     * else this.path === array then new Path(...this.path)
+     */
+    protected function pathInit(): void
+    {
+        if (\is_string($this->path)) {
+            $this->path = new Path($this->path);
+        } elseif (\is_array($this->path)) {
+            $this->path = new Path(...$this->path);
         }
     }
 
@@ -49,28 +91,6 @@ abstract class Rule
     protected function prepare(): void
     {
         // todo: a lot of logic
-    }
-
-    /**
-     * @param self $parent
-     * @return void
-     */
-    protected function afterPrepare(self $parent): void
-    {
-//        if ($parent->path) {
-//            $this->path = new RegExp(
-//                $parent->path->regExp() . $this->path()->regExp(),
-//                $parent->path->value() . $this->path()->value()
-//            );
-//        }
-
-        $this->path = $parent->path . $this->path;
-        $this->_key = $parent->_key . '.' . $this->_key;
-        $this->methods = $this->methods ?? $parent->methods;
-        $this->defaults = \array_merge(
-            (array)$parent->defaults,
-            (array)$this->defaults
-        );
     }
 
 }

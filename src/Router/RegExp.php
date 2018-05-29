@@ -13,26 +13,26 @@ class RegExp
     /**
      * @var string
      */
-    protected $regExp;
+    protected $raw;
 
     /**
      * RegExp constructor.
      *
-     * @param string $regExp
+     * @param string $raw
      * @param null|string $value
      */
-    public function __construct(string $regExp, ?string $value = null)
+    public function __construct(string $raw, ?string $value = null)
     {
-        $this->regExp = $regExp;
+        $this->raw = $raw;
         $this->value = $value;
     }
 
     /**
      * @return string
      */
-    public function regExp(): string
+    public function raw(): string
     {
-        return $this->regExp;
+        return $this->raw;
     }
 
     /**
@@ -73,6 +73,14 @@ class RegExp
             \str_replace(')', ')?', $path),
             $value
         );
+    }
+
+    /**
+     * @return string
+     */
+    public function __toString(): string
+    {
+        return (string)($this->raw ?: $this->value);
     }
 
 }

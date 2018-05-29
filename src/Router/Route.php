@@ -258,6 +258,8 @@ class Route implements \Serializable
      * @param string $path
      *
      * @return string
+     *
+     * @deprecated
      */
     protected function regexUri(array $http, string $path): string
     {
@@ -266,6 +268,8 @@ class Route implements \Serializable
 
     /**
      * @return string
+     *
+     * @deprecated
      */
     protected function regex(): string
     {
@@ -289,6 +293,8 @@ class Route implements \Serializable
 
     /**
      * reload route
+     *
+     * @deprecated
      */
     protected function reload(): void
     {

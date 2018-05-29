@@ -5,6 +5,12 @@ namespace Bavix\Router;
 use Bavix\Exceptions\NotFound;
 use Bavix\Slice\Slice;
 
+/**
+ * Class Type
+ * @package Bavix\Router
+ *
+ * @deprecated
+ */
 abstract class Type
 {
 
@@ -12,51 +18,71 @@ abstract class Type
 
     /**
      * @var bool
+     *
+     * @deprecated
      */
     protected $pathRequired;
 
     /**
      * @var Configure
+     *
+     * @deprecated
      */
     protected $configure;
 
     /**
      * @var Slice
+     *
+     * @deprecated
      */
     protected $slice;
 
     /**
      * @var array
+     *
+     * @deprecated
      */
     protected $regex;
 
     /**
      * @var array
+     *
+     * @deprecated
      */
     protected $defaults;
 
     /**
      * @var array
+     *
+     * @deprecated
      */
     protected $methods;
 
     /**
      * @var string
+     *
+     * @deprecated
      */
     protected $protocol;
 
     /**
      * @var string
+     *
+     * @deprecated
      */
     protected $host;
 
     /**
      * @var string
+     *
+     * @deprecated
      */
     protected $path;
 
     /**
      * @var string
+     *
+     * @deprecated
      */
     protected $key;
 
@@ -68,6 +94,8 @@ abstract class Type
      * @param array     $options
      *
      * @throws NotFound\Data
+     *
+     * @deprecated
      */
     public function __construct(Configure $configure, Slice $slice, array $options)
     {
@@ -90,6 +118,8 @@ abstract class Type
      * @param string|array $storage
      * 
      * @return string
+     *
+     * @deprecated
      */
     protected function regexData(&$storage): array
     {
@@ -109,6 +139,8 @@ abstract class Type
      *
      * @return array
      * @throws NotFound\Path
+     *
+     * @deprecated
      */
     protected function path(Slice $slice): array 
     {
@@ -126,6 +158,8 @@ abstract class Type
 
     /**
      * @return array
+     *
+     * @deprecated
      */
     abstract public function build(): array;
 

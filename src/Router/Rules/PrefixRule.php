@@ -27,7 +27,7 @@ class PrefixRule extends Rule
     protected function prepare(): void
     {
         $this->protocol = new RegExp('\w+');
-        $this->host = new RegExp('.+');
+        $this->host = new RegExp('[^\/]+');
     }
 
 }

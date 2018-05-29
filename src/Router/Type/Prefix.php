@@ -4,6 +4,12 @@ namespace Bavix\Router\Type;
 
 use Bavix\Slice\Slice;
 
+/**
+ * Class Prefix
+ * @package Bavix\Router\Type
+ *
+ * @deprecated
+ */
 class Prefix extends Http
 {
 

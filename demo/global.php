@@ -82,7 +82,7 @@ return [
     'default' => [
         'type' => 'pattern',
         'path' => [
-            '/<any:\w+>',
+            '/<any>',
             [
                 'any' => '.*'
             ]

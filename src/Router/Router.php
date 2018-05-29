@@ -11,6 +11,7 @@ class Router
 
     /**
      * @var array
+     * @deprecated
      */
     protected $classMap = [
         'configure' => Configure::class
@@ -23,6 +24,7 @@ class Router
 
     /**
      * @var Slice
+     * @deprecated
      */
     protected $configureSlice;
 
@@ -33,26 +35,31 @@ class Router
 
     /**
      * @var Configure
+     * @deprecated
      */
     protected $configure;
 
     /**
      * @var string
+     * @deprecated
      */
     protected $method;
 
     /**
      * @var string
+     * @deprecated
      */
     protected $protocol;
 
     /**
      * @var string
+     * @deprecated
      */
     protected $host;
 
     /**
      * @var string
+     * @deprecated
      */
     protected $path;
 
@@ -79,6 +86,7 @@ class Router
 
     /**
      * @return Configure
+     * @deprecated
      */
     protected function configure(): Configure
     {
@@ -119,6 +127,8 @@ class Router
 
     /**
      * @return Slice
+     *
+     * @deprecated
      */
     protected function configureSlice(): Slice
     {
@@ -168,6 +178,8 @@ class Router
      * @return Route
      *
      * @throws Exceptions\NotFound\Page
+     *
+     * @deprecated
      */
     protected function find(string $uri): Route
     {

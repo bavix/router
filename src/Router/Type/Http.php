@@ -7,6 +7,12 @@ use Bavix\Router\Configure;
 use Bavix\Router\Type;
 use Bavix\Slice\Slice;
 
+/**
+ * Class Http
+ * @package Bavix\Router\Type
+ *
+ * @deprecated
+ */
 class Http extends Type
 {
 
@@ -35,6 +41,8 @@ class Http extends Type
      *
      * @return array
      * @throws NotFound\Data
+     *
+     * @deprecated
      */
     protected function storage(string $key, Slice $slice): array
     {
@@ -53,6 +61,8 @@ class Http extends Type
 
     /**
      * @return array
+     *
+     * @deprecated
      */
     public function build(): array
     {

@@ -7,6 +7,8 @@ namespace Bavix\Router;
  * @param mixed  $default
  *
  * @return mixed
+ *
+ * @deprecated
  */
 function server($variableName, $default = null)
 {
@@ -24,6 +26,8 @@ function server($variableName, $default = null)
 
 /**
  * @return string
+ *
+ * @deprecated
  */
 function method()
 {
@@ -32,6 +36,8 @@ function method()
 
 /**
  * @return string
+ *
+ * @deprecated
  */
 function protocol()
 {
@@ -54,6 +60,8 @@ function protocol()
 
 /**
  * @return string
+ *
+ * @deprecated
  */
 function host()
 {
@@ -62,6 +70,8 @@ function host()
 
 /**
  * @return string
+ *
+ * @deprecated
  */
 function isAjax()
 {
@@ -70,6 +80,8 @@ function isAjax()
 
 /**
  * @return string
+ *
+ * @deprecated
  */
 function path()
 {
@@ -81,6 +93,8 @@ function path()
  * @param array $attributes
  *
  * @return string
+ *
+ * @deprecated
  */
 function route(Route $route, array $attributes = [])
 {
