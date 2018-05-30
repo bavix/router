@@ -170,11 +170,23 @@ abstract class Rule implements \Serializable, \JsonSerializable
     }
 
     /**
+     * @return array
+     */
+    public function __sleep(): array
+    {
+        return \array_keys($this->serializeArray());
+    }
+
+    /**
      * @inheritdoc
      */
     public function serialize(): string
     {
-        return \serialize($this->serializeArray());
+        $data = [];
+        foreach ($this->serializeArray() as $key => $value) {
+            $data[$value] = $this->$value;
+        }
+        return \serialize($data);
     }
 
     /**
@@ -182,7 +194,7 @@ abstract class Rule implements \Serializable, \JsonSerializable
      */
     public function unserialize($serialized): void
     {
-        $data = \unserialize($serialized, null);
+        $data = \unserialize($serialized, (array)null);
         foreach ($data as $key => $value) {
             $this->{$key} = $value;
         }

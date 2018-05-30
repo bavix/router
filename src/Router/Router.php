@@ -62,14 +62,56 @@ class Router
     }
 
     /**
+     * @return string
+     */
+    protected function hash(): string
+    {
+        return \sha1(\json_encode($this->config));
+    }
+
+    /**
+     * @return array
+     * @throws
+     */
+    protected function loadingRoutes(): array
+    {
+        $loader = new Loader($this->config);
+        $this->routes = $loader->simplify();
+
+        if ($this->pool) {
+            $item = $this->pool->getItem($this->hash());
+            $item->set($this->routes);
+            $this->pool->save($item);
+        }
+
+        return $this->routes;
+    }
+
+    /**
+     * @return array
+     * @throws
+     */
+    protected function bootRoutes(): array
+    {
+        if ($this->pool) {
+            $item = $this->pool->getItem($this->hash());
+            $data = $item->get();
+            if ($data) {
+                return $data;
+            }
+        }
+
+        return $this->loadingRoutes();
+    }
+
+    /**
      * @return Route[]
      */
     public function routes(): array 
     {
         if (empty($this->routes))
         {
-            $loader = new Loader($this->config);
-            $this->routes = $loader->simplify();
+            $this->routes = $this->bootRoutes();
         }
 
         return $this->routes;

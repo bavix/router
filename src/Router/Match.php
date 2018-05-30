@@ -190,6 +190,14 @@ class Match implements \Serializable, \JsonSerializable
     }
 
     /**
+     * @return array
+     */
+    public function __sleep(): array
+    {
+        return \array_keys($this->jsonSerialize());
+    }
+
+    /**
      * @inheritdoc
      */
     public function serialize(): string
@@ -202,7 +210,8 @@ class Match implements \Serializable, \JsonSerializable
      */
     public function unserialize($serialized): void
     {
-        foreach (\unserialize($serialized, null) as $key => $value) {
+        $data = \unserialize($serialized, (array)null);
+        foreach ($data as $key => $value) {
             $this->{$key} = $value;
         }
     }

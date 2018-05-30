@@ -91,6 +91,14 @@ class Route implements Routable
     }
 
     /**
+     * @return array
+     */
+    public function __sleep(): array
+    {
+        return ['match'];
+    }
+
+    /**
      * @inheritdoc
      */
     public function serialize(): string
@@ -103,7 +111,7 @@ class Route implements Routable
      */
     public function unserialize($serialized): void
     {
-        $this->match = \unserialize($serialized, null);
+        $this->match = \unserialize($serialized, (array)null);
     }
 
     /**

@@ -4,7 +4,7 @@ namespace Bavix\Router;
 
 use Bavix\Exceptions\Runtime;
 
-class Path
+class Path implements \Serializable, \JsonSerializable
 {
 
     /**
@@ -146,6 +146,44 @@ class Path
             },
             $this->value
         );
+    }
+
+    /**
+     * @return array
+     */
+    public function __sleep(): array
+    {
+        return \array_keys($this->jsonSerialize());
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function serialize(): string
+    {
+        return \serialize($this->jsonSerialize());
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function unserialize($serialized): void
+    {
+        foreach (\unserialize($serialized, (array)null) as $key => $value) {
+            $this->$key = $value;
+        }
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function jsonSerialize(): array
+    {
+        return [
+            'pattern' => $this->pattern,
+            'regex' => $this->regex,
+            'value' => $this->value,
+        ];
     }
 
 }
