@@ -37,15 +37,36 @@ class Router
      */
     public function __construct($data, CacheItemPoolInterface $pool = null)
     {
-        $this->pushConfig($data);
+        $this->add($data);
         $this->pool = $pool;
+    }
+
+    /**
+     * @param Group $group
+     * @return Router
+     */
+    public function mount(Group $group): self
+    {
+        foreach ($group as $pattern) {
+            $this->push($pattern);
+        }
+        return $this;
+    }
+
+    /**
+     * @param Pattern $pattern
+     * @return Router
+     */
+    public function push(Pattern $pattern): self
+    {
+        return $this->add($pattern->toArray());
     }
 
     /**
      * @param \Traversable|iterable $config
      * @return Router
      */
-    protected function pushConfig($config): self
+    protected function add($config): self
     {
         $this->routes = null;
         $this->config = \array_merge(
