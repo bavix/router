@@ -42,7 +42,7 @@ class Router
     }
 
     /**
-     * @param iterable $config
+     * @param \Traversable|iterable $config
      * @return Router
      */
     protected function pushConfig($config): self
@@ -50,7 +50,7 @@ class Router
         $this->routes = null;
         $this->config = \array_merge(
             $this->config,
-            (array)$config
+            \iterator_to_array($config)
         );
 
         return $this;
