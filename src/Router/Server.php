@@ -64,7 +64,7 @@ class Server
              *
              * @var string $protocol
              */
-            $protocol = json_decode($protocol, true);
+            $protocol = \json_decode($protocol, true);
         }
 
         return $protocol['scheme'] ??

@@ -15,6 +15,11 @@ class Router
     public const VERSION = '2.0.0';
 
     /**
+     * @var Group[]
+     */
+    protected $groups = [];
+
+    /**
      * @var PatternRule[]
      */
     protected $routes;
@@ -37,8 +42,21 @@ class Router
      */
     public function __construct($data, CacheItemPoolInterface $pool = null)
     {
-        $this->add($data);
+        $this->addPattern($data);
         $this->pool = $pool;
+    }
+
+    /**
+     * @param string   $prefix
+     * @param callable $callback
+     *
+     * @return Group
+     */
+    public function group(string $prefix, callable $callback): Group
+    {
+        $group = new Group($prefix, $callback);
+        $this->mount($group);
+        return $group;
     }
 
     /**
@@ -47,9 +65,8 @@ class Router
      */
     public function mount(Group $group): self
     {
-        foreach ($group as $pattern) {
-            $this->push($pattern);
-        }
+        $this->routes = null;
+        $this->groups[] = $group;
         return $this;
     }
 
@@ -59,14 +76,14 @@ class Router
      */
     public function push(Pattern $pattern): self
     {
-        return $this->add($pattern->toArray());
+        return $this->addPattern($pattern->toArray());
     }
 
     /**
      * @param \Traversable|iterable $config
      * @return Router
      */
-    protected function add($config): self
+    protected function addPattern($config): self
     {
         $this->routes = null;
         $this->config = \array_merge(
@@ -82,6 +99,8 @@ class Router
      *
      * @throws Exceptions\NotFound\Data
      * @throws Exceptions\NotFound\Path
+     * @throws Exceptions\NotFound\Page
+     * @throws \Psr\Cache\InvalidArgumentException
      */
     public function getCurrentRoute(): Route
     {
@@ -94,8 +113,11 @@ class Router
      * @param string $protocol
      *
      * @return Route
+     *
      * @throws Exceptions\NotFound\Data
      * @throws Exceptions\NotFound\Path
+     * @throws Exceptions\NotFound\Page
+     * @throws \Psr\Cache\InvalidArgumentException
      */
     public function getRoute(string $path, string $host = null, string $protocol = null): Route
     {
@@ -111,11 +133,22 @@ class Router
     }
 
     /**
+     * loading mounted groups
+     */
+    protected function loadingGroups(): void
+    {
+        foreach ($this->groups as $group) {
+            $this->addPattern($group->toArray());
+        }
+    }
+
+    /**
      * @return array
-     * @throws
+     * @throws \Psr\Cache\InvalidArgumentException
      */
     protected function loadingRoutes(): array
     {
+        $this->loadingGroups();
         $loader = new Loader($this->config);
         $this->routes = $loader->simplify();
 
@@ -130,7 +163,7 @@ class Router
 
     /**
      * @return array
-     * @throws
+     * @throws \Psr\Cache\InvalidArgumentException
      */
     protected function bootRoutes(): array
     {
@@ -147,6 +180,7 @@ class Router
 
     /**
      * @return Route[]
+     * @throws \Psr\Cache\InvalidArgumentException
      */
     public function routes(): array 
     {
@@ -163,6 +197,7 @@ class Router
      * @return Route
      *
      * @throws Exceptions\NotFound\Path
+     * @throws \Psr\Cache\InvalidArgumentException
      */
     public function route(string $path): Route
     {
@@ -178,6 +213,8 @@ class Router
     /**
      * @param string $subject
      * @return Route
+     * @throws Exceptions\NotFound\Page
+     * @throws \Psr\Cache\InvalidArgumentException
      */
     protected function find(string $subject): Route
     {

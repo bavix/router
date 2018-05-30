@@ -2,7 +2,7 @@
 
 namespace Bavix\Router;
 
-class Pattern
+class Pattern implements PatternResolution
 {
 
     /**
@@ -29,6 +29,7 @@ class Pattern
 
     /**
      * Pattern constructor.
+     *
      * @param string $path
      * @param string $name
      */
@@ -43,16 +44,18 @@ class Pattern
      */
     public function getName(): string
     {
-        return $this->name ?: $this->generateName();
+        return $this->name ?: Helper::generateName($this->path);
     }
 
     /**
      * @param string $name
+     *
      * @return $this
      */
     public function setName(string $name): self
     {
         $this->name = $name;
+
         return $this;
     }
 
@@ -66,11 +69,13 @@ class Pattern
 
     /**
      * @param array|null $methods
+     *
      * @return $this
      */
     public function setMethods(?array $methods): self
     {
         $this->methods = $methods;
+
         return $this;
     }
 
@@ -84,11 +89,13 @@ class Pattern
 
     /**
      * @param array $defaults
+     *
      * @return $this
      */
     public function setDefaults(array $defaults): self
     {
         $this->defaults = $defaults;
+
         return $this;
     }
 
@@ -102,11 +109,13 @@ class Pattern
 
     /**
      * @param string $path
+     *
      * @return $this
      */
     public function setPath(string $path): self
     {
         $this->path = $path;
+
         return $this;
     }
 
@@ -117,20 +126,70 @@ class Pattern
     {
         return [
             $this->getName() => [
-                'type' => 'pattern',
-                'path' => $this->getPath(),
-                'methods' => $this->getMethods(),
+                'type'     => 'pattern',
+                'path'     => $this->getPath(),
+                'methods'  => $this->getMethods(),
                 'defaults' => $this->getDefaults(),
             ]
         ];
     }
 
     /**
-     * @return string
+     * @param array $methods
+     *
+     * @return Pattern
      */
-    protected function generateName(): string
+    public function methods(array $methods): Pattern
     {
-        return \preg_replace('~[^\w-]~', '_', $this->path);
+        return $this->setMethods($methods);
+    }
+
+    /**
+     * @return Pattern
+     */
+    public function any(): self
+    {
+        return $this->setMethods(null);
+    }
+
+    /**
+     * @return Pattern
+     */
+    public function get(): self
+    {
+        return $this->setMethods(['GET']);
+    }
+
+    /**
+     * @return Pattern
+     */
+    public function post(): self
+    {
+        return $this->setMethods(['POST']);
+    }
+
+    /**
+     * @return Pattern
+     */
+    public function put(): self
+    {
+        return $this->setMethods(['PUT']);
+    }
+
+    /**
+     * @return Pattern
+     */
+    public function patch(): self
+    {
+        return $this->setMethods(['PATCH']);
+    }
+
+    /**
+     * @return Pattern
+     */
+    public function delete(): self
+    {
+        return $this->setMethods(['DELETE']);
     }
 
 }

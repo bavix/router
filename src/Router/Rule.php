@@ -38,6 +38,11 @@ abstract class Rule implements \Serializable, \JsonSerializable
     protected $defaults;
 
     /**
+     * @var array
+     */
+    protected $middleware;
+
+    /**
      * Rule constructor.
      *
      * @param string $key
@@ -116,6 +121,18 @@ abstract class Rule implements \Serializable, \JsonSerializable
     }
 
     /**
+     * @param string $name
+     * @param self   $parent
+     */
+    protected function arrayMerge(string $name, self $parent): void
+    {
+        $this->$name = \array_merge(
+            (array)$parent->$name,
+            (array)$this->$name
+        );
+    }
+
+    /**
      * @param self $parent
      * @return void
      */
@@ -126,10 +143,8 @@ abstract class Rule implements \Serializable, \JsonSerializable
         $this->_host = $parent->host ?? $parent->_host ?? $this->_host;
         $this->_name = $parent->_name . '.' . $this->_name;
         $this->methods = $this->methods ?? $parent->methods;
-        $this->defaults = \array_merge(
-            (array)$parent->defaults,
-            (array)$this->defaults
-        );
+        $this->arrayMerge('defaults', $parent);
+        $this->arrayMerge('middleware', $parent);
     }
 
     /**
@@ -156,7 +171,7 @@ abstract class Rule implements \Serializable, \JsonSerializable
 
     /**
      * @return array
-     * @throws
+     * @throws \ReflectionException
      */
     protected function serializeArray(): array
     {
@@ -171,6 +186,7 @@ abstract class Rule implements \Serializable, \JsonSerializable
 
     /**
      * @return array
+     * @throws \ReflectionException
      */
     public function __sleep(): array
     {
@@ -179,6 +195,7 @@ abstract class Rule implements \Serializable, \JsonSerializable
 
     /**
      * @inheritdoc
+     * @throws \ReflectionException
      */
     public function serialize(): string
     {
@@ -194,6 +211,10 @@ abstract class Rule implements \Serializable, \JsonSerializable
      */
     public function unserialize($serialized): void
     {
+        /**
+         * @var string $serialized
+         * @var array $data
+         */
         $data = \unserialize($serialized, (array)null);
         foreach ($data as $key => $value) {
             $this->{$key} = $value;
@@ -202,6 +223,7 @@ abstract class Rule implements \Serializable, \JsonSerializable
 
     /**
      * @inheritdoc
+     * @throws \ReflectionException
      */
     public function jsonSerialize(): array
     {
