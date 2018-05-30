@@ -44,7 +44,7 @@ abstract class Rule implements \Serializable, \JsonSerializable
      * @param iterable $storage
      * @param null|self $parent
      */
-    public function __construct(string $key, iterable $storage, ?self $parent = null)
+    public function __construct(string $key, $storage, ?self $parent = null)
     {
         $this->prepare();
         $this->initializer($key, $storage);

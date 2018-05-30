@@ -13,9 +13,9 @@ class PatternRule extends Rule
      *
      * @param string $key
      * @param iterable $storage
-     * @param null $parent
+     * @param Rule|null $parent
      */
-    public function __construct(string $key, iterable $storage, $parent = null)
+    public function __construct(string $key, $storage, ?Rule $parent = null)
     {
         parent::__construct($key, $storage, $parent);
 

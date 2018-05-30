@@ -30,7 +30,7 @@ class Router
      * @param iterable $data
      * @param CacheItemPoolInterface   $pool
      */
-    public function __construct(iterable $data, CacheItemPoolInterface $pool = null)
+    public function __construct($data, CacheItemPoolInterface $pool = null)
     {
         $this->config = $data;
         $this->pool = $pool;

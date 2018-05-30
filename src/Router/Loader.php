@@ -35,7 +35,7 @@ class Loader
      * @param iterable $config
      * @param null|Rule $parent
      */
-    public function __construct(iterable $config, ?Rule $parent = null)
+    public function __construct($config, ?Rule $parent = null)
     {
         $this->config = $config;
         $this->parent = $parent;
