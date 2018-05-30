@@ -26,19 +26,32 @@ trait Attachable
 
     /**
      * @param array $storage
+     * @return array
+     */
+    protected function filter(array $storage): array
+    {
+        return \array_filter($storage, function (string $key) {
+            $this->checkProperty($key);
+            return $key{0} !== '@'; // for xml
+        }, \ARRAY_FILTER_USE_KEY);
+    }
+
+    /**
+     * @param string $key
+     */
+    protected function checkProperty(string $key): void
+    {
+        if ($key{0} === '_' || !\property_exists($this, $key)) {
+            throw new Runtime(\sprintf('The key `%s` is not registered', $key));
+        }
+    }
+
+    /**
+     * @param array $storage
      */
     protected function attached(array $storage): void
     {
-        foreach ($storage as $key => $value) {
-            if ($key{0} === '_' || !\property_exists($this, $key)) {
-                throw new Runtime(\sprintf('The key `%s` is not registered', $key));
-            }
-
-            if (null === $value || $key{0} === '@') {
-                // skip
-                continue;
-            }
-
+        foreach ($this->filter($storage) as $key => $value) {
             $this->$key = $value;
         }
     }
