@@ -22,7 +22,7 @@ class Router
     /**
      * @var iterable
      */
-    protected $config;
+    protected $config = [];
 
     /**
      * @var CacheItemPoolInterface
@@ -42,15 +42,15 @@ class Router
     }
 
     /**
-     * @param array $config
+     * @param iterable $config
      * @return Router
      */
-    protected function pushConfig(array $config): self
+    protected function pushConfig($config): self
     {
         $this->routes = null;
         $this->config = \array_merge(
-            (array)$this->config,
-            $config
+            $this->config,
+            (array)$config
         );
 
         return $this;
