@@ -37,8 +37,23 @@ class Router
      */
     public function __construct($data, CacheItemPoolInterface $pool = null)
     {
-        $this->config = $data;
+        $this->pushConfig($data);
         $this->pool = $pool;
+    }
+
+    /**
+     * @param array $config
+     * @return Router
+     */
+    protected function pushConfig(array $config): self
+    {
+        $this->routes = null;
+        $this->config = \array_merge(
+            (array)$this->config,
+            $config
+        );
+
+        return $this;
     }
 
     /**
