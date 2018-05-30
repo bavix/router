@@ -33,6 +33,11 @@ interface Routable extends \Serializable, \JsonSerializable
     /**
      * @return string
      */
+    public function getPathValue(): string;
+
+    /**
+     * @return string
+     */
     public function getPathPattern(): string;
 
     /**

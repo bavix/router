@@ -45,6 +45,14 @@ class Route implements Routable
     /**
      * @return string
      */
+    public function getPathValue(): string
+    {
+        return $this->match->getRule()->getPath()->getValue();
+    }
+
+    /**
+     * @return string
+     */
     public function getPath(): string
     {
         return $this->match->getPath();
@@ -132,6 +140,7 @@ class Route implements Routable
             'host' => $this->getHost(),
             'name' => $this->getName(),
             'path' => $this->getPath(),
+            'pathValue' => $this->getPathValue(),
             'pathPattern' => $this->getPathPattern(),
             'pattern' => $this->getPattern(),
             'attributes' => $this->getAttributes(),

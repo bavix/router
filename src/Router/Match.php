@@ -136,7 +136,7 @@ class Match implements \Serializable, \JsonSerializable
      */
     public function getPattern(): string
     {
-        return Build::url(
+        return Server::url(
             $this->rule->getPath()->getPattern(),
             $this->rule->getHost(),
             $this->rule->getProtocol()

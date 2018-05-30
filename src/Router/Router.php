@@ -58,7 +58,7 @@ class Router
      */
     public function getRoute(string $path, string $host = null, string $protocol = null): Route
     {
-        return $this->find(Build::url($path, $host, $protocol));
+        return $this->find(Server::url($path, $host, $protocol));
     }
 
     /**
@@ -109,8 +109,7 @@ class Router
      */
     public function routes(): array 
     {
-        if (empty($this->routes))
-        {
+        if (empty($this->routes)) {
             $this->routes = $this->bootRoutes();
         }
 
@@ -128,8 +127,7 @@ class Router
     {
         $routes = $this->routes();
 
-        if (empty($routes[$path]))
-        {
+        if (empty($routes[$path])) {
             throw new Exceptions\NotFound\Path('Route `' . $path . '` not found');
         }
 

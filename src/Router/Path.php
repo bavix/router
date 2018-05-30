@@ -10,7 +10,7 @@ class Path implements \Serializable, \JsonSerializable
     /**
      * default regexp
      */
-    protected const DEFAULT_REGEX = '[\w-]+';
+    public const DEFAULT_REGEX = '[\w-]+';
 
     /**
      * @var string

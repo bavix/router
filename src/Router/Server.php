@@ -8,7 +8,7 @@ class Server
     /**
      * @var array
      */
-    protected $server = [];
+    protected $input = [];
 
     /**
      * @return Server
@@ -27,12 +27,16 @@ class Server
      * @param null|string $default
      * @return string
      */
-    public function server(string $name, ?string $default = null): ?string
+    public function get(string $name, ?string $default = null): ?string
     {
-        if (empty($this->server[$name])) {
-            $this->server[$name] = \filter_input(INPUT_SERVER, $name) ?? $default;
+        if (empty($this->input[$name])) {
+            $this->input[$name] = \filter_input(INPUT_SERVER, $name, \FILTER_DEFAULT, [
+                'options' => [
+                    'default' => $default
+                ]
+            ]);
         }
-        return $this->server[$name];
+        return $this->input[$name];
     }
 
     /**
@@ -42,7 +46,7 @@ class Server
      */
     public function method(string $default = 'GET'): string
     {
-        return $this->server('REQUEST_METHOD', $default);
+        return $this->get('REQUEST_METHOD', $default);
     }
 
     /**
@@ -51,7 +55,7 @@ class Server
      */
     public function protocol(string $default = 'https'): string
     {
-        $protocol = $this->server('HTTP_CF_VISITOR'); // cloudFlare
+        $protocol = $this->get('HTTP_CF_VISITOR'); // cloudFlare
 
         if ($protocol)
         {
@@ -64,9 +68,9 @@ class Server
         }
 
         return $protocol['scheme'] ??
-            $this->server(
+            $this->get(
                 'HTTP_X_FORWARDED_PROTO',
-                $this->server('REQUEST_SCHEME', $default)
+                $this->get('REQUEST_SCHEME', $default)
             );
     }
 
@@ -75,7 +79,7 @@ class Server
      */
     public function host(): string
     {
-        return $this->server('HTTP_HOST', PHP_SAPI);
+        return $this->get('HTTP_HOST', PHP_SAPI);
     }
 
     /**
@@ -83,7 +87,20 @@ class Server
      */
     public function path(): string
     {
-        return \parse_url($this->server('REQUEST_URI'), PHP_URL_PATH);
+        return \parse_url($this->get('REQUEST_URI'), PHP_URL_PATH);
+    }
+
+    /**
+     * @param string $path
+     * @param null|string $host
+     * @param null|string $protocol
+     * @return string
+     */
+    public static function url(string $path, ?string $host = null, ?string $protocol = null): string
+    {
+        $scheme = $protocol ?? static::sharedInstance()->protocol();
+        $host = $host ?? static::sharedInstance()->host();
+        return $scheme . '://' . $host . $path;
     }
 
 }

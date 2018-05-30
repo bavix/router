@@ -12,7 +12,6 @@ $router = new \Bavix\Router\Router($slice, $pool);
 $route = $router->getCurrentRoute();
 
 var_dump(
-//    \Bavix\Router\route($route),
     $route->getAttributes(),
     $route->getDefaults(),
     $route->getProtocol(),
