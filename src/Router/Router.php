@@ -10,6 +10,11 @@ class Router
 {
 
     /**
+     * Router version
+     */
+    public const VERSION = '2.0.0';
+
+    /**
      * @var PatternRule[]
      */
     protected $routes;
@@ -66,7 +71,7 @@ class Router
      */
     protected function hash(): string
     {
-        return \sha1(\json_encode($this->config));
+        return self::VERSION . \crc32(\json_encode($this->config));
     }
 
     /**
