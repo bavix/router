@@ -85,6 +85,14 @@ class Route implements Routable
     /**
      * @return array
      */
+    public function getGroups(): array
+    {
+        return $this->match->getGroups();
+    }
+
+    /**
+     * @return array
+     */
     public function getMethods(): array
     {
         return $this->match->getRule()->getMethods();

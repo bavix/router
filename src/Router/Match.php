@@ -28,6 +28,11 @@ class Match implements \Serializable, \JsonSerializable
     protected $attributes = [];
 
     /**
+     * @var array
+     */
+    protected $groups = [];
+
+    /**
      * @var string
      */
     protected $method;
@@ -60,6 +65,14 @@ class Match implements \Serializable, \JsonSerializable
         $this->method = $method;
         $this->subject = $subject;
         $this->test();
+    }
+
+    /**
+     * @return array
+     */
+    public function getGroups(): array
+    {
+        return $this->groups;
     }
 
     /**
@@ -139,15 +152,20 @@ class Match implements \Serializable, \JsonSerializable
     }
 
     /**
-     * @param array $attributes
+     * @param array $groups
      */
-    protected function setAttributes(array $attributes): void
+    protected function setGroups(array $groups): void
     {
-        foreach ($attributes as $key => $value) {
+        foreach ($groups as $key => $value) {
             if ($value !== '') {
-                $this->attributes[$key] = $value;
+                $this->groups[$key] = $value;
             }
         }
+
+        $this->attributes = \array_merge(
+            $this->attributes,
+            $this->groups
+        );
     }
 
     /**
@@ -174,7 +192,7 @@ class Match implements \Serializable, \JsonSerializable
 
         $result = \preg_match($this->regex(), $this->subject, $matches);
         $this->test = $result !== 0;
-        $this->setAttributes(\array_filter(
+        $this->setGroups(\array_filter(
             $matches,
             '\is_string',
             \ARRAY_FILTER_USE_KEY
