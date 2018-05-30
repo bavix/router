@@ -14,8 +14,7 @@
     }
   ],
   "require": {
-    "psr/cache": "^1.0",
-    "bavix/slice": "^1.0"
+    "psr/cache": "^1.0"
   },
   "require-dev": {
     "tedivm/stash": "^0.14",
@@ -33,10 +32,7 @@
   "autoload": {
     "psr-4": {
       "Bavix\\": "src/"
-    },
-    "files": [
-      "libs/helper.php"
-    ]
+    }
   },
   "autoload-dev": {
     "psr-4": {

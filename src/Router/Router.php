@@ -2,11 +2,22 @@
 
 namespace Bavix\Router;
 
-use Bavix\Exceptions;
+use Bavix\Router\Rules\PatternRule;
 use Psr\Cache\CacheItemPoolInterface;
+use Bavix\Exceptions;
 
 class Router
 {
+
+    /**
+     * @var PatternRule[]
+     */
+    protected $routes;
+
+    /**
+     * @var iterable
+     */
+    protected $config;
 
     /**
      * @var CacheItemPoolInterface
@@ -26,11 +37,12 @@ class Router
     }
 
     /**
-     * @return Match
+     * @return Route
      *
      * @throws Exceptions\NotFound\Data
+     * @throws Exceptions\NotFound\Path
      */
-    public function getCurrentRoute(): Match
+    public function getCurrentRoute(): Route
     {
         return $this->find(Server::sharedInstance()->path());
     }
@@ -42,12 +54,11 @@ class Router
      *
      * @return Route
      * @throws Exceptions\NotFound\Data
+     * @throws Exceptions\NotFound\Path
      */
     public function getRoute(string $path, string $host = null, string $protocol = null): Route
     {
-        $uri = ($protocol ?? $this->protocol) . '://' . ($host ?? $this->host) . $path;
-
-        return $this->find($uri);
+        return $this->find(Build::url($path, $host, $protocol));
     }
 
     /**
@@ -57,7 +68,8 @@ class Router
     {
         if (empty($this->routes))
         {
-            $this->routes = (new Loader($this->config));
+            $loader = new Loader($this->config);
+            $this->routes = $loader->simplify();
         }
 
         return $this->routes;
@@ -72,14 +84,30 @@ class Router
      */
     public function route(string $path): Route
     {
-        $route = $this->configureSlice()->atData($path);
+        $routes = $this->routes();
 
-        if (empty($route))
+        if (empty($routes[$path]))
         {
             throw new Exceptions\NotFound\Path('Route `' . $path . '` not found');
         }
 
-        return $route;
+        return $routes[$path];
+    }
+
+    /**
+     * @param string $subject
+     * @return Route
+     */
+    protected function find(string $subject): Route
+    {
+        foreach ($this->routes() as $name => $patternRule) {
+            $match = new Match($patternRule, $subject, Server::sharedInstance()->method());
+            if ($match->isTest()) {
+                return new Route($match);
+            }
+        }
+
+        throw new Exceptions\NotFound\Page('Page `' . $subject . '` not found', 404);
     }
 
 }

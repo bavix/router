@@ -10,7 +10,7 @@ trait Attachable
     /**
      * @var string
      */
-    protected $_key;
+    protected $_name;
 
     /**
      * Attachable constructor.
@@ -20,7 +20,7 @@ trait Attachable
      */
     protected function initializer(string $key, array $storage): void
     {
-        $this->_key = $key;
+        $this->_name = $key;
         $this->attached($storage);
     }
 

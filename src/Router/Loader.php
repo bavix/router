@@ -58,7 +58,7 @@ class Loader
     }
 
     /**
-     * @return array
+     * @return PatternRule[]
      */
     public function simplify(): array
     {

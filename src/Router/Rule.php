@@ -2,7 +2,7 @@
 
 namespace Bavix\Router;
 
-abstract class Rule
+abstract class Rule implements \Serializable, \JsonSerializable
 {
 
     use Attachable;
@@ -41,10 +41,10 @@ abstract class Rule
      * Rule constructor.
      *
      * @param string $key
-     * @param array $storage
+     * @param iterable $storage
      * @param null|self $parent
      */
-    public function __construct(string $key, array $storage, ?self $parent = null)
+    public function __construct(string $key, iterable $storage, ?self $parent = null)
     {
         $this->prepare();
         $this->initializer($key, $storage);
@@ -52,6 +52,14 @@ abstract class Rule
         if ($parent) {
             $this->afterPrepare($parent);
         }
+    }
+
+    /**
+     * @return string
+     */
+    public function getName(): string
+    {
+        return $this->_name;
     }
 
     /**
@@ -116,7 +124,7 @@ abstract class Rule
         $this->hinge($parent->path);
         $this->_protocol = $parent->protocol ?? $parent->_protocol ?? $this->_protocol;
         $this->_host = $parent->host ?? $parent->_host ?? $this->_host;
-        $this->_key = $parent->_key . '.' . $this->_key;
+        $this->_name = $parent->_name . '.' . $this->_name;
         $this->methods = $this->methods ?? $parent->methods;
         $this->defaults = \array_merge(
             (array)$parent->defaults,
@@ -144,6 +152,53 @@ abstract class Rule
     {
         $this->_protocol = '\w+';
         $this->_host = '[^\/]+';
+    }
+
+    /**
+     * @return array
+     * @throws
+     */
+    protected function serializeArray(): array
+    {
+        $properties = [];
+        $reflation = new \ReflectionClass($this);
+        $protected = $reflation->getProperties(\ReflectionProperty::IS_PROTECTED);
+        foreach ($protected as $property) {
+            $properties[] = $property->name;
+        }
+        return $properties;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function serialize(): string
+    {
+        return \serialize($this->serializeArray());
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function unserialize($serialized): void
+    {
+        $data = \unserialize($serialized, null);
+        foreach ($data as $key => $value) {
+            $this->{$key} = $value;
+        }
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function jsonSerialize(): array
+    {
+        $data = [];
+        foreach ($this->serializeArray() as $key => $value) {
+            $key = \ltrim($value, '_');
+            $data[$key] = $this->$value;
+        }
+        return $data;
     }
 
 }

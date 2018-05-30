@@ -2,22 +2,68 @@
 
 namespace Bavix\Router;
 
-use Bavix\Router\Rules\PatternRule;
-
-class Route implements \Serializable
+class Route implements Routable
 {
 
     /**
-     * @var PatternRule
+     * @var Match
      */
-    protected $rule;
+    protected $match;
 
     /**
-     * @return array
+     * @param Match $match
      */
-    public function getDefaults(): array
+    public function __construct(Match $match)
     {
-        return $this->rule->getDefaults();
+        $this->match = $match;
+    }
+
+    /**
+     * @return string
+     */
+    public function getProtocol(): string
+    {
+        return $this->match->getProtocol();
+    }
+
+    /**
+     * @return string
+     */
+    public function getHost(): string
+    {
+        return $this->match->getHost();
+    }
+
+    /**
+     * @return string
+     */
+    public function getName(): string
+    {
+        return $this->match->getRule()->getName();
+    }
+
+    /**
+     * @return string
+     */
+    public function getPath(): string
+    {
+        return $this->match->getPath();
+    }
+
+    /**
+     * @return string
+     */
+    public function getPathPattern(): string
+    {
+        return $this->match->getRule()->getPath()->getPattern();
+    }
+
+    /**
+     * @return string
+     */
+    public function getPattern(): string
+    {
+        return $this->match->getPattern();
     }
 
     /**
@@ -25,39 +71,23 @@ class Route implements \Serializable
      */
     public function getAttributes(): array
     {
-        return $this->attributes ?? $this->getDefaults();
+        return $this->match->getAttributes();
     }
 
     /**
-     * @param string $method
-     *
-     * @return bool
+     * @return array
      */
-    protected function methodAllowed(string $method): bool
+    public function getDefaults(): array
     {
-        $methods = $this->rule->getMethods();
-        return $methods === null || \in_array($method, $methods, true);
+        return $this->match->getRule()->getDefaults();
     }
 
     /**
-     * @param string $uri
-     *
-     * @return Match
+     * @return array
      */
-    protected function match(string $uri): Match
+    public function getMethods(): array
     {
-        return new Match($this->rule, $uri);
-    }
-
-    /**
-     * @param string $uri
-     * @param string $method
-     *
-     * @return bool
-     */
-    public function test(string $uri, string $method): bool
-    {
-        return $this->methodAllowed($method) && $this->match($uri)->isTest();
+        return $this->match->getRule()->getMethods();
     }
 
     /**
@@ -65,7 +95,7 @@ class Route implements \Serializable
      */
     public function serialize(): string
     {
-
+        return \serialize($this->match);
     }
 
     /**
@@ -73,7 +103,25 @@ class Route implements \Serializable
      */
     public function unserialize($serialized): void
     {
+        $this->match = \unserialize($serialized, null);
+    }
 
+    /**
+     * @inheritdoc
+     */
+    public function jsonSerialize(): array
+    {
+        return [
+            'protocol' => $this->getProtocol(),
+            'host' => $this->getHost(),
+            'name' => $this->getName(),
+            'path' => $this->getPath(),
+            'pathPattern' => $this->getPathPattern(),
+            'pattern' => $this->getPattern(),
+            'attributes' => $this->getAttributes(),
+            'defaults' => $this->getDefaults(),
+            'methods' => $this->getMethods(),
+        ];
     }
 
 }

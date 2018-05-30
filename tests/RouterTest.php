@@ -2,8 +2,10 @@
 
 namespace Tests;
 
+use Bavix\Router\Match;
 use Bavix\Router\Route;
 use Bavix\Router\Router;
+use Bavix\Router\Rules\PatternRule;
 use Bavix\Slice\Slice;
 use Bavix\Tests\Unit;
 use Bavix\Tests\Bind;
@@ -14,7 +16,7 @@ class RouterTest extends Unit
     public function testRoute(): void
     {
 
-        $slice = new Slice([
+        $rule1 = new PatternRule('rule1', [
             'type' => 'pattern',
             'path' => '/<controller>(/<action>/<value:\w+>)',
 
@@ -23,9 +25,7 @@ class RouterTest extends Unit
             ]
         ]);
 
-        $route1 = new Route($slice);
-
-        $route2 = new Route($slice->make([
+        $rule2 = new PatternRule('rule2', [
             'type' => 'pattern',
             'path' => '/<controller>(/<action>(/<id:\d+>))',
 
@@ -33,16 +33,20 @@ class RouterTest extends Unit
                 'action' => 'default'
             ],
 
-            'methods' => ['GET', 'POST', 'AJAX']
+            'methods' => ['GET', 'POST']
 
-        ]));
+        ]);
 
-        $this->assertTrue($route1->test('https://example.com/hello-world', 'GET'));
-        $this->assertTrue($route1->test('https://example.com/hello-world', 'AJAX'));
-        $this->assertFalse($route2->test('https://example.com/hello-world2/test/string', 'GET'));
+        $match1 = new Match($rule1, 'https://example.com/hello-world', 'GET');
+        $match2 = new Match($rule1, 'https://example.com/hello-world', 'MY_METHOD');
+        $match3 = new Match($rule2, 'https://example.com/hello-world2/test/string', 'GET');
 
-        $attributes  = $route1->getAttributes();
-        $attributes2 = $route2->getAttributes();
+        $this->assertTrue($match1->isTest());
+        $this->assertTrue($match2->isTest());
+        $this->assertFalse($match3->isTest());
+
+        $attributes  = $match2->getAttributes();
+        $attributes2 = $match3->getAttributes();
 
         $this->assertEquals(
             'hello-world',
@@ -53,7 +57,7 @@ class RouterTest extends Unit
             $attributes['action']
         );
         $this->assertEquals(
-            $route2->getDefaults(),
+            $match3->getRule()->getDefaults(),
             $attributes2
         );
     }
@@ -76,12 +80,7 @@ class RouterTest extends Unit
             ]
         ]);
 
-        $router = new \Bavix\Router\Router($slice);
-
-        Bind::setProperty($router, 'method', 'GET');
-        Bind::setProperty($router, 'host', 'router.deimos');
-        Bind::setProperty($router, 'protocol', 'https');
-
+        $router = new Router($slice);
         $router->getRoute('/hello-world');
     }
 
@@ -157,11 +156,6 @@ class RouterTest extends Unit
         ]);
 
         $router = new Router($slice);
-
-        Bind::setProperty($router, 'method', 'GET');
-        Bind::setProperty($router, 'host', 'router.deimos');
-        Bind::setProperty($router, 'protocol', 'https');
-
         $attributes = $router->getRoute('/demo/many.php')->getAttributes();
 
         $this->assertEquals(
@@ -201,11 +195,6 @@ class RouterTest extends Unit
         ]);
 
         $router = new Router($slice);
-
-        Bind::setProperty($router, 'method', 'GET');
-        Bind::setProperty($router, 'host', 'router.deimos');
-        Bind::setProperty($router, 'protocol', 'https');
-
         // lang:default -> ru
         $route = $router->getRoute('/hello-world');
         $this->assertEquals($route->getAttributes(), [

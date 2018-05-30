@@ -4,13 +4,38 @@ namespace Bavix\Router;
 
 use Bavix\Router\Rules\PatternRule;
 
-class Match
+class Match implements \Serializable, \JsonSerializable
 {
 
     /**
      * @var array
      */
-    protected $attributes;
+    protected $urlData;
+
+    /**
+     * @var string
+     */
+    protected $protocol;
+
+    /**
+     * @var string
+     */
+    protected $host;
+
+    /**
+     * @var array
+     */
+    protected $attributes = [];
+
+    /**
+     * @var string
+     */
+    protected $method;
+
+    /**
+     * @var string
+     */
+    protected $subject;
 
     /**
      * @var PatternRule
@@ -25,31 +50,64 @@ class Match
     /**
      * @param PatternRule $rule
      * @param string $subject
+     * @param string $method
      */
-    public function __construct(PatternRule $rule, string $subject)
+    public function __construct(PatternRule $rule, string $subject, string $method)
     {
+        $this->attributes = $rule->getDefaults();
+        $this->urlData = \parse_url($subject);
         $this->rule = $rule;
-        $result = \preg_match($this->regex(), $subject, $matches);
-        $this->test = $result !== 0;
-        $this->attributes = \array_filter(
-            $matches,
-            '\is_string',
-            \ARRAY_FILTER_USE_KEY
-        );
+        $this->method = $method;
+        $this->subject = $subject;
+        $this->test();
     }
 
     /**
      * @return string
      */
-    protected function regex(): string
+    public function getProtocol(): ?string
     {
-        $url = Build::url(
-            $this->rule->getPath()->getPattern(),
-            $this->rule->getHost(),
-            $this->rule->getProtocol()
-        );
+        return $this->urlData[\PHP_URL_SCHEME] ?? null;
+    }
 
-        return '~^' . $url . '$~u';
+    /**
+     * @return string
+     */
+    public function getHost(): ?string
+    {
+        return $this->urlData[\PHP_URL_HOST] ?? null;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPath(): ?string
+    {
+        return $this->urlData[\PHP_URL_PATH] ?? null;
+    }
+
+    /**
+     * @return string
+     */
+    public function getQuery(): string
+    {
+        return $this->urlData[\PHP_URL_QUERY] ?? null;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSubject(): string
+    {
+        return $this->subject;
+    }
+
+    /**
+     * @return PatternRule
+     */
+    public function getRule(): PatternRule
+    {
+        return $this->rule;
     }
 
     /**
@@ -61,11 +119,109 @@ class Match
     }
 
     /**
+     * @return string
+     */
+    public function getPattern(): string
+    {
+        return Build::url(
+            $this->rule->getPath()->getPattern(),
+            $this->rule->getHost(),
+            $this->rule->getProtocol()
+        );
+    }
+
+    /**
      * @return bool
      */
     public function isTest(): bool
     {
         return $this->test;
+    }
+
+    /**
+     * @param array $attributes
+     */
+    protected function setAttributes(array $attributes): void
+    {
+        foreach ($attributes as $key => $value) {
+            if ($value !== '') {
+                $this->attributes[$key] = $value;
+            }
+        }
+    }
+
+    /**
+     * check method
+     *
+     * @return bool
+     */
+    protected function methodAllowed(): bool
+    {
+        $this->test = $this->rule->getMethods() === null ||
+            \in_array($this->method, $this->rule->getMethods(), true);
+
+        return $this->isTest();
+    }
+
+    /**
+     * check subject
+     */
+    protected function test(): void
+    {
+        if (!$this->methodAllowed()) {
+            return;
+        }
+
+        $result = \preg_match($this->regex(), $this->subject, $matches);
+        $this->test = $result !== 0;
+        $this->setAttributes(\array_filter(
+            $matches,
+            '\is_string',
+            \ARRAY_FILTER_USE_KEY
+        ));
+    }
+
+    /**
+     * @return string
+     */
+    protected function regex(): string
+    {
+        return '~^' . $this->getPattern() . '$~u';
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function serialize(): string
+    {
+        return \serialize($this->jsonSerialize());
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function unserialize($serialized): void
+    {
+        foreach (\unserialize($serialized, null) as $key => $value) {
+            $this->{$key} = $value;
+        }
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function jsonSerialize(): array
+    {
+        return [
+            'urlData' => $this->urlData,
+            'protocol' => $this->protocol,
+            'host' => $this->host,
+            'attributes ' => $this->attributes ,
+            'method' => $this->method,
+            'subject' => $this->subject,
+            'rule' => $this->rule,
+            'test' => $this->test,
+        ];
     }
 
 }
