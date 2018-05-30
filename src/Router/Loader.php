@@ -14,7 +14,7 @@ class Loader
      * @var array
      */
     protected $rules = [
-        'http' => Rules\PrefixRule::class,
+        'http' => Rules\HttpRule::class,
         'prefix' => Rules\PrefixRule::class,
         'pattern' => Rules\PatternRule::class,
     ];
@@ -32,10 +32,10 @@ class Loader
     /**
      * Loader constructor.
      *
-     * @param array $config
+     * @param iterable $config
      * @param null|Rule $parent
      */
-    public function __construct(array $config, ?Rule $parent = null)
+    public function __construct(iterable $config, ?Rule $parent = null)
     {
         $this->config = $config;
         $this->parent = $parent;

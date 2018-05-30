@@ -18,7 +18,7 @@ trait Attachable
      * @param string $key
      * @param array $storage
      */
-    public function initializer(string $key, array $storage): void
+    protected function initializer(string $key, array $storage): void
     {
         $this->_key = $key;
         $this->attached($storage);

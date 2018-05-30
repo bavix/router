@@ -8,9 +8,19 @@ class Path
 {
 
     /**
+     * default regexp
+     */
+    protected const DEFAULT_REGEX = '[\w-]+';
+
+    /**
      * @var string
      */
-    protected $path;
+    protected $pattern;
+
+    /**
+     * @var string
+     */
+    protected $value;
 
     /**
      * @var array
@@ -19,14 +29,43 @@ class Path
 
     /**
      * Path constructor.
-     * @param string $path
-     * @param array $regex
+     *
+     * @param string $value
+     * @param array  $regex
      */
-    public function __construct(string $path, array $regex = [])
+    public function __construct(string $value, array $regex = [])
     {
-        $this->path = $path;
+        $this->value = $value;
         $this->regex = $regex;
         $this->processing();
+    }
+
+    /**
+     * @param string $value
+     *
+     * @return string
+     */
+    protected function quote(string $value): string
+    {
+        $path = \preg_quote($value, '()');
+        $path = \strtr($path, [
+            '\\(' => '(',
+            '\\)' => ')',
+            '\\<' => '<',
+            '\\>' => '>',
+        ]);
+
+        return \str_replace(')', ')?', $path);
+    }
+
+    /**
+     * @param string $name
+     *
+     * @return string
+     */
+    protected function regexAttribute(string $name): string
+    {
+        return $this->regex[$name] ?? self::DEFAULT_REGEX;
     }
 
     /**
@@ -34,15 +73,26 @@ class Path
      */
     public function getPattern(): string
     {
-        // todo
+        if (!$this->pattern) {
+            $this->pattern = \preg_replace_callback(
+                '~\<(?<key>' . self::DEFAULT_REGEX . '+)\>~',
+                function ($matches) {
+                    return '(?<' . $matches['key'] . '>' .
+                        $this->regexAttribute($matches['key']) .
+                        ')';
+                },
+                $this->quote($this->value)
+            );
+        }
+        return $this->pattern;
     }
 
     /**
      * @return string
      */
-    public function getPath(): string
+    public function getValue(): string
     {
-        return $this->path;
+        return $this->value;
     }
 
     /**
@@ -58,8 +108,9 @@ class Path
      */
     public function hinge(self $parent): void
     {
-        $this->path = $parent->path . $this->path;
-        $this->regex = \array_merge(
+        $this->pattern = null;
+        $this->value   = $parent->value . $this->value;
+        $this->regex   = \array_merge(
             $parent->regex,
             $this->regex
         );
@@ -74,15 +125,15 @@ class Path
      */
     protected function processing(): void
     {
-        $this->path = \preg_replace_callback(
-            '~\<(?<key>\w+):(?<value>.+?)>~',
+        $this->value = \preg_replace_callback(
+            '~\<(?<key>' . self::DEFAULT_REGEX . '+):(?<value>.+?)>~',
             function (array $matches) {
 
                 if (!empty($this->regex[$matches['key']])) {
                     throw new Runtime(\sprintf(
                         'duplicate in registry key `%s` for path `%s`',
                         $matches['key'],
-                        $this->path
+                        $this->value
                     ));
                 }
 
@@ -93,7 +144,7 @@ class Path
 
                 return '<' . $matches['key'] . '>';
             },
-            $this->path
+            $this->value
         );
     }
 

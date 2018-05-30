@@ -3,65 +3,10 @@
 namespace Bavix\Router;
 
 use Bavix\Exceptions;
-use Bavix\Slice\Slice;
 use Psr\Cache\CacheItemPoolInterface;
 
 class Router
 {
-
-    /**
-     * @var array
-     * @deprecated
-     */
-    protected $classMap = [
-        'configure' => Configure::class
-    ];
-
-    /**
-     * @var Slice
-     */
-    protected $slice;
-
-    /**
-     * @var Slice
-     * @deprecated
-     */
-    protected $configureSlice;
-
-    /**
-     * @var Route[]
-     */
-    protected $routes;
-
-    /**
-     * @var Configure
-     * @deprecated
-     */
-    protected $configure;
-
-    /**
-     * @var string
-     * @deprecated
-     */
-    protected $method;
-
-    /**
-     * @var string
-     * @deprecated
-     */
-    protected $protocol;
-
-    /**
-     * @var string
-     * @deprecated
-     */
-    protected $host;
-
-    /**
-     * @var string
-     * @deprecated
-     */
-    protected $path;
 
     /**
      * @var CacheItemPoolInterface
@@ -71,43 +16,23 @@ class Router
     /**
      * Router constructor.
      *
-     * @param array|\Traversable|Slice $data
+     * @param iterable $data
      * @param CacheItemPoolInterface   $pool
      */
-    public function __construct($data, CacheItemPoolInterface $pool = null)
+    public function __construct(iterable $data, CacheItemPoolInterface $pool = null)
     {
-        $this->slice    = Slice::from($data);
-        $this->pool     = $pool;
-        $this->method   = method();
-        $this->protocol = protocol();
-        $this->host     = host();
-        $this->path     = path();
+        $this->config = $data;
+        $this->pool = $pool;
     }
 
     /**
-     * @return Configure
-     * @deprecated
-     */
-    protected function configure(): Configure
-    {
-        if (!$this->configure)
-        {
-            $class = $this->classMap['configure'];
-
-            $this->configure = new $class($this->slice, $this->pool);
-        }
-
-        return $this->configure;
-    }
-
-    /**
-     * @return Route
+     * @return Match
      *
      * @throws Exceptions\NotFound\Data
      */
-    public function getCurrentRoute(): Route
+    public function getCurrentRoute(): Match
     {
-        return $this->getRoute($this->path);
+        return $this->find(Server::sharedInstance()->path());
     }
 
     /**
@@ -126,28 +51,13 @@ class Router
     }
 
     /**
-     * @return Slice
-     *
-     * @deprecated
-     */
-    protected function configureSlice(): Slice
-    {
-        if (!$this->configureSlice)
-        {
-            $this->configureSlice = $this->configure()->data();
-        }
-
-        return $this->configureSlice;
-    }
-
-    /**
      * @return Route[]
      */
     public function routes(): array 
     {
         if (empty($this->routes))
         {
-            $this->routes = $this->configureSlice()->asArray();
+            $this->routes = (new Loader($this->config));
         }
 
         return $this->routes;
@@ -170,31 +80,6 @@ class Router
         }
 
         return $route;
-    }
-
-    /**
-     * @param string $uri
-     *
-     * @return Route
-     *
-     * @throws Exceptions\NotFound\Page
-     *
-     * @deprecated
-     */
-    protected function find(string $uri): Route
-    {
-        /**
-         * @var Route $route
-         */
-        foreach ($this->routes() as $key => $route)
-        {
-            if ($route->test($uri, $this->method))
-            {
-                return $route;
-            }
-        }
-
-        throw new Exceptions\NotFound\Page('Page `' . $uri . '` not found', 404);
     }
 
 }

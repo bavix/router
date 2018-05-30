@@ -8,6 +8,16 @@ abstract class Rule
     use Attachable;
 
     /**
+     * @var string
+     */
+    protected $_protocol;
+
+    /**
+     * @var string
+     */
+    protected $_host;
+
+    /**
      * @var null|string
      */
     protected $type;
@@ -18,7 +28,7 @@ abstract class Rule
     protected $path;
 
     /**
-     * @var array
+     * @var null|array
      */
     protected $methods;
 
@@ -45,6 +55,46 @@ abstract class Rule
     }
 
     /**
+     * @return string
+     */
+    public function getProtocol(): string
+    {
+        return $this->_protocol;
+    }
+
+    /**
+     * @return string
+     */
+    public function getHost(): string
+    {
+        return $this->_host;
+    }
+
+    /**
+     * @return Path
+     */
+    public function getPath(): Path
+    {
+        return $this->path;
+    }
+
+    /**
+     * @return null|array
+     */
+    public function getMethods(): ?array
+    {
+        return $this->methods;
+    }
+
+    /**
+     * @return array
+     */
+    public function getDefaults(): array
+    {
+        return (array)$this->defaults;
+    }
+
+    /**
      * @param Path|null $path
      */
     protected function hinge(?Path $path): void
@@ -64,6 +114,8 @@ abstract class Rule
     protected function afterPrepare(self $parent): void
     {
         $this->hinge($parent->path);
+        $this->_protocol = $parent->protocol ?? $parent->_protocol ?? $this->_protocol;
+        $this->_host = $parent->host ?? $parent->_host ?? $this->_host;
         $this->_key = $parent->_key . '.' . $this->_key;
         $this->methods = $this->methods ?? $parent->methods;
         $this->defaults = \array_merge(
@@ -90,7 +142,8 @@ abstract class Rule
      */
     protected function prepare(): void
     {
-        // todo: a lot of logic
+        $this->_protocol = '\w+';
+        $this->_host = '[^\/]+';
     }
 
 }

@@ -4,7 +4,7 @@ return [
 
     'http' => [
 
-        'type'   => 'http',
+        'type'   => 'prefix',
 
         'protocol' => 'http', // optional null
         'host'     => '(.+\.)?example.com', // optional null
