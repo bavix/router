@@ -6,7 +6,7 @@ class Group
 {
 
     /**
-     * @var Collection[]
+     * @var ResourceCollection[]
      */
     protected $collections = [];
 
@@ -60,7 +60,7 @@ class Group
     {
         $resolver = new Resolver(function (Pattern $pattern) {
             return $this->pushPattern($pattern);
-        }, function (Collection $collection) {
+        }, function (ResourceCollection $collection) {
             return $this->pushCollection($collection);
         });
 
@@ -81,11 +81,11 @@ class Group
     }
 
     /**
-     * @param Collection $collection
+     * @param ResourceCollection $collection
      *
-     * @return Collection
+     * @return ResourceCollection
      */
-    protected function pushCollection(Collection $collection): Collection
+    protected function pushCollection(ResourceCollection $collection): ResourceCollection
     {
         $this->collections[] = $collection;
         return $collection;

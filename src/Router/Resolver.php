@@ -28,11 +28,11 @@ class Resolver implements GroupResolution
     }
 
     /**
-     * @param Collection $collection
+     * @param ResourceCollection $collection
      *
      * @return Pattern
      */
-    protected function pushCollection(Collection $collection): Collection
+    protected function pushCollection(ResourceCollection $collection): ResourceCollection
     {
         return \call_user_func($this->collections, $collection);
     }
@@ -152,15 +152,15 @@ class Resolver implements GroupResolution
      * @param null|string $name
      * @param null|string $id
      *
-     * @return Collection
+     * @return ResourceCollection
      */
-    public function resource(string $entityName, ?string $name = null, ?string $id = null): Collection
+    public function resource(string $entityName, ?string $name = null, ?string $id = null): ResourceCollection
     {
         $entityName = \rtrim($entityName, '/');
         $name = $name ?: \ltrim($entityName, '/');
         $id = $id ?: $name;
 
-        $collection = new Collection();
+        $collection = new ResourceCollection();
 
         $index = 'index';
         $collection[$index] = $this

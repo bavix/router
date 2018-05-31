@@ -67,8 +67,8 @@ interface GroupResolution
      * @param null|string $name
      * @param null|string $id
      *
-     * @return Collection
+     * @return ResourceCollection
      */
-    public function resource(string $entityName, ?string $name = null, ?string $id = null): Collection;
+    public function resource(string $entityName, ?string $name = null, ?string $id = null): ResourceCollection;
 
 }

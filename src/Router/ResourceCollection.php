@@ -4,12 +4,12 @@ namespace Bavix\Router;
 
 use Bavix\Iterator\Iterator;
 
-class Collection extends Iterator
+class ResourceCollection extends Iterator
 {
 
     /**
      * @param array $names
-     * @return Collection
+     * @return ResourceCollection
      */
     public function names(array $names): self
     {
@@ -25,7 +25,7 @@ class Collection extends Iterator
 
     /**
      * @param array $names
-     * @return Collection
+     * @return ResourceCollection
      */
     public function only(array $names): self
     {
@@ -38,7 +38,7 @@ class Collection extends Iterator
 
     /**
      * @param array $names
-     * @return Collection
+     * @return ResourceCollection
      */
     public function except(array $names): self
     {
