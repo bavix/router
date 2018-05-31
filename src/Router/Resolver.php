@@ -138,14 +138,44 @@ class Resolver implements GroupResolution
     }
 
     /**
-     * @param ResourceCollection $collection
      * @param string $name
-     * @param string $type
-     * @return Pattern
+     * @param string $index
+     * @return string
      */
-    protected function route(ResourceCollection $collection, string $name, string $type): Pattern
+    protected function name(string $name, string $index): string
     {
-        return $collection[$type] = $this->pattern('', $name . '.' . $type);
+        return $name . '.' . $index;
+    }
+
+    /**
+     * @param string $entityName
+     * @param string $action
+     * @return string
+     */
+    protected function action(string $entityName, string $action): string
+    {
+        return $entityName . '/' . $action;
+    }
+
+    /**
+     * @param string $entityName
+     * @param string $id
+     * @return string
+     */
+    protected function id(string $entityName, string $id): string
+    {
+        return $this->action($entityName, '<' . $id . '>');
+    }
+
+    /**
+     * @param string $entityName
+     * @param string $id
+     * @param string $action
+     * @return string
+     */
+    protected function idAction(string $entityName, string $id, string $action): string
+    {
+        return $this->action($this->id($entityName, $id), $action);
     }
 
     /**
@@ -171,36 +201,42 @@ class Resolver implements GroupResolution
         $name = $name ?: \ltrim($entityName, '/');
         $id = $id ?: $name;
 
-        $collection = new ResourceCollection();
-        $this->route($collection, $name, 'index')
-            ->setPath($entityName)
-            ->get();
+        return $this->pushCollection(new ResourceCollection([
+            'index' => $this->pattern(
+                $entityName,
+                $this->name($name, 'index')
+            )->get(),
 
-        $this->route($collection, $name, 'create')
-            ->setPath($entityName . '/create')
-            ->get();
+            'create' => $this->pattern(
+                $this->action($entityName, 'create'),
+                $this->name($name, 'create')
+            )->get(),
 
-        $this->route($collection, $name, 'store')
-            ->setPath($entityName)
-            ->post();
+            'store' => $this->pattern(
+                $entityName,
+                $this->name($name, 'store')
+            )->post(),
 
-        $this->route($collection, $name, 'show')
-            ->setPath($entityName . '/<' . $id . '>')
-            ->get();
+            'show' => $this->pattern(
+                $this->id($entityName, $id),
+                $this->name($name, 'show')
+            )->get(),
 
-        $this->route($collection, $name, 'edit')
-            ->setPath($entityName . '/<' . $id . '>/edit')
-            ->get();
+            'edit' => $this->pattern(
+                $this->idAction($entityName, $id, 'edit'),
+                $this->name($name, 'edit')
+            )->get(),
 
-        $this->route($collection, $name, 'update')
-            ->setPath($entityName . '/<' . $id . '>/edit')
-            ->setMethods(['PUT', 'PATCH']);
+            'update' => $this->pattern(
+                $this->idAction($entityName, $id, 'edit'),
+                $this->name($name, 'update')
+            )->setMethods(['PUT', 'PATCH']),
 
-        $this->route($collection, $name, 'destroy')
-            ->setPath($entityName . '/<' . $id . '>')
-            ->delete();
-
-        return $this->pushCollection($collection);
+            'destroy' => $this->pattern(
+                $this->id($entityName, $id),
+                $this->name($name, 'destroy')
+            )->delete(),
+        ]));
     }
 
 }
