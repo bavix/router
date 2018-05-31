@@ -63,6 +63,59 @@ interface GroupResolution
     public function delete(string $path, ?string $name = null): Pattern;
 
     /**
+     * @param string $entityName
+     * @param null|string $name
+     * @return Pattern
+     */
+    public function index(string $entityName, ?string $name = null): Pattern;
+
+    /**
+     * @param string $entityName
+     * @param null|string $name
+     * @return Pattern
+     */
+    public function create(string $entityName, ?string $name = null): Pattern;
+
+    /**
+     * @param string $entityName
+     * @param null|string $name
+     * @return Pattern
+     */
+    public function store(string $entityName, ?string $name = null): Pattern;
+
+    /**
+     * @param string $entityName
+     * @param null|string $name
+     * @param null|string $id
+     * @return Pattern
+     */
+    public function show(string $entityName, ?string $name = null, ?string $id = null): Pattern;
+
+    /**
+     * @param string $entityName
+     * @param null|string $name
+     * @param null|string $id
+     * @return Pattern
+     */
+    public function edit(string $entityName, ?string $name = null, ?string $id = null): Pattern;
+
+    /**
+     * @param string $entityName
+     * @param null|string $name
+     * @param null|string $id
+     * @return Pattern
+     */
+    public function update(string $entityName, ?string $name = null, ?string $id = null): Pattern;
+
+    /**
+     * @param string $entityName
+     * @param null|string $name
+     * @param null|string $id
+     * @return Pattern
+     */
+    public function destroy(string $entityName, ?string $name = null, ?string $id = null): Pattern;
+
+    /**
      * @param string      $entityName
      * @param null|string $name
      * @param null|string $id

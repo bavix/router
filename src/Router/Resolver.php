@@ -138,6 +138,203 @@ class Resolver implements GroupResolution
     }
 
     /**
+     * entityName -> /users
+     *
+     *  GET         users.index     /users
+     *
+     * @param string $entityName
+     * @param null|string $name
+     * @return Pattern
+     */
+    protected function _index(string $entityName, ?string $name = null): Pattern
+    {
+        return $this->pattern(
+            $entityName,
+            $this->name($name, 'index')
+        )->get();
+    }
+
+    /**
+     * @param string $entityName
+     * @param null|string $name
+     * @return Pattern
+     */
+    public function index(string $entityName, ?string $name = null): Pattern
+    {
+        return $this->pushPattern($this->_index($entityName, $name));
+    }
+
+    /**
+     * entityName -> /users
+     *
+     *  GET         users.create    /users/create
+     *
+     * @param string $entityName
+     * @param null|string $name
+     * @return Pattern
+     */
+    protected function _create(string $entityName, ?string $name = null): Pattern
+    {
+        return $this->pattern(
+            $this->action($entityName, 'create'),
+            $this->name($name, 'create')
+        )->get();
+    }
+
+    /**
+     * @param string $entityName
+     * @param null|string $name
+     * @return Pattern
+     */
+    public function create(string $entityName, ?string $name = null): Pattern
+    {
+        return $this->pushPattern($this->_create($entityName, $name));
+    }
+
+    /**
+     * entityName -> /users
+     *
+     *  POST        users.store     /users
+     *
+     * @param string $entityName
+     * @param null|string $name
+     * @return Pattern
+     */
+    protected function _store(string $entityName, ?string $name = null): Pattern
+    {
+        return $this->pattern(
+            $entityName,
+            $this->name($name, 'store')
+        )->post();
+    }
+
+    /**
+     * @param string $entityName
+     * @param null|string $name
+     * @return Pattern
+     */
+    public function store(string $entityName, ?string $name = null): Pattern
+    {
+        return $this->pushPattern($this->_store($entityName, $name));
+    }
+
+    /**
+     * entityName -> /users
+     *
+     *  GET         users.show      /users/{id}
+     *
+     * @param string $entityName
+     * @param null|string $name
+     * @param null|string $id
+     * @return Pattern
+     */
+    protected function _show(string $entityName, ?string $name = null, ?string $id = null): Pattern
+    {
+        return $this->pattern(
+            $this->id($entityName, $id),
+            $this->name($name, 'show')
+        )->get();
+    }
+
+    /**
+     * @param string $entityName
+     * @param null|string $name
+     * @param null|string $id
+     * @return Pattern
+     */
+    public function show(string $entityName, ?string $name = null, ?string $id = null): Pattern
+    {
+        return $this->pushPattern($this->_show($entityName, $name, $id));
+    }
+
+    /**
+     * entityName -> /users
+     *
+     *  GET         users.edit      /users/{id}/edit
+     *
+     * @param string $entityName
+     * @param null|string $name
+     * @param null|string $id
+     * @return Pattern
+     */
+    protected function _edit(string $entityName, ?string $name = null, ?string $id = null): Pattern
+    {
+        return $this->pattern(
+            $this->idAction($entityName, $id, 'edit'),
+            $this->name($name, 'edit')
+        )->get();
+    }
+
+    /**
+     * @param string $entityName
+     * @param null|string $name
+     * @param null|string $id
+     * @return Pattern
+     */
+    public function edit(string $entityName, ?string $name = null, ?string $id = null): Pattern
+    {
+        return $this->pushPattern($this->_edit($entityName, $name, $id));
+    }
+
+    /**
+     * entityName -> /users
+     *
+     *  PUT/PATCH   users.update    /users/{id}/edit
+     *
+     * @param string $entityName
+     * @param null|string $name
+     * @param null|string $id
+     * @return Pattern
+     */
+    protected function _update(string $entityName, ?string $name = null, ?string $id = null): Pattern
+    {
+        return $this->pattern(
+            $this->idAction($entityName, $id, 'edit'),
+            $this->name($name, 'update')
+        )->setMethods(['PUT', 'PATCH']);
+    }
+
+    /**
+     * @param string $entityName
+     * @param null|string $name
+     * @param null|string $id
+     * @return Pattern
+     */
+    public function update(string $entityName, ?string $name = null, ?string $id = null): Pattern
+    {
+        return $this->pushPattern($this->_update($entityName, $name, $id));
+    }
+
+    /**
+     * entityName -> /users
+     *
+     *  DELETE      users.destroy   /users/{id}
+     *
+     * @param string $entityName
+     * @param null|string $name
+     * @param null|string $id
+     * @return Pattern
+     */
+    protected function _destroy(string $entityName, ?string $name = null, ?string $id = null): Pattern
+    {
+        return $this->pattern(
+            $this->id($entityName, $id),
+            $this->name($name, 'destroy')
+        )->delete();
+    }
+
+    /**
+     * @param string $entityName
+     * @param null|string $name
+     * @param null|string $id
+     * @return Pattern
+     */
+    public function destroy(string $entityName, ?string $name = null, ?string $id = null): Pattern
+    {
+        return $this->pushPattern($this->_destroy($entityName, $name, $id));
+    }
+
+    /**
      * @param string $name
      * @param string $index
      * @return string
@@ -202,40 +399,13 @@ class Resolver implements GroupResolution
         $id = $id ?: $name;
 
         return $this->pushCollection(new ResourceCollection([
-            'index' => $this->pattern(
-                $entityName,
-                $this->name($name, 'index')
-            )->get(),
-
-            'create' => $this->pattern(
-                $this->action($entityName, 'create'),
-                $this->name($name, 'create')
-            )->get(),
-
-            'store' => $this->pattern(
-                $entityName,
-                $this->name($name, 'store')
-            )->post(),
-
-            'show' => $this->pattern(
-                $this->id($entityName, $id),
-                $this->name($name, 'show')
-            )->get(),
-
-            'edit' => $this->pattern(
-                $this->idAction($entityName, $id, 'edit'),
-                $this->name($name, 'edit')
-            )->get(),
-
-            'update' => $this->pattern(
-                $this->idAction($entityName, $id, 'edit'),
-                $this->name($name, 'update')
-            )->setMethods(['PUT', 'PATCH']),
-
-            'destroy' => $this->pattern(
-                $this->id($entityName, $id),
-                $this->name($name, 'destroy')
-            )->delete(),
+            'index' => $this->_index($entityName, $name),
+            'create' => $this->_create($entityName, $name),
+            'store' => $this->_store($entityName, $name),
+            'show' => $this->_show($entityName, $name, $id),
+            'edit' => $this->_edit($entityName, $name, $id),
+            'update' => $this->_update($entityName, $name, $id),
+            'destroy' => $this->_destroy($entityName, $name, $id)
         ]));
     }
 
