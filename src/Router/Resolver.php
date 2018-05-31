@@ -138,6 +138,17 @@ class Resolver implements GroupResolution
     }
 
     /**
+     * @param ResourceCollection $collection
+     * @param string $name
+     * @param string $type
+     * @return Pattern
+     */
+    protected function route(ResourceCollection $collection, string $name, string $type): Pattern
+    {
+        return $collection[$type] = $this->pattern('', $name . '.' . $type);
+    }
+
+    /**
      * entityName -> /users
      *
      *  GET         users.index     /users
@@ -161,40 +172,32 @@ class Resolver implements GroupResolution
         $id = $id ?: $name;
 
         $collection = new ResourceCollection();
-
-        $index = 'index';
-        $collection[$index] = $this
-            ->pattern($entityName, $name . '.' . $index)
+        $this->route($collection, $name, 'index')
+            ->setPath($entityName)
             ->get();
 
-        $index = 'create';
-        $collection[$index] = $this
-            ->pattern($entityName . '/create', $name . '.' . $index)
+        $this->route($collection, $name, 'create')
+            ->setPath($entityName . '/create')
             ->get();
 
-        $index = 'store';
-        $collection[$index] = $this
-            ->pattern($entityName, $name . '.' . $index)
+        $this->route($collection, $name, 'store')
+            ->setPath($entityName)
             ->post();
 
-        $index = 'show';
-        $collection[$index] = $this
-            ->pattern($entityName . '/<' . $id . '>', $name . '.' . $index)
+        $this->route($collection, $name, 'show')
+            ->setPath($entityName . '/<' . $id . '>')
             ->get();
 
-        $index = 'edit';
-        $collection[$index] = $this
-            ->pattern($entityName . '/<' . $id . '>/edit', $name . '.' . $index)
+        $this->route($collection, $name, 'edit')
+            ->setPath($entityName . '/<' . $id . '>/edit')
             ->get();
 
-        $index = 'update';
-        $collection[$index] = $this
-            ->pattern($entityName . '/<' . $id . '>/edit', $name . '.' . $index)
+        $this->route($collection, $name, 'update')
+            ->setPath($entityName . '/<' . $id . '>/edit')
             ->setMethods(['PUT', 'PATCH']);
 
-        $index = 'destroy';
-        $collection[$index] = $this
-            ->pattern($entityName . '/<' . $id . '>', $name . '.' . $index)
+        $this->route($collection, $name, 'destroy')
+            ->setPath($entityName . '/<' . $id . '>')
             ->delete();
 
         return $this->pushCollection($collection);
