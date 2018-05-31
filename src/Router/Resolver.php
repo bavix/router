@@ -30,7 +30,7 @@ class Resolver implements GroupResolution
     /**
      * @param ResourceCollection $collection
      *
-     * @return Pattern
+     * @return ResourceCollection
      */
     protected function pushCollection(ResourceCollection $collection): ResourceCollection
     {
