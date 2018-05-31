@@ -68,6 +68,14 @@ class Match implements \Serializable, \JsonSerializable
     }
 
     /**
+     * @return string
+     */
+    public function getMethod(): string
+    {
+        return $this->method;
+    }
+
+    /**
      * @return array
      */
     public function getGroups(): array
@@ -80,7 +88,7 @@ class Match implements \Serializable, \JsonSerializable
      */
     public function getProtocol(): ?string
     {
-        return $this->urlData[\PHP_URL_SCHEME] ?? null;
+        return $this->urlData['scheme'] ?? null;
     }
 
     /**
@@ -88,7 +96,7 @@ class Match implements \Serializable, \JsonSerializable
      */
     public function getHost(): ?string
     {
-        return $this->urlData[\PHP_URL_HOST] ?? null;
+        return $this->urlData['host'] ?? null;
     }
 
     /**
@@ -96,7 +104,7 @@ class Match implements \Serializable, \JsonSerializable
      */
     public function getPath(): ?string
     {
-        return $this->urlData[\PHP_URL_PATH] ?? null;
+        return $this->urlData['path'] ?? null;
     }
 
     /**
@@ -104,7 +112,7 @@ class Match implements \Serializable, \JsonSerializable
      */
     public function getQuery(): string
     {
-        return $this->urlData[\PHP_URL_QUERY] ?? null;
+        return $this->urlData['query'] ?? null;
     }
 
     /**

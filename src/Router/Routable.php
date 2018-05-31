@@ -61,8 +61,8 @@ interface Routable extends \Serializable, \JsonSerializable
     public function getGroups(): array;
 
     /**
-     * @return array
+     * @return null|array
      */
-    public function getMethods(): array;
+    public function getMethods(): ?array;
 
 }

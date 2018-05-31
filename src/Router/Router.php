@@ -103,7 +103,7 @@ class Router
      */
     public function getCurrentRoute(): Route
     {
-        return $this->find(Server::sharedInstance()->path());
+        return $this->getRoute(Server::sharedInstance()->path());
     }
 
     /**

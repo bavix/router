@@ -42,6 +42,19 @@ class Loader
     }
 
     /**
+     * @param string $key
+     *
+     * @return string
+     */
+    protected function way(string $key): string
+    {
+        if ($this->parent) {
+            return $this->parent->getName() . '.' . $key;
+        }
+        return $key;
+    }
+
+    /**
      * @return \Generator
      */
     public function routes(): \Generator
@@ -49,7 +62,7 @@ class Loader
         foreach ($this->config as $key => $item) {
             if (empty($item['type'])) {
                 throw new Exceptions\NotFound\Data(
-                    \sprintf('The type parameter for key `%s` is not found', $key)
+                    \sprintf('The type parameter for key `%s` is not found', $this->way($key))
                 );
             }
 

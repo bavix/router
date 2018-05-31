@@ -40,7 +40,7 @@ abstract class Rule implements \Serializable, \JsonSerializable
     /**
      * @var array
      */
-    protected $middleware;
+    protected $extends;
 
     /**
      * Rule constructor.
@@ -102,9 +102,9 @@ abstract class Rule implements \Serializable, \JsonSerializable
     /**
      * @return array
      */
-    public function getMiddleware(): array
+    public function getExtends(): array
     {
-        return (array)$this->middleware;
+        return (array)$this->extends;
     }
 
     /**
@@ -152,7 +152,7 @@ abstract class Rule implements \Serializable, \JsonSerializable
         $this->_name = $parent->_name . '.' . $this->_name;
         $this->methods = $this->methods ?? $parent->methods;
         $this->arrayMerge('defaults', $parent);
-        $this->arrayMerge('middleware', $parent);
+        $this->arrayMerge('extends', $parent);
     }
 
     /**

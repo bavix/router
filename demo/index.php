@@ -12,12 +12,17 @@ $router = new \Bavix\Router\Router($slice, $pool);
 $route = $router->getCurrentRoute();
 
 var_dump(
-    $route->getAttributes(),
-    $route->getDefaults(),
-    $route->getProtocol(),
-    $route->getHost(),
-    $route->getPath(),
-    $route->getPattern(),
-    $route->getPathPattern(),
-    $route->getName()
+    ['getExtends' => $route->getExtends()],
+    ['getAttributes' => $route->getAttributes()],
+    ['getGroups' => $route->getGroups()],
+    ['getDefaults' => $route->getDefaults()],
+    ['getMethods' => $route->getMethods()],
+    ['getMethod' => $route->getMethod()],
+    ['getProtocol' => $route->getProtocol()],
+    ['getHost' => $route->getHost()],
+    ['getPath' => $route->getPath()],
+    ['getPattern' => $route->getPattern()],
+    ['getPathPattern' => $route->getPathPattern()],
+    ['getPathValue' => $route->getPathValue()],
+    ['getName' => $route->getName()]
 );

@@ -25,7 +25,7 @@ class PatternRule extends Rule
                     'No `%s` option found for class `%s` on `%s` route',
                     'path',
                     __CLASS__,
-                    $key
+                    $this->getName()
                 )
             );
         }

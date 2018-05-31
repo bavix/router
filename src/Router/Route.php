@@ -18,6 +18,11 @@ class Route implements Routable
         $this->match = $match;
     }
 
+    public function getMethod(): string
+    {
+        return $this->match->getMethod();
+    }
+
     /**
      * @return string
      */
@@ -85,9 +90,9 @@ class Route implements Routable
     /**
      * @return array
      */
-    public function getMiddleware(): array
+    public function getExtends(): array
     {
-        return $this->match->getRule()->getMiddleware();
+        return $this->match->getRule()->getExtends();
     }
 
     /**
@@ -107,9 +112,9 @@ class Route implements Routable
     }
 
     /**
-     * @return array
+     * @return null|array
      */
-    public function getMethods(): array
+    public function getMethods(): ?array
     {
         return $this->match->getRule()->getMethods();
     }
@@ -151,7 +156,7 @@ class Route implements Routable
             'pathValue' => $this->getPathValue(),
             'pathPattern' => $this->getPathPattern(),
             'pattern' => $this->getPattern(),
-            'middleware' => $this->getMiddleware(),
+            'extends' => $this->getExtends(),
             'attributes' => $this->getAttributes(),
             'defaults' => $this->getDefaults(),
             'methods' => $this->getMethods(),

@@ -38,7 +38,7 @@ class Group
     /**
      * @var array
      */
-    protected $middleware = [];
+    protected $extends = [];
 
     /**
      * @var array
@@ -149,18 +149,18 @@ class Group
     /**
      * @return array
      */
-    public function getMiddleware(): array
+    public function getExtends(): array
     {
-        return $this->middleware;
+        return $this->extends;
     }
 
     /**
-     * @param array $middleware
+     * @param array $extends
      * @return $this
      */
-    public function setMiddleware(array $middleware): self
+    public function setExtends(array $extends): self
     {
-        $this->middleware = $middleware;
+        $this->extends = $extends;
         return $this;
     }
 
@@ -248,7 +248,7 @@ class Group
                 'methods' => $this->getMethods(),
                 'resolver' => $this->getResolver(),
                 'defaults' => $this->getDefaults(),
-                'middleware' => $this->getMiddleware(),
+                'extends' => $this->getExtends(),
             ]
         ];
     }
