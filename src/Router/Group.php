@@ -6,6 +6,11 @@ class Group
 {
 
     /**
+     * @var Collection[]
+     */
+    protected $collections = [];
+
+    /**
      * @var Pattern[]
      */
     protected $resolver = [];
@@ -54,7 +59,9 @@ class Group
     public function __construct(string $prefix, callable $callback)
     {
         $resolver = new Resolver(function (Pattern $pattern) {
-            return $this->push($pattern);
+            return $this->pushPattern($pattern);
+        }, function (Collection $collection) {
+            return $this->pushCollection($collection);
         });
 
         $this->path = $prefix;
@@ -67,10 +74,21 @@ class Group
      *
      * @return Pattern
      */
-    protected function push(Pattern $pattern): Pattern
+    protected function pushPattern($pattern): Pattern
     {
         $this->resolver[$pattern->getName()] = $pattern;
         return $pattern;
+    }
+
+    /**
+     * @param Collection $collection
+     *
+     * @return Collection
+     */
+    protected function pushCollection(Collection $collection): Collection
+    {
+        $this->collections[] = $collection;
+        return $collection;
     }
 
     /**
@@ -83,10 +101,13 @@ class Group
 
     /**
      * @param string $name
+     *
+     * @return $this
      */
-    public function setName(string $name): void
+    public function setName(string $name): self
     {
         $this->name = $name;
+        return $this;
     }
 
     /**
@@ -180,14 +201,36 @@ class Group
     }
 
     /**
+     * @return \Generator
+     */
+    protected function patterns(): \Generator
+    {
+        foreach ($this->collections as $collection) {
+            foreach ($collection as $pattern) {
+                yield $pattern;
+            }
+        }
+    }
+
+    /**
      * @return array
      */
     protected function getResolver(): array
     {
         $patterns = [];
-        foreach ($this->resolver as $pattern) {
+
+        /**
+         * @var Pattern[] $resolver
+         */
+        $resolver = \array_merge(
+            $this->resolver,
+            \iterator_to_array($this->patterns())
+        );
+
+        foreach ($resolver as $pattern) {
             $patterns[] = $pattern->toArray();
         }
+
         return \array_merge(...$patterns);
     }
 

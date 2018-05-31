@@ -8,16 +8,33 @@ class Resolver implements GroupResolution
     /**
      * @var callable
      */
-    protected $pusher;
+    protected $collections;
+
+    /**
+     * @var callable
+     */
+    protected $patterns;
 
     /**
      * Resolver constructor.
      *
-     * @param callable $pusher
+     * @param callable $patterns
+     * @param callable $collections
      */
-    public function __construct(callable $pusher)
+    public function __construct(callable $patterns, callable $collections)
     {
-        $this->pusher = $pusher;
+        $this->collections = $collections;
+        $this->patterns = $patterns;
+    }
+
+    /**
+     * @param Collection $collection
+     *
+     * @return Pattern
+     */
+    protected function pushCollection(Collection $collection): Collection
+    {
+        return \call_user_func($this->collections, $collection);
     }
 
     /**
@@ -25,9 +42,19 @@ class Resolver implements GroupResolution
      *
      * @return Pattern
      */
-    protected function callback(Pattern $pattern): Pattern
+    protected function pushPattern(Pattern $pattern): Pattern
     {
-        return \call_user_func($this->pusher, $pattern);
+        return \call_user_func($this->patterns, $pattern);
+    }
+
+    /**
+     * @param string $path
+     * @param null|string $name
+     * @return Pattern
+     */
+    protected function pattern(string $path, ?string $name): Pattern
+    {
+        return new Pattern($path, $name);
     }
 
     /**
@@ -39,7 +66,7 @@ class Resolver implements GroupResolution
      */
     public function methods(array $methods, string $path, ?string $name): Pattern
     {
-        return $this->callback(new Pattern($path, $name))->methods($methods);
+        return $this->pushPattern($this->pattern($path, $name))->methods($methods);
     }
 
     /**
@@ -52,7 +79,7 @@ class Resolver implements GroupResolution
      */
     public function any(string $path, ?string $name = null): Pattern
     {
-        return $this->callback(new Pattern($path, $name))->any();
+        return $this->pushPattern($this->pattern($path, $name))->any();
     }
 
     /**
@@ -63,7 +90,7 @@ class Resolver implements GroupResolution
      */
     public function get(string $path, ?string $name = null): Pattern
     {
-        return $this->callback(new Pattern($path, $name))->get();
+        return $this->pushPattern($this->pattern($path, $name))->get();
     }
 
     /**
@@ -74,7 +101,7 @@ class Resolver implements GroupResolution
      */
     public function post(string $path, ?string $name = null): Pattern
     {
-        return $this->callback(new Pattern($path, $name))->post();
+        return $this->pushPattern($this->pattern($path, $name))->post();
     }
 
     /**
@@ -85,7 +112,7 @@ class Resolver implements GroupResolution
      */
     public function put(string $path, ?string $name = null): Pattern
     {
-        return $this->callback(new Pattern($path, $name))->put();
+        return $this->pushPattern($this->pattern($path, $name))->put();
     }
 
     /**
@@ -96,7 +123,7 @@ class Resolver implements GroupResolution
      */
     public function patch(string $path, ?string $name = null): Pattern
     {
-        return $this->callback(new Pattern($path, $name))->patch();
+        return $this->pushPattern($this->pattern($path, $name))->patch();
     }
 
     /**
@@ -107,7 +134,7 @@ class Resolver implements GroupResolution
      */
     public function delete(string $path, ?string $name = null): Pattern
     {
-        return $this->callback(new Pattern($path, $name))->delete();
+        return $this->pushPattern($this->pattern($path, $name))->delete();
     }
 
     /**
@@ -124,27 +151,53 @@ class Resolver implements GroupResolution
      * @param string      $entityName
      * @param null|string $name
      * @param null|string $id
+     *
+     * @return Collection
      */
-    public function resource(string $entityName, ?string $name = null, ?string $id = null): void
+    public function resource(string $entityName, ?string $name = null, ?string $id = null): Collection
     {
         $entityName = \rtrim($entityName, '/');
         $name = $name ?: \ltrim($entityName, '/');
         $id = $id ?: $name;
 
-        $this->get($entityName, $name . '.index');
-        $this->get($entityName . '/create', $name . '.create');
+        $collection = new Collection();
 
-        $this->post($entityName, $name . '.store');
+        $index = 'index';
+        $collection[$index] = $this
+            ->pattern($entityName, $name . '.' . $index)
+            ->get();
 
-        $this->get($entityName . '/<' . $id . '>', $name . '.show');
-        $this->get($entityName . '/<' . $id . '>/edit', $name . '.edit');
-        $this->methods(
-            ['PUT', 'PATCH'],
-            $entityName . '/<' . $id . '>/edit',
-            $name . '.update'
-        );
+        $index = 'create';
+        $collection[$index] = $this
+            ->pattern($entityName . '/create', $name . '.' . $index)
+            ->get();
 
-        $this->delete($entityName . '/<' . $id . '>', $name . '.destroy');
+        $index = 'store';
+        $collection[$index] = $this
+            ->pattern($entityName, $name . '.' . $index)
+            ->post();
+
+        $index = 'show';
+        $collection[$index] = $this
+            ->pattern($entityName . '/<' . $id . '>', $name . '.' . $index)
+            ->get();
+
+        $index = 'edit';
+        $collection[$index] = $this
+            ->pattern($entityName . '/<' . $id . '>/edit', $name . '.' . $index)
+            ->get();
+
+        $index = 'update';
+        $collection[$index] = $this
+            ->pattern($entityName . '/<' . $id . '>/edit', $name . '.' . $index)
+            ->setMethods(['PUT', 'PATCH']);
+
+        $index = 'destroy';
+        $collection[$index] = $this
+            ->pattern($entityName . '/<' . $id . '>', $name . '.' . $index)
+            ->delete();
+
+        return $this->pushCollection($collection);
     }
 
 }
