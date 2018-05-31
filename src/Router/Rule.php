@@ -102,6 +102,14 @@ abstract class Rule implements \Serializable, \JsonSerializable
     /**
      * @return array
      */
+    public function getMiddleware(): array
+    {
+        return (array)$this->middleware;
+    }
+
+    /**
+     * @return array
+     */
     public function getDefaults(): array
     {
         return (array)$this->defaults;

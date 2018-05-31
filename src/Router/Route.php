@@ -85,6 +85,14 @@ class Route implements Routable
     /**
      * @return array
      */
+    public function getMiddleware(): array
+    {
+        return $this->match->getRule()->getMiddleware();
+    }
+
+    /**
+     * @return array
+     */
     public function getDefaults(): array
     {
         return $this->match->getRule()->getDefaults();
@@ -143,6 +151,7 @@ class Route implements Routable
             'pathValue' => $this->getPathValue(),
             'pathPattern' => $this->getPathPattern(),
             'pattern' => $this->getPattern(),
+            'middleware' => $this->getMiddleware(),
             'attributes' => $this->getAttributes(),
             'defaults' => $this->getDefaults(),
             'methods' => $this->getMethods(),

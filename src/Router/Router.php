@@ -100,7 +100,6 @@ class Router
      * @throws Exceptions\NotFound\Data
      * @throws Exceptions\NotFound\Path
      * @throws Exceptions\NotFound\Page
-     * @throws \Psr\Cache\InvalidArgumentException
      */
     public function getCurrentRoute(): Route
     {
@@ -117,7 +116,6 @@ class Router
      * @throws Exceptions\NotFound\Data
      * @throws Exceptions\NotFound\Path
      * @throws Exceptions\NotFound\Page
-     * @throws \Psr\Cache\InvalidArgumentException
      */
     public function getRoute(string $path, string $host = null, string $protocol = null): Route
     {
@@ -144,7 +142,7 @@ class Router
 
     /**
      * @return array
-     * @throws \Psr\Cache\InvalidArgumentException
+     * @throws
      */
     protected function loadingRoutes(): array
     {
@@ -163,7 +161,7 @@ class Router
 
     /**
      * @return array
-     * @throws \Psr\Cache\InvalidArgumentException
+     * @throws
      */
     protected function bootRoutes(): array
     {
@@ -180,7 +178,6 @@ class Router
 
     /**
      * @return Route[]
-     * @throws \Psr\Cache\InvalidArgumentException
      */
     public function routes(): array 
     {
@@ -197,7 +194,6 @@ class Router
      * @return Route
      *
      * @throws Exceptions\NotFound\Path
-     * @throws \Psr\Cache\InvalidArgumentException
      */
     public function route(string $path): Route
     {
@@ -214,7 +210,6 @@ class Router
      * @param string $subject
      * @return Route
      * @throws Exceptions\NotFound\Page
-     * @throws \Psr\Cache\InvalidArgumentException
      */
     protected function find(string $subject): Route
     {

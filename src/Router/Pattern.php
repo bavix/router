@@ -15,6 +15,11 @@ class Pattern implements PatternResolution
     /**
      * @var array
      */
+    protected $middleware = [];
+
+    /**
+     * @var array
+     */
     protected $defaults = [];
 
     /**
@@ -57,6 +62,22 @@ class Pattern implements PatternResolution
         $this->name = $name;
 
         return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getMiddleware(): array
+    {
+        return $this->middleware;
+    }
+
+    /**
+     * @param array $middleware
+     */
+    public function setMiddleware(array $middleware): void
+    {
+        $this->middleware = $middleware;
     }
 
     /**
@@ -130,6 +151,7 @@ class Pattern implements PatternResolution
                 'path'     => $this->getPath(),
                 'methods'  => $this->getMethods(),
                 'defaults' => $this->getDefaults(),
+                'middleware' => $this->getMiddleware(),
             ]
         ];
     }

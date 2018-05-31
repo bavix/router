@@ -38,6 +38,7 @@ trait Attachable
 
     /**
      * @param string $key
+     * @throws
      */
     protected function checkProperty(string $key): void
     {
