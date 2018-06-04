@@ -124,4 +124,13 @@ interface GroupResolution
      */
     public function resource(string $entityName, ?string $name = null, ?string $id = null): ResourceCollection;
 
+    /**
+     * @param string      $entityName
+     * @param null|string $name
+     * @param null|string $id
+     *
+     * @return ResourceCollection
+     */
+    public function apiResource(string $entityName, ?string $name = null, ?string $id = null): ResourceCollection;
+
 }

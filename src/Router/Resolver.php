@@ -409,4 +409,18 @@ class Resolver implements GroupResolution
         ]));
     }
 
+    /**
+     * @param string      $entityName
+     * @param null|string $name
+     * @param null|string $id
+     *
+     * @return ResourceCollection
+     */
+    public function apiResource(string $entityName, ?string $name = null, ?string $id = null): ResourceCollection
+    {
+        return $this->resource($entityName, $name, $id)->only([
+            'index', 'store', 'show', 'update', 'destroy'
+        ]);
+    }
+
 }

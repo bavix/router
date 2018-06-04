@@ -179,7 +179,7 @@ class Pattern implements PatternResolution
      */
     public function get(): self
     {
-        return $this->setMethods(['GET']);
+        return $this->setMethods(['GET', 'HEAD']);
     }
 
     /**
