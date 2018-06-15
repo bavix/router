@@ -182,6 +182,7 @@ class Path implements \Serializable, \JsonSerializable
     public function jsonSerialize(): array
     {
         return [
+            'defaultRegex' => $this->defaultRegex,
             'pattern' => $this->pattern,
             'regex' => $this->regex,
             'value' => $this->value,
