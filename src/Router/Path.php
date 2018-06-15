@@ -8,9 +8,9 @@ class Path implements \Serializable, \JsonSerializable
 {
 
     /**
-     * default regexp
+     * @var string
      */
-    public const DEFAULT_REGEX = '[\w-]+';
+    protected $defaultRegex;
 
     /**
      * @var string
@@ -30,11 +30,13 @@ class Path implements \Serializable, \JsonSerializable
     /**
      * Path constructor.
      *
+     * @param string $defaultRegex
      * @param string $value
      * @param array  $regex
      */
-    public function __construct(string $value, array $regex = [])
+    public function __construct(string $defaultRegex, string $value, array $regex = [])
     {
+        $this->defaultRegex = $defaultRegex;
         $this->value = $value;
         $this->regex = $regex;
         $this->processing();
@@ -65,7 +67,7 @@ class Path implements \Serializable, \JsonSerializable
      */
     protected function regexAttribute(string $name): string
     {
-        return $this->regex[$name] ?? self::DEFAULT_REGEX;
+        return $this->regex[$name] ?? $this->defaultRegex;
     }
 
     /**
@@ -75,7 +77,7 @@ class Path implements \Serializable, \JsonSerializable
     {
         if (!$this->pattern) {
             $this->pattern = \preg_replace_callback(
-                '~\<(?<key>' . self::DEFAULT_REGEX . '+)\>~',
+                '~\<(?<key>' . $this->defaultRegex . '+)\>~',
                 function ($matches) {
                     return '(?<' . $matches['key'] . '>' .
                         $this->regexAttribute($matches['key']) .
@@ -126,7 +128,7 @@ class Path implements \Serializable, \JsonSerializable
     protected function processing(): void
     {
         $this->value = \preg_replace_callback(
-            '~\<(?<key>' . self::DEFAULT_REGEX . '+):(?<value>.+?)>~',
+            '~\<(?<key>' . $this->defaultRegex . '+):(?<value>.+?)>~',
             function (array $matches) {
 
                 if (!empty($this->regex[$matches['key']])) {

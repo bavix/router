@@ -7,6 +7,8 @@ abstract class Rule implements \Serializable, \JsonSerializable
 
     use Attachable;
 
+    public const DEFAULT_REGEX = '[\w-]+';
+
     /**
      * @var string
      */
@@ -41,6 +43,11 @@ abstract class Rule implements \Serializable, \JsonSerializable
      * @var array
      */
     protected $extends;
+
+    /**
+     * @var string
+     */
+    protected $defaultRegex;
 
     /**
      * Rule constructor.
@@ -116,6 +123,14 @@ abstract class Rule implements \Serializable, \JsonSerializable
     }
 
     /**
+     * @return string
+     */
+    public function getDefaultRegex(): string
+    {
+        return $this->defaultRegex ?: self::DEFAULT_REGEX;
+    }
+
+    /**
      * @param Path|null $path
      */
     protected function hinge(?Path $path): void
@@ -156,15 +171,37 @@ abstract class Rule implements \Serializable, \JsonSerializable
     }
 
     /**
+     * Returns an array of two elements.
+     *
+     * The first parameter is path,
+     *  the second is an array of regular expressions.
+     *
+     * @return array
+     */
+    protected function pathExtract(): array
+    {
+        $regExp = [];
+        $path = $this->path;
+
+        if (\is_array($this->path)) {
+            $regExp = \array_pop($this->path);
+            $path = \array_pop($this->path);
+        }
+
+        return [$path, $regExp];
+    }
+
+    /**
      * if this.path === string then new Path(string, [])
      * else this.path === array then new Path(...this.path)
      */
     protected function pathInit(): void
     {
-        if (\is_string($this->path)) {
-            $this->path = new Path($this->path);
-        } elseif (\is_array($this->path)) {
-            $this->path = new Path(...$this->path);
+        [$path, $regExp] = $this->pathExtract();
+        $this->path = null;
+
+        if ($path) {
+            $this->path = new Path($this->getDefaultRegex(), $path, $regExp);
         }
     }
 
