@@ -23,8 +23,3 @@ Routing library.
 Supported by
 
 [![Supported by JetBrains](https://cdn.rawgit.com/bavix/development-through/46475b4b/jetbrains.svg)](https://www.jetbrains.com/)
-
-## Support on Beerpay
-Hey dude! Help me out for a couple of :beers:!
-
-[![Beerpay](https://beerpay.io/bavix/router/badge.svg?style=beer-square)](https://beerpay.io/bavix/router)  [![Beerpay](https://beerpay.io/bavix/router/make-wish.svg?style=flat-square)](https://beerpay.io/bavix/router?focus=wish)
