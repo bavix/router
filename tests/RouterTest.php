@@ -212,4 +212,37 @@ class RouterTest extends Unit
         ]);
     }
 
+    public function testSpecialCharRule()
+    {
+        $rule1 = new PatternRule('rule1', [
+            'defaultRegex' => '[\w+]+',
+
+            'type' => 'pattern',
+            'path' => '/<controller>(/<action>/<value:\w+>)',
+
+            'defaults' => [
+                'action' => 'default2'
+            ]
+        ]);
+
+        $rule2 = new PatternRule('rule2', [
+            'type' => 'pattern',
+            'path' => '/<controller>(/<action>/<value:\w+>)',
+
+            'defaults' => [
+                'action' => 'default2'
+            ]
+        ]);
+
+        $match1 = new Match($rule1, 'https://example.com/hello+world', 'GET');
+        $match2 = new Match($rule2, 'https://example.com/hello-world', 'GET');
+        $match3 = new Match($rule2, 'https://example.com/hello+world', 'GET');
+        $match4 = new Match($rule1, 'https://example.com/hello-world', 'GET');
+
+        $this->assertTrue($match1->isTest());
+        $this->assertTrue($match2->isTest());
+        $this->assertFalse($match3->isTest()); // no char "+"
+        $this->assertFalse($match4->isTest()); // no char "-"
+    }
+
 }
