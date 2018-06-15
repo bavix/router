@@ -80,6 +80,20 @@ class Router
     }
 
     /**
+     * @param array|\Traversable $data
+     *
+     * @return array
+     */
+    protected function asArray($data): array
+    {
+        if (!\is_array($data)) {
+            return \iterator_to_array($data);
+        }
+
+        return $data;
+    }
+
+    /**
      * @param \Traversable|iterable $config
      * @return Router
      */
@@ -88,7 +102,7 @@ class Router
         $this->routes = null;
         $this->config = \array_merge(
             $this->config,
-            \iterator_to_array($config)
+            $this->asArray($config)
         );
 
         return $this;
@@ -127,7 +141,9 @@ class Router
      */
     protected function hash(): string
     {
-        return self::VERSION . \crc32(\json_encode($this->config));
+        $config = \json_encode($this->config);
+        $groups = \json_encode($this->groups);
+        return \crc32(self::VERSION . $config . $groups);
     }
 
     /**

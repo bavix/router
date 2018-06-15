@@ -11,6 +11,10 @@ $router = new \Bavix\Router\Router($slice, $pool);
 
 $route = $router->getCurrentRoute();
 
+$router->group('hello', function (\Bavix\Router\GroupResolution $group) {
+    $group->apiResource('world');
+});
+
 var_dump(
     ['getExtends' => $route->getExtends()],
     ['getAttributes' => $route->getAttributes()],

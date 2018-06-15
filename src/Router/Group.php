@@ -2,7 +2,7 @@
 
 namespace Bavix\Router;
 
-class Group
+class Group implements \JsonSerializable
 {
 
     /**
@@ -251,6 +251,14 @@ class Group
                 'extends' => $this->getExtends(),
             ]
         ];
+    }
+
+    /**
+     * @return array
+     */
+    public function jsonSerialize(): array
+    {
+        return $this->toArray();
     }
 
 }
