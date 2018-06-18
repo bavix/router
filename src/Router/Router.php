@@ -2,59 +2,32 @@
 
 namespace Bavix\Router;
 
-use Bavix\Exceptions;
-use Bavix\Slice\Slice;
+use Bavix\Router\Rules\PatternRule;
 use Psr\Cache\CacheItemPoolInterface;
+use Bavix\Exceptions;
 
 class Router
 {
 
     /**
-     * @var array
+     * Router version
      */
-    protected $classMap = [
-        'configure' => Configure::class
-    ];
+    public const VERSION = '2.0.0';
 
     /**
-     * @var Slice
+     * @var Group[]
      */
-    protected $slice;
+    protected $groups = [];
 
     /**
-     * @var Slice
-     */
-    protected $configureSlice;
-
-    /**
-     * @var Route[]
+     * @var PatternRule[]
      */
     protected $routes;
 
     /**
-     * @var Configure
+     * @var iterable
      */
-    protected $configure;
-
-    /**
-     * @var string
-     */
-    protected $method;
-
-    /**
-     * @var string
-     */
-    protected $protocol;
-
-    /**
-     * @var string
-     */
-    protected $host;
-
-    /**
-     * @var string
-     */
-    protected $path;
+    protected $config = [];
 
     /**
      * @var CacheItemPoolInterface
@@ -64,42 +37,87 @@ class Router
     /**
      * Router constructor.
      *
-     * @param array|\Traversable|Slice $data
+     * @param iterable $data
      * @param CacheItemPoolInterface   $pool
      */
     public function __construct($data, CacheItemPoolInterface $pool = null)
     {
-        $this->slice    = Slice::from($data);
-        $this->pool     = $pool;
-        $this->method   = method();
-        $this->protocol = protocol();
-        $this->host     = host();
-        $this->path     = path();
+        $this->addPattern($data);
+        $this->pool = $pool;
     }
 
     /**
-     * @return Configure
+     * @param string   $prefix
+     * @param callable $callback
+     *
+     * @return Group
      */
-    protected function configure(): Configure
+    public function group(string $prefix, callable $callback): Group
     {
-        if (!$this->configure)
-        {
-            $class = $this->classMap['configure'];
+        $group = new Group($prefix, $callback);
+        $this->mount($group);
+        return $group;
+    }
 
-            $this->configure = new $class($this->slice, $this->pool);
+    /**
+     * @param Group $group
+     * @return Router
+     */
+    public function mount(Group $group): self
+    {
+        $this->routes = null;
+        $this->groups[] = $group;
+        return $this;
+    }
+
+    /**
+     * @param Pattern $pattern
+     * @return Router
+     */
+    public function push(Pattern $pattern): self
+    {
+        return $this->addPattern($pattern->toArray());
+    }
+
+    /**
+     * @param array|\Traversable $data
+     *
+     * @return array
+     */
+    protected function asArray($data): array
+    {
+        if (!\is_array($data)) {
+            return \iterator_to_array($data);
         }
 
-        return $this->configure;
+        return $data;
+    }
+
+    /**
+     * @param \Traversable|iterable $config
+     * @return Router
+     */
+    protected function addPattern($config): self
+    {
+        $this->routes = null;
+        $this->config = \array_merge(
+            $this->config,
+            $this->asArray($config)
+        );
+
+        return $this;
     }
 
     /**
      * @return Route
      *
      * @throws Exceptions\NotFound\Data
+     * @throws Exceptions\NotFound\Path
+     * @throws Exceptions\NotFound\Page
      */
     public function getCurrentRoute(): Route
     {
-        return $this->getRoute($this->path);
+        return $this->getRoute(Server::sharedInstance()->path());
     }
 
     /**
@@ -108,26 +126,70 @@ class Router
      * @param string $protocol
      *
      * @return Route
+     *
      * @throws Exceptions\NotFound\Data
+     * @throws Exceptions\NotFound\Path
+     * @throws Exceptions\NotFound\Page
      */
     public function getRoute(string $path, string $host = null, string $protocol = null): Route
     {
-        $uri = ($protocol ?? $this->protocol) . '://' . ($host ?? $this->host) . $path;
-
-        return $this->find($uri);
+        return $this->find(Server::url($path, $host, $protocol));
     }
 
     /**
-     * @return Slice
+     * @return string
      */
-    protected function configureSlice(): Slice
+    protected function hash(): string
     {
-        if (!$this->configureSlice)
-        {
-            $this->configureSlice = $this->configure()->data();
+        $config = \json_encode($this->config);
+        $groups = \json_encode($this->groups);
+        return \crc32(self::VERSION . $config . $groups);
+    }
+
+    /**
+     * loading mounted groups
+     */
+    protected function loadingGroups(): void
+    {
+        foreach ($this->groups as $group) {
+            $this->addPattern($group->toArray());
+        }
+    }
+
+    /**
+     * @return array
+     * @throws
+     */
+    protected function loadingRoutes(): array
+    {
+        $this->loadingGroups();
+        $loader = new Loader($this->config);
+        $this->routes = $loader->simplify();
+
+        if ($this->pool) {
+            $item = $this->pool->getItem($this->hash());
+            $item->set($this->routes);
+            $this->pool->save($item);
         }
 
-        return $this->configureSlice;
+        return $this->routes;
+    }
+
+    /**
+     * @return array
+     * @throws
+     */
+    protected function bootRoutes(): array
+    {
+        if ($this->pool) {
+            $item = $this->pool->getItem($this->hash());
+            $data = $item->get();
+            if ($data) {
+                return $data;
+            }
+        }
+
+        return $this->loadingRoutes();
     }
 
     /**
@@ -135,9 +197,8 @@ class Router
      */
     public function routes(): array 
     {
-        if (empty($this->routes))
-        {
-            $this->routes = $this->configureSlice()->asArray();
+        if (empty($this->routes)) {
+            $this->routes = $this->bootRoutes();
         }
 
         return $this->routes;
@@ -152,37 +213,30 @@ class Router
      */
     public function route(string $path): Route
     {
-        $route = $this->configureSlice()->atData($path);
+        $routes = $this->routes();
 
-        if (empty($route))
-        {
+        if (empty($routes[$path])) {
             throw new Exceptions\NotFound\Path('Route `' . $path . '` not found');
         }
 
-        return $route;
+        return $routes[$path];
     }
 
     /**
-     * @param string $uri
-     *
+     * @param string $subject
      * @return Route
-     *
      * @throws Exceptions\NotFound\Page
      */
-    protected function find(string $uri): Route
+    protected function find(string $subject): Route
     {
-        /**
-         * @var Route $route
-         */
-        foreach ($this->routes() as $key => $route)
-        {
-            if ($route->test($uri, $this->method))
-            {
-                return $route;
+        foreach ($this->routes() as $name => $patternRule) {
+            $match = new Match($patternRule, $subject, Server::sharedInstance()->method());
+            if ($match->isTest()) {
+                return new Route($match);
             }
         }
 
-        throw new Exceptions\NotFound\Page('Page `' . $uri . '` not found', 404);
+        throw new Exceptions\NotFound\Page('Page `' . $subject . '` not found', 404);
     }
 
 }

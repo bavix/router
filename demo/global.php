@@ -4,10 +4,10 @@ return [
 
     'http' => [
 
-        'type'   => 'http',
+        'type'   => 'prefix',
 
         'protocol' => 'http', // optional null
-        'host'     => '(.+\.)?example.com', // optional null
+        'host'     => 'router\.local', // optional null
 
         'resolver' => [
 
@@ -55,6 +55,15 @@ return [
                 'methods' => ['FETCH', 'GET']
             ],
 
+            'demo' => [
+                'type' => 'pattern',
+                'path' => ['/demo(/<word>)', ['word' => '\w+']],
+
+                'defaults' => [
+                    'line' => __LINE__
+                ]
+            ],
+
         ],
 
         'methods' => ['POST', 'GET']
@@ -82,7 +91,7 @@ return [
     'default' => [
         'type' => 'pattern',
         'path' => [
-            '/<any:\w+>',
+            '/<any>',
             [
                 'any' => '.*'
             ]
