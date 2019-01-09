@@ -60,6 +60,9 @@ abstract class Rule implements \Serializable, \JsonSerializable
     {
         $this->prepare();
         $this->initializer($key, $storage);
+        if ($parent) {
+            $this->beforePrepare($parent);
+        }
         $this->pathInit();
         if ($parent) {
             $this->afterPrepare($parent);
@@ -153,6 +156,15 @@ abstract class Rule implements \Serializable, \JsonSerializable
             (array)$parent->$name,
             (array)$this->$name
         );
+    }
+
+    /**
+     * @param self $parent
+     * @return void
+     */
+    protected function beforePrepare(self $parent): void
+    {
+        $this->defaultRegex = $this->defaultRegex ?: $parent->defaultRegex;
     }
 
     /**

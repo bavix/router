@@ -212,6 +212,49 @@ class RouterTest extends Unit
         ]);
     }
 
+    /**
+     * @see https://github.com/bavix/router/issues/9
+     */
+    public function testCyrillic(): void
+    {
+        $slice = new Slice([
+            __METHOD__ => [
+                'type'     => 'prefix',
+                'path'     => '(/<lang:[a-z]{2}>)',
+                'defaultRegex' => '[-\wА-ЯЁа-яё]+',
+                'resolver' => [
+                    __FUNCTION__ => [
+                        'type'     => 'pattern',
+                        'path'     => '/<controller>(/<action>(/<id:\d+>))',
+                        'defaults' => [
+                            'action' => 'default'
+                        ],
+                    ],
+                ],
+                'defaults' => [
+                    'lang' => 'ru'
+                ]
+            ]
+        ]);
+
+        $router = new Router($slice);
+        // lang:default -> ru
+        $route = $router->getRoute('/привет-мир');
+        $this->assertEquals($route->getAttributes(), [
+            'controller' => 'привет-мир',
+            'action'     => 'default',
+            'lang'       => 'ru',
+        ]);
+
+        // lang -> en
+        $route = $router->getRoute('/en/hello-world');
+        $this->assertEquals($route->getAttributes(), [
+            'controller' => 'hello-world',
+            'action'     => 'default',
+            'lang'       => 'en',
+        ]);
+    }
+
     public function testSpecialCharRule()
     {
         $rule1 = new PatternRule('rule1', [
