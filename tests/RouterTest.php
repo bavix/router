@@ -172,6 +172,52 @@ class RouterTest extends Unit
 
     }
 
+    public function testPrefixSuccessArray(): void
+    {
+        $slice = [
+            __METHOD__ => [
+                'type'     => 'prefix',
+                'path'     => '/demo',
+                'resolver' => [
+                    __FUNCTION__ => [
+                        'type'     => 'pattern',
+                        'path'     => '/many.php',
+                        'defaults' => [
+                            'p1'     => 'hello',
+                            'p2'     => 'world',
+                            'action' => 'default'
+                        ],
+                    ],
+                    __METHOD__   => [
+                        'type'     => 'pattern',
+                        'path'     => '/<p1>',
+                        'defaults' => [
+                            'p1'     => 'hello',
+                            'p2'     => 'world',
+                            'action' => 'default'
+                        ],
+                    ]
+                ]
+            ]
+        ];
+
+        $router = new Router($slice);
+        $attributes = $router->getRoute('/demo/many.php')->getAttributes();
+
+        $this->assertEquals(
+            'hello',
+            $attributes['p1']
+        );
+
+        $attributes = $router->getRoute('/demo/deimos')->getAttributes();
+
+        $this->assertEquals(
+            'deimos',
+            $attributes['p1']
+        );
+
+    }
+
     public function testLanguage(): void
     {
         $slice = new Slice([
