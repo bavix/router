@@ -26,6 +26,16 @@ trait Attachable
 
     /**
      * @param array $storage
+     */
+    protected function attached(array $storage): void
+    {
+        foreach ($this->filter($storage) as $key => $value) {
+            $this->$key = $value;
+        }
+    }
+
+    /**
+     * @param array $storage
      * @return array
      */
     protected function filter(array $storage): array
@@ -42,18 +52,8 @@ trait Attachable
      */
     protected function checkProperty(string $key): void
     {
-        if ($key{0} === '_' || !\property_exists($this, $key)) {
+        if (!\property_exists($this, $key) || \strpos($key, '_') === 0) {
             throw new Runtime(\sprintf('The key `%s` is not registered', $key));
-        }
-    }
-
-    /**
-     * @param array $storage
-     */
-    protected function attached(array $storage): void
-    {
-        foreach ($this->filter($storage) as $key => $value) {
-            $this->$key = $value;
         }
     }
 

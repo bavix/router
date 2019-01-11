@@ -27,6 +27,15 @@ class ResourceCollection extends Iterator
      * @param array $names
      * @return ResourceCollection
      */
+    public function except(array $names): self
+    {
+        return $this->only(\array_diff(\array_keys($this->data), $names));
+    }
+
+    /**
+     * @param array $names
+     * @return ResourceCollection
+     */
     public function only(array $names): self
     {
         $this->data = \array_filter($this->data, function (string $needle) use ($names) {
@@ -34,15 +43,6 @@ class ResourceCollection extends Iterator
         }, \ARRAY_FILTER_USE_KEY);
 
         return $this;
-    }
-
-    /**
-     * @param array $names
-     * @return ResourceCollection
-     */
-    public function except(array $names): self
-    {
-        return $this->only(\array_diff(\array_keys($this->data), $names));
     }
 
 }

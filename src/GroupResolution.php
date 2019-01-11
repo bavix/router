@@ -6,8 +6,8 @@ interface GroupResolution
 {
 
     /**
-     * @param array       $methods
-     * @param string      $path
+     * @param array $methods
+     * @param string $path
      * @param null|string $name
      *
      * @return Pattern
@@ -15,7 +15,7 @@ interface GroupResolution
     public function methods(array $methods, string $path, ?string $name): Pattern;
 
     /**
-     * @param string      $path
+     * @param string $path
      * @param null|string $name
      *
      * @return Pattern
@@ -23,7 +23,7 @@ interface GroupResolution
     public function any(string $path, ?string $name = null): Pattern;
 
     /**
-     * @param string      $path
+     * @param string $path
      * @param null|string $name
      *
      * @return Pattern
@@ -31,7 +31,7 @@ interface GroupResolution
     public function get(string $path, ?string $name = null): Pattern;
 
     /**
-     * @param string      $path
+     * @param string $path
      * @param null|string $name
      *
      * @return Pattern
@@ -39,7 +39,7 @@ interface GroupResolution
     public function post(string $path, ?string $name = null): Pattern;
 
     /**
-     * @param string      $path
+     * @param string $path
      * @param null|string $name
      *
      * @return Pattern
@@ -47,7 +47,7 @@ interface GroupResolution
     public function put(string $path, ?string $name = null): Pattern;
 
     /**
-     * @param string      $path
+     * @param string $path
      * @param null|string $name
      *
      * @return Pattern
@@ -55,7 +55,7 @@ interface GroupResolution
     public function patch(string $path, ?string $name = null): Pattern;
 
     /**
-     * @param string      $path
+     * @param string $path
      * @param null|string $name
      *
      * @return Pattern
@@ -116,7 +116,7 @@ interface GroupResolution
     public function destroy(string $entityName, ?string $name = null, ?string $id = null): Pattern;
 
     /**
-     * @param string      $entityName
+     * @param string $entityName
      * @param null|string $name
      * @param null|string $id
      *
@@ -125,7 +125,7 @@ interface GroupResolution
     public function resource(string $entityName, ?string $name = null, ?string $id = null): ResourceCollection;
 
     /**
-     * @param string      $entityName
+     * @param string $entityName
      * @param null|string $name
      * @param null|string $id
      *

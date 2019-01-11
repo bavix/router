@@ -45,6 +45,22 @@ class Pattern implements PatternResolution
     }
 
     /**
+     * @return array
+     */
+    public function toArray(): array
+    {
+        return [
+            $this->getName() => [
+                'type' => 'pattern',
+                'path' => $this->getPath(),
+                'methods' => $this->getMethods(),
+                'defaults' => $this->getDefaults(),
+                'extends' => $this->getExtends(),
+            ]
+        ];
+    }
+
+    /**
      * @return string
      */
     public function getName(): string
@@ -65,19 +81,23 @@ class Pattern implements PatternResolution
     }
 
     /**
-     * @return array
+     * @return string
      */
-    public function getExtends(): array
+    public function getPath(): string
     {
-        return $this->extends;
+        return $this->path;
     }
 
     /**
-     * @param array $extends
+     * @param string $path
+     *
+     * @return $this
      */
-    public function setExtends(array $extends): void
+    public function setPath(string $path): self
     {
-        $this->extends = $extends;
+        $this->path = $path;
+
+        return $this;
     }
 
     /**
@@ -121,39 +141,19 @@ class Pattern implements PatternResolution
     }
 
     /**
-     * @return string
-     */
-    public function getPath(): string
-    {
-        return $this->path;
-    }
-
-    /**
-     * @param string $path
-     *
-     * @return $this
-     */
-    public function setPath(string $path): self
-    {
-        $this->path = $path;
-
-        return $this;
-    }
-
-    /**
      * @return array
      */
-    public function toArray(): array
+    public function getExtends(): array
     {
-        return [
-            $this->getName() => [
-                'type'     => 'pattern',
-                'path'     => $this->getPath(),
-                'methods'  => $this->getMethods(),
-                'defaults' => $this->getDefaults(),
-                'extends' => $this->getExtends(),
-            ]
-        ];
+        return $this->extends;
+    }
+
+    /**
+     * @param array $extends
+     */
+    public function setExtends(array $extends): void
+    {
+        $this->extends = $extends;
     }
 
     /**

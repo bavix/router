@@ -1,9 +1,7 @@
 {
   "name": "bavix/router",
-  "description": "router",
-  "keywords": [
-    "router"
-  ],
+  "description": "Component for building site routes. It just works!",
+  "keywords": ["routing", "router", "URL", "URI"],
   "homepage": "https://github.com/bavix/router",
   "license": "MIT",
   "type": "library",
@@ -20,7 +18,7 @@
   "require-dev": {
     "tedivm/stash": "^0.14",
     "bavix/config": "^1.0",
-    "symfony/yaml": "^3.2",
+    "symfony/yaml": ">=3.2",
     "bavix/tests": "^1.0",
     "bavix/xml": "^1.0"
   },
@@ -32,7 +30,7 @@
   },
   "autoload": {
     "psr-4": {
-      "Bavix\\": "src/"
+      "Bavix\\Router\\": "src/"
     }
   },
   "autoload-dev": {

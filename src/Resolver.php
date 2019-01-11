@@ -28,13 +28,15 @@ class Resolver implements GroupResolution
     }
 
     /**
-     * @param ResourceCollection $collection
+     * @param array $methods
+     * @param string $path
+     * @param null|string $name
      *
-     * @return ResourceCollection
+     * @return Pattern
      */
-    protected function pushCollection(ResourceCollection $collection): ResourceCollection
+    public function methods(array $methods, string $path, ?string $name): Pattern
     {
-        return \call_user_func($this->collections, $collection);
+        return $this->pushPattern($this->pattern($path, $name))->methods($methods);
     }
 
     /**
@@ -58,21 +60,9 @@ class Resolver implements GroupResolution
     }
 
     /**
-     * @param array       $methods
-     * @param string      $path
-     * @param null|string $name
-     *
-     * @return Pattern
-     */
-    public function methods(array $methods, string $path, ?string $name): Pattern
-    {
-        return $this->pushPattern($this->pattern($path, $name))->methods($methods);
-    }
-
-    /**
      * GET|POST|PUT|PATCH|HEAD|OPTIONS|DELETE
      *
-     * @param string      $path
+     * @param string $path
      * @param null|string $name
      *
      * @return Pattern
@@ -83,7 +73,7 @@ class Resolver implements GroupResolution
     }
 
     /**
-     * @param string      $path
+     * @param string $path
      * @param null|string $name
      *
      * @return Pattern
@@ -94,7 +84,7 @@ class Resolver implements GroupResolution
     }
 
     /**
-     * @param string      $path
+     * @param string $path
      * @param null|string $name
      *
      * @return Pattern
@@ -105,7 +95,7 @@ class Resolver implements GroupResolution
     }
 
     /**
-     * @param string      $path
+     * @param string $path
      * @param null|string $name
      *
      * @return Pattern
@@ -116,7 +106,7 @@ class Resolver implements GroupResolution
     }
 
     /**
-     * @param string      $path
+     * @param string $path
      * @param null|string $name
      *
      * @return Pattern
@@ -127,7 +117,7 @@ class Resolver implements GroupResolution
     }
 
     /**
-     * @param string      $path
+     * @param string $path
      * @param null|string $name
      *
      * @return Pattern
@@ -135,6 +125,16 @@ class Resolver implements GroupResolution
     public function delete(string $path, ?string $name = null): Pattern
     {
         return $this->pushPattern($this->pattern($path, $name))->delete();
+    }
+
+    /**
+     * @param string $entityName
+     * @param null|string $name
+     * @return Pattern
+     */
+    public function index(string $entityName, ?string $name = null): Pattern
+    {
+        return $this->pushPattern($this->_index($entityName, $name));
     }
 
     /**
@@ -155,13 +155,23 @@ class Resolver implements GroupResolution
     }
 
     /**
+     * @param string $name
+     * @param string $index
+     * @return string
+     */
+    protected function name(string $name, string $index): string
+    {
+        return $name . '.' . $index;
+    }
+
+    /**
      * @param string $entityName
      * @param null|string $name
      * @return Pattern
      */
-    public function index(string $entityName, ?string $name = null): Pattern
+    public function create(string $entityName, ?string $name = null): Pattern
     {
-        return $this->pushPattern($this->_index($entityName, $name));
+        return $this->pushPattern($this->_create($entityName, $name));
     }
 
     /**
@@ -183,12 +193,22 @@ class Resolver implements GroupResolution
 
     /**
      * @param string $entityName
+     * @param string $action
+     * @return string
+     */
+    protected function action(string $entityName, string $action): string
+    {
+        return $entityName . '/' . $action;
+    }
+
+    /**
+     * @param string $entityName
      * @param null|string $name
      * @return Pattern
      */
-    public function create(string $entityName, ?string $name = null): Pattern
+    public function store(string $entityName, ?string $name = null): Pattern
     {
-        return $this->pushPattern($this->_create($entityName, $name));
+        return $this->pushPattern($this->_store($entityName, $name));
     }
 
     /**
@@ -211,11 +231,12 @@ class Resolver implements GroupResolution
     /**
      * @param string $entityName
      * @param null|string $name
+     * @param null|string $id
      * @return Pattern
      */
-    public function store(string $entityName, ?string $name = null): Pattern
+    public function show(string $entityName, ?string $name = null, ?string $id = null): Pattern
     {
-        return $this->pushPattern($this->_store($entityName, $name));
+        return $this->pushPattern($this->_show($entityName, $name, $id));
     }
 
     /**
@@ -238,13 +259,23 @@ class Resolver implements GroupResolution
 
     /**
      * @param string $entityName
+     * @param string $id
+     * @return string
+     */
+    protected function id(string $entityName, string $id): string
+    {
+        return $this->action($entityName, '<' . $id . '>');
+    }
+
+    /**
+     * @param string $entityName
      * @param null|string $name
      * @param null|string $id
      * @return Pattern
      */
-    public function show(string $entityName, ?string $name = null, ?string $id = null): Pattern
+    public function edit(string $entityName, ?string $name = null, ?string $id = null): Pattern
     {
-        return $this->pushPattern($this->_show($entityName, $name, $id));
+        return $this->pushPattern($this->_edit($entityName, $name, $id));
     }
 
     /**
@@ -267,13 +298,24 @@ class Resolver implements GroupResolution
 
     /**
      * @param string $entityName
+     * @param string $id
+     * @param string $action
+     * @return string
+     */
+    protected function idAction(string $entityName, string $id, string $action): string
+    {
+        return $this->action($this->id($entityName, $id), $action);
+    }
+
+    /**
+     * @param string $entityName
      * @param null|string $name
      * @param null|string $id
      * @return Pattern
      */
-    public function edit(string $entityName, ?string $name = null, ?string $id = null): Pattern
+    public function update(string $entityName, ?string $name = null, ?string $id = null): Pattern
     {
-        return $this->pushPattern($this->_edit($entityName, $name, $id));
+        return $this->pushPattern($this->_update($entityName, $name, $id));
     }
 
     /**
@@ -300,9 +342,9 @@ class Resolver implements GroupResolution
      * @param null|string $id
      * @return Pattern
      */
-    public function update(string $entityName, ?string $name = null, ?string $id = null): Pattern
+    public function destroy(string $entityName, ?string $name = null, ?string $id = null): Pattern
     {
-        return $this->pushPattern($this->_update($entityName, $name, $id));
+        return $this->pushPattern($this->_destroy($entityName, $name, $id));
     }
 
     /**
@@ -327,52 +369,14 @@ class Resolver implements GroupResolution
      * @param string $entityName
      * @param null|string $name
      * @param null|string $id
-     * @return Pattern
+     *
+     * @return ResourceCollection
      */
-    public function destroy(string $entityName, ?string $name = null, ?string $id = null): Pattern
+    public function apiResource(string $entityName, ?string $name = null, ?string $id = null): ResourceCollection
     {
-        return $this->pushPattern($this->_destroy($entityName, $name, $id));
-    }
-
-    /**
-     * @param string $name
-     * @param string $index
-     * @return string
-     */
-    protected function name(string $name, string $index): string
-    {
-        return $name . '.' . $index;
-    }
-
-    /**
-     * @param string $entityName
-     * @param string $action
-     * @return string
-     */
-    protected function action(string $entityName, string $action): string
-    {
-        return $entityName . '/' . $action;
-    }
-
-    /**
-     * @param string $entityName
-     * @param string $id
-     * @return string
-     */
-    protected function id(string $entityName, string $id): string
-    {
-        return $this->action($entityName, '<' . $id . '>');
-    }
-
-    /**
-     * @param string $entityName
-     * @param string $id
-     * @param string $action
-     * @return string
-     */
-    protected function idAction(string $entityName, string $id, string $action): string
-    {
-        return $this->action($this->id($entityName, $id), $action);
+        return $this->resource($entityName, $name, $id)->only([
+            'index', 'store', 'show', 'update', 'destroy'
+        ]);
     }
 
     /**
@@ -386,7 +390,7 @@ class Resolver implements GroupResolution
      *  PUT/PATCH   users.update    /users/{id}/edit
      *  DELETE      users.destroy   /users/{id}
      *
-     * @param string      $entityName
+     * @param string $entityName
      * @param null|string $name
      * @param null|string $id
      *
@@ -410,17 +414,13 @@ class Resolver implements GroupResolution
     }
 
     /**
-     * @param string      $entityName
-     * @param null|string $name
-     * @param null|string $id
+     * @param ResourceCollection $collection
      *
      * @return ResourceCollection
      */
-    public function apiResource(string $entityName, ?string $name = null, ?string $id = null): ResourceCollection
+    protected function pushCollection(ResourceCollection $collection): ResourceCollection
     {
-        return $this->resource($entityName, $name, $id)->only([
-            'index', 'store', 'show', 'update', 'destroy'
-        ]);
+        return \call_user_func($this->collections, $collection);
     }
 
 }

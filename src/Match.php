@@ -68,6 +68,65 @@ class Match implements \Serializable, \JsonSerializable
     }
 
     /**
+     * check subject
+     */
+    protected function test(): void
+    {
+        if (!$this->methodAllowed()) {
+            return;
+        }
+
+        $result = \preg_match($this->regex(), $this->subject, $matches);
+        $this->test = $result !== 0;
+        $this->setGroups(\array_filter(
+            $matches,
+            '\is_string',
+            \ARRAY_FILTER_USE_KEY
+        ));
+    }
+
+    /**
+     * check method
+     *
+     * @return bool
+     */
+    protected function methodAllowed(): bool
+    {
+        $this->test = $this->rule->getMethods() === null ||
+            \in_array($this->method, $this->rule->getMethods(), true);
+
+        return $this->isTest();
+    }
+
+    /**
+     * @return bool
+     */
+    public function isTest(): bool
+    {
+        return $this->test;
+    }
+
+    /**
+     * @return string
+     */
+    protected function regex(): string
+    {
+        return '~^' . $this->getPattern() . '$~u';
+    }
+
+    /**
+     * @return string
+     */
+    public function getPattern(): string
+    {
+        return Server::url(
+            $this->rule->getPath()->getPattern(),
+            $this->rule->getHost(),
+            $this->rule->getProtocol()
+        );
+    }
+
+    /**
      * @return string
      */
     public function getMethod(): string
@@ -81,6 +140,23 @@ class Match implements \Serializable, \JsonSerializable
     public function getGroups(): array
     {
         return $this->groups;
+    }
+
+    /**
+     * @param array $groups
+     */
+    protected function setGroups(array $groups): void
+    {
+        foreach ($groups as $key => $value) {
+            if ($value !== '') {
+                $this->groups[$key] = $value;
+            }
+        }
+
+        $this->attributes = \array_merge(
+            $this->attributes,
+            $this->groups
+        );
     }
 
     /**
@@ -140,87 +216,28 @@ class Match implements \Serializable, \JsonSerializable
     }
 
     /**
-     * @return string
-     */
-    public function getPattern(): string
-    {
-        return Server::url(
-            $this->rule->getPath()->getPattern(),
-            $this->rule->getHost(),
-            $this->rule->getProtocol()
-        );
-    }
-
-    /**
-     * @return bool
-     */
-    public function isTest(): bool
-    {
-        return $this->test;
-    }
-
-    /**
-     * @param array $groups
-     */
-    protected function setGroups(array $groups): void
-    {
-        foreach ($groups as $key => $value) {
-            if ($value !== '') {
-                $this->groups[$key] = $value;
-            }
-        }
-
-        $this->attributes = \array_merge(
-            $this->attributes,
-            $this->groups
-        );
-    }
-
-    /**
-     * check method
-     *
-     * @return bool
-     */
-    protected function methodAllowed(): bool
-    {
-        $this->test = $this->rule->getMethods() === null ||
-            \in_array($this->method, $this->rule->getMethods(), true);
-
-        return $this->isTest();
-    }
-
-    /**
-     * check subject
-     */
-    protected function test(): void
-    {
-        if (!$this->methodAllowed()) {
-            return;
-        }
-
-        $result = \preg_match($this->regex(), $this->subject, $matches);
-        $this->test = $result !== 0;
-        $this->setGroups(\array_filter(
-            $matches,
-            '\is_string',
-            \ARRAY_FILTER_USE_KEY
-        ));
-    }
-
-    /**
-     * @return string
-     */
-    protected function regex(): string
-    {
-        return '~^' . $this->getPattern() . '$~u';
-    }
-
-    /**
      * @return array
      */
     public function __sleep(): array
     {
         return \array_keys($this->jsonSerialize());
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function jsonSerialize(): array
+    {
+        return [
+            'urlData' => $this->urlData,
+            'protocol' => $this->protocol,
+            'host' => $this->host,
+            'attributes ' => $this->attributes,
+            'method' => $this->method,
+            'subject' => $this->subject,
+            'rule' => $this->rule,
+            'test' => $this->test,
+        ];
     }
 
     /**
@@ -240,23 +257,6 @@ class Match implements \Serializable, \JsonSerializable
         foreach ($data as $key => $value) {
             $this->{$key} = $value;
         }
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function jsonSerialize(): array
-    {
-        return [
-            'urlData' => $this->urlData,
-            'protocol' => $this->protocol,
-            'host' => $this->host,
-            'attributes ' => $this->attributes ,
-            'method' => $this->method,
-            'subject' => $this->subject,
-            'rule' => $this->rule,
-            'test' => $this->test,
-        ];
     }
 
 }

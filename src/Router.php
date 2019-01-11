@@ -2,9 +2,9 @@
 
 namespace Bavix\Router;
 
+use Bavix\Exceptions;
 use Bavix\Router\Rules\PatternRule;
 use Psr\Cache\CacheItemPoolInterface;
-use Bavix\Exceptions;
 
 class Router
 {
@@ -25,7 +25,7 @@ class Router
     protected $routes;
 
     /**
-     * @var iterable
+     * @var array
      */
     protected $config = [];
 
@@ -38,7 +38,7 @@ class Router
      * Router constructor.
      *
      * @param iterable $data
-     * @param CacheItemPoolInterface   $pool
+     * @param CacheItemPoolInterface $pool
      */
     public function __construct($data, CacheItemPoolInterface $pool = null)
     {
@@ -47,7 +47,36 @@ class Router
     }
 
     /**
-     * @param string   $prefix
+     * @param \Traversable|iterable $config
+     * @return Router
+     */
+    protected function addPattern($config): self
+    {
+        $this->routes = null;
+        $this->config = \array_merge(
+            $this->config,
+            $this->asArray($config)
+        );
+
+        return $this;
+    }
+
+    /**
+     * @param array|\Traversable $data
+     *
+     * @return array
+     */
+    protected function asArray($data): array
+    {
+        if (!\is_array($data)) {
+            return \iterator_to_array($data);
+        }
+
+        return $data;
+    }
+
+    /**
+     * @param string $prefix
      * @param callable $callback
      *
      * @return Group
@@ -80,35 +109,6 @@ class Router
     }
 
     /**
-     * @param array|\Traversable $data
-     *
-     * @return array
-     */
-    protected function asArray($data): array
-    {
-        if (!\is_array($data)) {
-            return \iterator_to_array($data);
-        }
-
-        return $data;
-    }
-
-    /**
-     * @param \Traversable|iterable $config
-     * @return Router
-     */
-    protected function addPattern($config): self
-    {
-        $this->routes = null;
-        $this->config = \array_merge(
-            $this->config,
-            $this->asArray($config)
-        );
-
-        return $this;
-    }
-
-    /**
      * @return Route
      *
      * @throws Exceptions\NotFound\Data
@@ -137,39 +137,29 @@ class Router
     }
 
     /**
-     * @return string
+     * @param string $subject
+     * @return Route
+     * @throws Exceptions\NotFound\Page
      */
-    protected function hash(): string
+    protected function find(string $subject): Route
     {
-        $config = \json_encode($this->config);
-        $groups = \json_encode($this->groups);
-        return \crc32(self::VERSION . $config . $groups);
-    }
-
-    /**
-     * loading mounted groups
-     */
-    protected function loadingGroups(): void
-    {
-        foreach ($this->groups as $group) {
-            $this->addPattern($group->toArray());
+        foreach ($this->routes() as $name => $patternRule) {
+            $match = new Match($patternRule, $subject, Server::sharedInstance()->method());
+            if ($match->isTest()) {
+                return new Route($match);
+            }
         }
+
+        throw new Exceptions\NotFound\Page('Page `' . $subject . '` not found', 404);
     }
 
     /**
-     * @return array
-     * @throws
+     * @return Route[]
      */
-    protected function loadingRoutes(): array
+    public function routes(): array
     {
-        $this->loadingGroups();
-        $loader = new Loader($this->config);
-        $this->routes = $loader->simplify();
-
-        if ($this->pool) {
-            $item = $this->pool->getItem($this->hash());
-            $item->set($this->routes);
-            $this->pool->save($item);
+        if (empty($this->routes)) {
+            $this->routes = $this->bootRoutes();
         }
 
         return $this->routes;
@@ -193,15 +183,42 @@ class Router
     }
 
     /**
-     * @return Route[]
+     * @return string
      */
-    public function routes(): array 
+    protected function hash(): string
     {
-        if (empty($this->routes)) {
-            $this->routes = $this->bootRoutes();
+        $config = \json_encode($this->config);
+        $groups = \json_encode($this->groups);
+        return \crc32(self::VERSION . $config . $groups);
+    }
+
+    /**
+     * @return array
+     * @throws
+     */
+    protected function loadingRoutes(): array
+    {
+        $this->loadingGroups();
+        $loader = new Loader($this->config);
+        $this->routes = $loader->simplify();
+
+        if ($this->pool) {
+            $item = $this->pool->getItem($this->hash());
+            $item->set($this->routes);
+            $this->pool->save($item);
         }
 
         return $this->routes;
+    }
+
+    /**
+     * loading mounted groups
+     */
+    protected function loadingGroups(): void
+    {
+        foreach ($this->groups as $group) {
+            $this->addPattern($group->toArray());
+        }
     }
 
     /**
@@ -220,23 +237,6 @@ class Router
         }
 
         return $routes[$path];
-    }
-
-    /**
-     * @param string $subject
-     * @return Route
-     * @throws Exceptions\NotFound\Page
-     */
-    protected function find(string $subject): Route
-    {
-        foreach ($this->routes() as $name => $patternRule) {
-            $match = new Match($patternRule, $subject, Server::sharedInstance()->method());
-            if ($match->isTest()) {
-                return new Route($match);
-            }
-        }
-
-        throw new Exceptions\NotFound\Page('Page `' . $subject . '` not found', 404);
     }
 
 }

@@ -12,10 +12,10 @@ class PatternRule extends Rule
      * PatternRule constructor.
      *
      * @param string $key
-     * @param iterable $storage
+     * @param array $storage
      * @param Rule|null $parent
      */
-    public function __construct(string $key, $storage, ?Rule $parent = null)
+    public function __construct(string $key, array $storage, ?Rule $parent = null)
     {
         parent::__construct($key, $storage, $parent);
 

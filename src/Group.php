@@ -92,6 +92,33 @@ class Group implements \JsonSerializable
     }
 
     /**
+     * @return array
+     */
+    public function jsonSerialize(): array
+    {
+        return $this->toArray();
+    }
+
+    /**
+     * @return array
+     */
+    public function toArray(): array
+    {
+        return [
+            $this->getName() => [
+                'type' => 'prefix',
+                'protocol' => $this->getProtocol(),
+                'host' => $this->getHost(),
+                'path' => $this->path,
+                'methods' => $this->getMethods(),
+                'resolver' => $this->getResolver(),
+                'defaults' => $this->getDefaults(),
+                'extends' => $this->getExtends(),
+            ]
+        ];
+    }
+
+    /**
      * @return string
      */
     public function getName(): string
@@ -147,42 +174,6 @@ class Group implements \JsonSerializable
     }
 
     /**
-     * @return array
-     */
-    public function getExtends(): array
-    {
-        return $this->extends;
-    }
-
-    /**
-     * @param array $extends
-     * @return $this
-     */
-    public function setExtends(array $extends): self
-    {
-        $this->extends = $extends;
-        return $this;
-    }
-
-    /**
-     * @return array
-     */
-    public function getDefaults(): array
-    {
-        return $this->defaults;
-    }
-
-    /**
-     * @param array $defaults
-     * @return $this
-     */
-    public function setDefaults(array $defaults): self
-    {
-        $this->defaults = $defaults;
-        return $this;
-    }
-
-    /**
      * @return null|array
      */
     public function getMethods(): ?array
@@ -198,18 +189,6 @@ class Group implements \JsonSerializable
     {
         $this->methods = $methods;
         return $this;
-    }
-
-    /**
-     * @return \Generator
-     */
-    protected function patterns(): \Generator
-    {
-        foreach ($this->collections as $collection) {
-            foreach ($collection as $pattern) {
-                yield $pattern;
-            }
-        }
     }
 
     /**
@@ -235,30 +214,51 @@ class Group implements \JsonSerializable
     }
 
     /**
-     * @return array
+     * @return \Generator
      */
-    public function toArray(): array
+    protected function patterns(): \Generator
     {
-        return [
-            $this->getName() => [
-                'type' => 'prefix',
-                'protocol' => $this->getProtocol(),
-                'host' => $this->getHost(),
-                'path' => $this->path,
-                'methods' => $this->getMethods(),
-                'resolver' => $this->getResolver(),
-                'defaults' => $this->getDefaults(),
-                'extends' => $this->getExtends(),
-            ]
-        ];
+        foreach ($this->collections as $collection) {
+            foreach ($collection as $pattern) {
+                yield $pattern;
+            }
+        }
     }
 
     /**
      * @return array
      */
-    public function jsonSerialize(): array
+    public function getDefaults(): array
     {
-        return $this->toArray();
+        return $this->defaults;
+    }
+
+    /**
+     * @param array $defaults
+     * @return $this
+     */
+    public function setDefaults(array $defaults): self
+    {
+        $this->defaults = $defaults;
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getExtends(): array
+    {
+        return $this->extends;
+    }
+
+    /**
+     * @param array $extends
+     * @return $this
+     */
+    public function setExtends(array $extends): self
+    {
+        $this->extends = $extends;
+        return $this;
     }
 
 }

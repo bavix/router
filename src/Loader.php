@@ -42,16 +42,16 @@ class Loader
     }
 
     /**
-     * @param string $key
-     *
-     * @return string
+     * @return PatternRule[]
      */
-    protected function way(string $key): string
+    public function simplify(): array
     {
-        if ($this->parent) {
-            return $this->parent->getName() . '.' . $key;
+        $routes = [];
+        foreach ($this->routes() as $key => $route) {
+            $routes[] = $this->_simplify($route, $key);
         }
-        return $key;
+
+        return \array_merge(...$routes);
     }
 
     /**
@@ -71,16 +71,43 @@ class Loader
     }
 
     /**
-     * @return PatternRule[]
+     * @param string $key
+     *
+     * @return string
      */
-    public function simplify(): array
+    protected function way(string $key): string
     {
-        $routes = [];
-        foreach ($this->routes() as $key => $route) {
-            $routes[] = $this->_simplify($route, $key);
+        if ($this->parent) {
+            return $this->parent->getName() . '.' . $key;
+        }
+        return $key;
+    }
+
+    /**
+     * @param string $type
+     * @param string $key
+     * @param array $item
+     *
+     * @return Rule
+     */
+    public function rule(string $type, string $key, array $item): Rule
+    {
+        if (!$this->validate($type)) {
+            throw new Runtime(\sprintf('Undefined type `%s`', $type));
         }
 
-        return \array_merge(...$routes);
+        $class = $this->rules[$type];
+        return new $class($key, $item, $this->parent);
+    }
+
+    /**
+     * @param string $type
+     *
+     * @return bool
+     */
+    protected function validate(string $type): bool
+    {
+        return \array_key_exists($type, $this->rules);
     }
 
     /**
@@ -105,33 +132,6 @@ class Loader
         }
 
         return \array_merge(...$rules);
-    }
-
-    /**
-     * @param string $type
-     *
-     * @return bool
-     */
-    protected function validate(string $type): bool
-    {
-        return \array_key_exists($type, $this->rules);
-    }
-
-    /**
-     * @param string $type
-     * @param string $key
-     * @param array  $item
-     *
-     * @return Rule
-     */
-    public function rule(string $type, string $key, array $item): Rule
-    {
-        if (!$this->validate($type)) {
-            throw new Runtime(\sprintf('Undefined type `%s`', $type));
-        }
-
-        $class = $this->rules[$type];
-        return new $class($key, $item, $this->parent);
     }
 
 }
